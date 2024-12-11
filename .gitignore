@@ -1,0 +1,10 @@
+.env.dev
+.env.prod
+.env.test
+
+.git
+
+node_modules
+__pycache__
+
+.cursorrules

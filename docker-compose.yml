@@ -1,0 +1,31 @@
+services:
+  frontend:
+    build:
+      context: ./frontend
+      target: base
+    ports:
+      - "3000:3000"
+    env_file:
+      - .env.dev
+    volumes:
+      - type: bind
+        source: ./frontend/src
+        target: /app/src
+      - type: bind
+        source: ./frontend/public
+        target: /app/public
+      - type: volume
+        target: /app/node_modules
+      - type: volume
+        target: /app/.next
+    user: "node"
+    command: npm run dev
+    
+  backend:
+    build: ./backend
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./backend:/app
+    env_file:
+      - .env.dev
