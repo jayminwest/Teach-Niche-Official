@@ -28,6 +28,16 @@ export default function Home() {
     }
   }
 
+  const handleTestStripe = async () => {
+    try {
+      const response = await fetch('http://localhost:8000/test-stripe')
+      const data = await response.json()
+      alert(`Backend Stripe connection: ${JSON.stringify(data)}`)
+    } catch (error) {
+      alert('Failed to test Stripe connection through backend')
+    }
+  }
+
   return (
     <>
       <Head>
@@ -58,6 +68,12 @@ export default function Home() {
             variant="secondary"
             onClick={handleTestSupabaseBackend}
             aria-label="Test Supabase connection through backend"
+          />
+          <Button
+            label="Test Stripe"
+            variant="secondary"
+            onClick={handleTestStripe}
+            aria-label="Test Stripe connection through backend"
           />
         </div>
       </main>

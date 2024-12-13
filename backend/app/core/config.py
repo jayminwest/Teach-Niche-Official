@@ -5,6 +5,7 @@ from typing import List
 class Settings(BaseModel):
     NEXT_PUBLIC_SUPABASE_URL: str
     NEXT_PUBLIC_SUPABASE_ANON_KEY: str
+    STRIPE_SECRET_KEY: str
     CORS_ORIGINS: List[str] = ["http://localhost:3000"]
 
     class Config:
@@ -18,5 +19,6 @@ def get_settings() -> Settings:
     
     return Settings(
         NEXT_PUBLIC_SUPABASE_URL=os.getenv("NEXT_PUBLIC_SUPABASE_URL"),
-        NEXT_PUBLIC_SUPABASE_ANON_KEY=os.getenv("NEXT_PUBLIC_SUPABASE_ANON_KEY")
+        NEXT_PUBLIC_SUPABASE_ANON_KEY=os.getenv("NEXT_PUBLIC_SUPABASE_ANON_KEY"),
+        STRIPE_SECRET_KEY=os.getenv("STRIPE_SECRET_KEY")
     )
