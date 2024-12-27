@@ -1,13 +1,20 @@
 import pytest
-import sys
-import os
-sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-
 from fastapi.testclient import TestClient
-from backend.main import app
+import os
+from main import app
 
 @pytest.fixture
 def client():
-    """Create a test client for the FastAPI app."""
-    with TestClient(app) as client:
-        yield client
+    return TestClient(app)
+
+@pytest.fixture(autouse=True)
+def setup_test_env():
+    """Setup test environment variables before each test"""
+    os.environ["NEXT_PUBLIC_SUPABASE_URL"] = "http://localhost:8000"
+    os.environ["NEXT_PUBLIC_SUPABASE_ANON_KEY"] = "test-key"
+    os.environ["STRIPE_SECRET_KEY"] = "test-key"
+    yield
+    # Clean up after tests
+    os.environ.pop("NEXT_PUBLIC_SUPABASE_URL", None)
+    os.environ.pop("NEXT_PUBLIC_SUPABASE_ANON_KEY", None)
+    os.environ.pop("STRIPE_SECRET_KEY", None)
