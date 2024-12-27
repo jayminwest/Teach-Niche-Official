@@ -1,0 +1,25 @@
+[project]
+name = "teach-niche-backend"
+version = "0.1.0"
+description = "Backend for Teach Niche"
+authors = [
+    { name = "Jaymin West", email = "jaymin@teachniche.com" }
+]
+dependencies = [
+    "fastapi",
+    "uvicorn",
+    "supabase",
+    "python-dotenv",
+    "httpx",
+    "stripe",
+    "pydantic",
+    "flask",
+    "send_from_directory",
+    "pytest",
+    "requests",
+    "jsonify",
+    "json",
+    "os",
+    "dotenv",
+    "python-dotenv"
+]
