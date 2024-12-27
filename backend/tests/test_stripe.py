@@ -7,6 +7,19 @@ from app.stripe.payouts import setup_payouts
 from app.stripe.compliance import generate_tax_form
 
 def test_onboarding(client):
+    """
+    Test Stripe account creation and onboarding session generation.
+    
+    Args:
+        client: Flask test client fixture
+        
+    Tests:
+        1. Account creation endpoint returns 200 and valid account ID
+        2. Account session creation returns 200 and valid client secret
+        
+    Raises:
+        AssertionError: If any response codes aren't 200 or required fields are missing
+    """
     # Test create_account
     response = client.post('/account')
     assert response.status_code == 200
@@ -20,6 +33,19 @@ def test_onboarding(client):
     assert client_secret is not None
 
 def test_dashboard(client):
+    """
+    Test Stripe dashboard session creation for connected accounts.
+    
+    Args:
+        client: Flask test client fixture
+        
+    Tests:
+        1. Dashboard session endpoint returns 200
+        2. Response contains valid client secret
+        
+    Raises:
+        AssertionError: If response code isn't 200 or client secret is missing
+    """
     connected_account_id = "acct_test_id"
     response = client.post('/dashboard_session', json={'account': connected_account_id})
     assert response.status_code == 200
@@ -27,6 +53,20 @@ def test_dashboard(client):
     assert client_secret is not None
 
 def test_payments(client):
+    """
+    Test Stripe checkout session creation for payments.
+    
+    Args:
+        client: Flask test client fixture
+        
+    Tests:
+        1. Checkout session creation returns 200
+        2. Response contains valid session ID
+        3. Test product creation with specified price
+        
+    Raises:
+        AssertionError: If response code isn't 200 or session ID is missing
+    """
     response = client.post('/create_checkout_session', json={
         'account': 'acct_test_id',
         'line_items': [
@@ -45,6 +85,20 @@ def test_payments(client):
     assert session_id is not None
 
 def test_payouts(client):
+    """
+    Test Stripe payout schedule configuration.
+    
+    Args:
+        client: Flask test client fixture
+        
+    Tests:
+        1. Payout setup endpoint returns 200
+        2. Weekly payout schedule is properly configured
+        3. Response indicates successful setup
+        
+    Raises:
+        AssertionError: If response code isn't 200 or setup status is incorrect
+    """
     response = client.post('/setup_payouts', json={
         'account': 'acct_test_id',
         'interval': 'weekly',
@@ -56,6 +110,20 @@ def test_payouts(client):
     assert status == 'payouts setup successful'
 
 def test_webhook(client):
+    """
+    Test Stripe webhook endpoint handling.
+    
+    Args:
+        client: Flask test client fixture
+        
+    Tests:
+        1. Webhook endpoint processes payment_intent.succeeded event
+        2. Validates Stripe signature header
+        3. Expects 400 for invalid signature in test environment
+        
+    Raises:
+        AssertionError: If response code isn't 400 for invalid test signature
+    """
     payload = json.dumps({'type': 'payment_intent.succeeded', 'data': {'object': {}}})
     headers = {
         'Stripe-Signature': 'test_signature'
@@ -64,5 +132,21 @@ def test_webhook(client):
     assert response.status_code == 400
 
 def test_compliance():
+    """
+    Test tax form generation for Stripe connected accounts.
+    
+    Tests:
+        1. Tax form generation for specified account
+        2. Validates return value is not None
+        
+    Args:
+        None
+        
+    Returns:
+        None
+        
+    Raises:
+        AssertionError: If tax form generation fails or returns None
+    """
     result = generate_tax_form('acct_test_id')
     assert result is not None
