@@ -3,6 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.core.config import get_settings
 from app.routes.base import router as base_router
 from app.routes.supabase import router as supabase_router
+from app.routes.stripe import router as stripe_router
 
 settings = get_settings()
 
@@ -18,6 +19,7 @@ app.add_middleware(
 
 app.include_router(base_router)
 app.include_router(supabase_router)
+app.include_router(stripe_router)
 
 if __name__ == "__main__":
     import uvicorn

@@ -63,11 +63,11 @@ def test_auth(client):
     Raises:
         AssertionError: If response code isn't 200 or auth fails
     """
-    # Test sign-up
+    # Test sign-up    
     response = client.post('/signup', json={'email': 'test@example.com', 'password': 'TestPassword123'})
     assert response.status_code == 200
     # Test sign-in
-    response = client.post('/signin', json={'email': 'test@example.com', 'password': 'TestPassword123'})
+    response = client.post('/signin', json={'email': 'test@example.com', 'password': 'TestPassword123'})    
     assert response.status_code == 200
     # Test password reset
     response = client.post('/reset_password', json={'email': 'test@example.com'})
@@ -100,8 +100,8 @@ def test_api(client):
     record_id = response.get_json().get('id')
     assert record_id is not None
     # Test reading records
-    response = client.get('/read_records', json={'table': table_name})
-    assert response.status_code == 200
+    response = client.get('/read_records', params={'table': table_name})
+    assert response.status_code == 200    
     # Test updating a record
     response = client.put('/update_record', json={'table': table_name, 'record_id': record_id, 'data': {'name': 'Updated Test'}})
     assert response.status_code == 200
