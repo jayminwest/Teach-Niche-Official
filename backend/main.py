@@ -1,7 +1,8 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.core.config import get_settings
-from app.routes.base import router
+from app.routes.base import router as base_router
+from app.routes.supabase import router as supabase_router
 
 settings = get_settings()
 
@@ -15,7 +16,8 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-app.include_router(router)
+app.include_router(base_router)
+app.include_router(supabase_router)
 
 if __name__ == "__main__":
     import uvicorn
