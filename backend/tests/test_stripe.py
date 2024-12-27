@@ -135,7 +135,7 @@ def test_webhook(client):
     response = client.post('/webhook', data=payload, headers=headers)
     assert response.status_code == 400
 
-def test_compliance():
+def test_compliance(app_context):
     """
     Test tax form generation for Stripe connected accounts.
     
@@ -144,7 +144,7 @@ def test_compliance():
         2. Validates return value is not None
         
     Args:
-        None
+        app_context: Flask application context fixture
         
     Returns:
         None
