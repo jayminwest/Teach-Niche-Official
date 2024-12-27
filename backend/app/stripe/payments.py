@@ -2,6 +2,20 @@ from flask import request, jsonify
 from app.stripe.client import stripe
 
 def create_checkout_session():
+    """
+    Create a Stripe Checkout session for processing payments.
+
+    Initiates a Checkout Session to process payments for the provided line items and route funds to the specified connected account.
+
+    Parameters:
+        None (retrieves `account` and `line_items` from the JSON data in the Flask `request` object)
+
+    Returns:
+        tuple: A Flask `jsonify` response containing the `id` of the created Checkout Session, and an HTTP status code.
+
+    Exception Handling:
+        - Catches any exception and returns a 500 error response with the error message.
+    """
     try:
         data = request.get_json()
         connected_account_id = data.get('account')
