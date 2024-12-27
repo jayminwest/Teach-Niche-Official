@@ -10,7 +10,7 @@ from backend.app.stripe.payments import create_checkout_session
 from backend.app.stripe.payouts import setup_payouts
 from backend.app.stripe.compliance import generate_tax_form
 
-def test_onboarding(client, capsys):
+def test_onboarding(client):
     """
     Test Stripe account creation and onboarding session generation.
     
@@ -35,9 +35,11 @@ def test_onboarding(client, capsys):
     assert response.status_code == 200
     client_secret = response.get_json().get('client_secret')
     assert client_secret is not None
-    print("\n✅ test_onboarding passed!", file=sys.stderr)
+    print("\n==========================================")
+    print("✅ TEST PASSED: Stripe Onboarding")
+    print("==========================================")
 
-def test_dashboard(client, capsys):
+def test_dashboard(client):
     """
     Test Stripe dashboard session creation for connected accounts.
     
@@ -56,9 +58,11 @@ def test_dashboard(client, capsys):
     assert response.status_code == 200
     client_secret = response.get_json().get('client_secret')
     assert client_secret is not None
-    print("\n✅ test_dashboard passed!", file=sys.stderr)
+    print("\n==========================================")
+    print("✅ TEST PASSED: Stripe Dashboard")
+    print("==========================================")
 
-def test_payments(client, capsys):
+def test_payments(client):
     """
     Test Stripe checkout session creation for payments.
     
@@ -89,9 +93,11 @@ def test_payments(client, capsys):
     assert response.status_code == 200
     session_id = response.get_json().get('id')
     assert session_id is not None
-    print("\n✅ test_payments passed!", file=sys.stderr)
+    print("\n==========================================")
+    print("✅ TEST PASSED: Stripe Payments")
+    print("==========================================")
 
-def test_payouts(client, capsys):
+def test_payouts(client):
     """
     Test Stripe payout schedule configuration.
     
@@ -115,9 +121,11 @@ def test_payouts(client, capsys):
     assert response.status_code == 200
     status = response.get_json().get('status')
     assert status == 'payouts setup successful'
-    print("\n✅ test_payouts passed!", file=sys.stderr)
+    print("\n==========================================")
+    print("✅ TEST PASSED: Stripe Payouts")
+    print("==========================================")
 
-def test_webhook(client, capsys):
+def test_webhook(client):
     """
     Test Stripe webhook endpoint handling.
     
@@ -138,9 +146,11 @@ def test_webhook(client, capsys):
     }
     response = client.post('/webhook', data=payload, headers=headers)
     assert response.status_code == 400
-    print("\n✅ test_webhook passed!", file=sys.stderr)
+    print("\n==========================================")
+    print("✅ TEST PASSED: Stripe Webhooks")
+    print("==========================================")
 
-def test_compliance(app_context, capsys):
+def test_compliance(app_context):
     """
     Test tax form generation for Stripe connected accounts.
     
@@ -159,4 +169,6 @@ def test_compliance(app_context, capsys):
     """
     result = generate_tax_form('acct_test_id')
     assert result is not None
-    print("\n✅ test_compliance passed!", file=sys.stderr)
+    print("\n==========================================")
+    print("✅ TEST PASSED: Stripe Compliance")
+    print("==========================================")
