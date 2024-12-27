@@ -1,5 +1,9 @@
 import json
 import pytest
+import sys
+import os
+sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(__file__))))
+
 from backend.app.stripe.onboarding import create_account, create_account_session
 from backend.app.stripe.dashboard import dashboard_session_handler
 from backend.app.stripe.payments import create_checkout_session
