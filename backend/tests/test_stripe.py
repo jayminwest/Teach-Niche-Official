@@ -1,10 +1,10 @@
 import json
 import pytest
-from app.stripe.onboarding import create_account, create_account_session
-from app.stripe.dashboard import dashboard_session_handler
-from app.stripe.payments import create_checkout_session
-from app.stripe.payouts import setup_payouts
-from app.stripe.compliance import generate_tax_form
+from ..app.stripe.onboarding import create_account, create_account_session
+from ..app.stripe.dashboard import dashboard_session_handler
+from ..app.stripe.payments import create_checkout_session
+from ..app.stripe.payouts import setup_payouts
+from ..app.stripe.compliance import generate_tax_form
 
 def test_onboarding(client):
     """
