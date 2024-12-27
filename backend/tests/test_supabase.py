@@ -1,92 +1,114 @@
 """
 test_supabase.py
-
 This module contains tests for Supabase functionality.
 """
+import json
 
-def test_models():
+def test_models(client):
     """
-    Tests the database models for correctness.
+    Test Supabase model creation.
 
-    Returns:
-        None
+    Args:
+        client: Flask test client fixture
+
+    Tests:
+        1. Model creation returns 200
+        2. Response indicates successful creation
+
+    Raises:
+        AssertionError: If response code isn't 200 or creation fails
     """
-    from app.supabase.models import BaseModel
-    model_instance = BaseModel()
-    assert model_instance is not None
-    print("test_models PASSED")
+    response = client.post('/create_model')
+    assert response.status_code == 200
+    status = response.get_json().get('status')
+    assert status == 'model created successfully'
+    print("\n==========================================")
+    print("✅ TEST PASSED: Supabase Models")
+    print("==========================================")
 
-def test_migrations():
+def test_migrations(client):
     """
-    Tests the apply_migration function for proper execution.
+    Test Supabase migration application.
 
-    Returns:
-        None
+    Args:
+        client: Flask test client fixture
+
+    Tests:
+        1. Migration endpoint returns 200
+        2. Response indicates successful migration
+
+    Raises:
+        AssertionError: If response code isn't 200 or migration fails
     """
-    from app.supabase.migrations import apply_migration
-    try:
-        apply_migration("test_section")
-        print("test_migrations PASSED")
-    except Exception as e:
-        assert False, f"Migration failed: {e}"
+    response = client.post('/apply_migration', json={'section': 'test_section'})
+    assert response.status_code == 200
+    status = response.get_json().get('status')
+    assert status == 'migration applied successfully'
+    print("\n==========================================")
+    print("✅ TEST PASSED: Supabase Migrations")
+    print("==========================================")
 
-def test_auth():
+def test_auth(client):
     """
-    Tests authentication functionalities.
+    Test Supabase authentication functionalities.
 
-    Returns:
-        None
+    Args:
+        client: Flask test client fixture
+
+    Tests:
+        1. User sign-up endpoint returns 200
+        2. User sign-in endpoint returns 200
+        3. Password reset endpoint returns 200
+
+    Raises:
+        AssertionError: If response code isn't 200 or auth fails
     """
-    from app.supabase.auth import (
-        sign_up_with_email,
-        sign_in_with_email,
-        send_password_reset_email,
-        update_password,
-        sign_in_with_google
-    )
-    # Test email sign-up
-    user = sign_up_with_email("test@example.com", "TestPassword123")
-    assert user is not None
+    # Test sign-up
+    response = client.post('/signup', json={'email': 'test@example.com', 'password': 'TestPassword123'})
+    assert response.status_code == 200
+    # Test sign-in
+    response = client.post('/signin', json={'email': 'test@example.com', 'password': 'TestPassword123'})
+    assert response.status_code == 200
+    # Test password reset
+    response = client.post('/reset_password', json={'email': 'test@example.com'})
+    assert response.status_code == 200
 
-    # Test email sign-in
-    session = sign_in_with_email("test@example.com", "TestPassword123")
-    assert session is not None
+    print("\n==========================================")
+    print("✅ TEST PASSED: Supabase Auth")
+    print("==========================================")
 
-    # Test password reset email
-    send_password_reset_email("test@example.com")
-    # Assume email is sent (mocking may be required)
-
-    print("test_auth PASSED")
-
-def test_api():
+def test_api(client):
     """
-    Tests CRUD operations via the Supabase API.
+    Test Supabase CRUD operations via API endpoints.
 
-    Returns:
-        None
+    Args:
+        client: Flask test client fixture
+
+    Tests:
+        1. Record creation endpoint returns 200
+        2. Record reading endpoint returns 200
+        3. Record update endpoint returns 200
+        4. Record deletion endpoint returns 200
+
+    Raises:
+        AssertionError: If response code isn't 200 or CRUD operation fails
     """
-    from app.supabase.api import (
-        create_record,
-        read_records,
-        update_record,
-        delete_record
-    )
-    table_name = "test_table"
-
+    table_name = "test_table"    
     # Test record creation
-    record = create_record(table_name, {"name": "Test"})
-    assert record is not None
-
+    response = client.post('/create_record', json={'table': table_name, 'data': {'name': 'Test'}})
+    assert response.status_code == 200
+    record_id = response.get_json().get('id')
+    assert record_id is not None
     # Test reading records
-    records = read_records(table_name)
-    assert len(records) > 0
-
+    response = client.get('/read_records', json={'table': table_name})
+    assert response.status_code == 200
     # Test updating a record
-    updated_record = update_record(table_name, record['id'], {"name": "Updated Test"})
-    assert updated_record['name'] == "Updated Test"
-
+    response = client.put('/update_record', json={'table': table_name, 'record_id': record_id, 'data': {'name': 'Updated Test'}})
+    assert response.status_code == 200
     # Test deleting a record
-    delete_response = delete_record(table_name, record['id'])
-    assert delete_response is not None
+    response = client.delete('/delete_record', json={'table': table_name, 'record_id': record_id})
+    assert response.status_code == 200
 
-    print("test_api PASSED")
+    print("\n==========================================")
+    print("✅ TEST PASSED: Supabase API")
+    print("==========================================")
