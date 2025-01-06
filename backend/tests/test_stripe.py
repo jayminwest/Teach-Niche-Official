@@ -32,7 +32,7 @@ TEST_WEEKLY_ANCHOR = "monday"
 TEST_DELAY_DAYS = 7
 
 from backend.app.stripe.onboarding import create_stripe_connected_account, create_stripe_account_session
-from backend.app.stripe.dashboard import dashboard_session_handler
+from backend.app.stripe.dashboard import handle_dashboard_session_request
 from backend.app.stripe.payments import create_checkout_session
 from backend.app.stripe.payouts import setup_payouts
 from backend.app.stripe.compliance import generate_tax_form
@@ -110,7 +110,7 @@ def test_dashboard_session_creation(client):
     Raises:
         AssertionError: If response code isn't 200 or client secret is missing
     """
-    response = client.post('/dashboard_session', json={'account': TEST_ACCOUNT_ID})
+    response = handle_dashboard_session_request()
     assert response.status_code == 200
     client_secret = response.get_json().get('client_secret')
     assert client_secret is not None
