@@ -31,13 +31,13 @@ TEST_QUANTITY = 1
 TEST_WEEKLY_ANCHOR = "monday"
 TEST_DELAY_DAYS = 7
 
-from backend.app.stripe.onboarding import create_account, create_account_session
+from backend.app.stripe.onboarding import create_stripe_connected_account, create_stripe_account_session
 from backend.app.stripe.dashboard import dashboard_session_handler
 from backend.app.stripe.payments import create_checkout_session
 from backend.app.stripe.payouts import setup_payouts
 from backend.app.stripe.compliance import generate_tax_form
 
-def test_account_creation(client):
+def test_stripe_connected_account_creation(client):
     """Test Stripe account creation functionality.
     
     Verifies that the account creation endpoint:
@@ -59,7 +59,7 @@ def test_account_creation(client):
     assert account_id is not None
     return account_id
 
-def test_account_session_creation(client):
+def test_stripe_account_session_creation(client):
     """Test Stripe account session creation functionality.
     
     Verifies that the account session creation endpoint:
@@ -72,8 +72,8 @@ def test_account_session_creation(client):
     Raises:
         AssertionError: If response code isn't 200 or client secret is missing
     """
-    account_id = test_account_creation(client)
-    response = client.post('/account_session', json={'account': account_id})
+    account_id = test_stripe_connected_account_creation(client)
+    response = client.post('/stripe_account_session', json={'account': account_id})
     assert response.status_code == 200
     client_secret = response.get_json().get('client_secret')
     assert client_secret is not None
@@ -91,8 +91,8 @@ def test_onboarding(client):
     Raises:
         AssertionError: If any part of the onboarding flow fails
     """
-    test_account_creation(client)
-    test_account_session_creation(client)
+    test_stripe_connected_account_creation(client)
+    test_stripe_account_session_creation(client)
     print("\n==========================================")
     print("✅ TEST PASSED: Stripe Onboarding")
     print("==========================================")
