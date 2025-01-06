@@ -11,7 +11,7 @@ The module integrates with Stripe's API to manage account creation and onboardin
 ensuring proper configuration of account capabilities and controller settings.
 """
 
-from Flask import request, jsonify
+from flask import request, jsonify
 from app.stripe.client import stripe
 
 def _get_account_id_from_request():
