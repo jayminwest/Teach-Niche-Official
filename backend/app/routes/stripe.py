@@ -39,7 +39,7 @@ from fastapi import APIRouter, HTTPException, Body, Request
 from app.stripe.onboarding import create_stripe_connected_account as create_account, create_stripe_account_session as create_account_session
 from app.stripe.dashboard import handle_dashboard_session_request as dashboard_session_handler
 from app.stripe.payments import create_checkout_session
-from app.stripe.payouts import setup_payouts
+from app.stripe.payouts import handle_payout_configuration_request as setup_payouts
 from app.stripe.webhooks import stripe_webhook
 
 router = APIRouter(
@@ -233,8 +233,13 @@ async def configure_stripe_payouts(
         {'status': 'payouts configured successfully'}
     """
     try:
-        status = setup_payouts(account_id, interval, delay_days, weekly_anchor)
-        return {"status": status}
+        response, status_code = setup_payouts()
+        if status_code != 200:
+            raise HTTPException(
+                status_code=status_code,
+                detail=response.get('error', 'Payout configuration failed')
+            )
+        return {"status": "payouts configured successfully"}
     except Exception as error:
         raise HTTPException(
             status_code=500,
