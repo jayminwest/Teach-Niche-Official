@@ -12,8 +12,14 @@ from supabase import create_client
 from functools import lru_cache
 import os
 
-# Global variable for singleton Supabase client instance
-_SUPABASE_CLIENT = None
+# Initialize the Supabase client instance
+supabase = None
+
+def _initialize():
+    """Initialize the Supabase client instance."""
+    global supabase
+    if supabase is None:
+        supabase = get_supabase_client()
 
 @lru_cache()
 def get_supabase_client():
@@ -40,18 +46,5 @@ def get_supabase_client():
         
     return create_client(supabase_url, supabase_key)
 
-def initialize_supabase():
-    """Initializes and returns the global Supabase client instance.
-    
-    Implements lazy loading pattern to initialize the Supabase client only when needed.
-    Ensures a single instance is maintained throughout the application lifecycle.
-    
-    Returns:
-        supabase.Client: Initialized Supabase client instance
-    """
-    global _SUPABASE_CLIENT
-    
-    if _SUPABASE_CLIENT is None:
-        _SUPABASE_CLIENT = get_supabase_client()
-        
-    return _SUPABASE_CLIENT
+# Initialize the client when module is imported
+_initialize()
