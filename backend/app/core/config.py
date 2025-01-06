@@ -1,8 +1,34 @@
+"""
+Configuration management for the application.
+
+This module handles all environment configuration and settings using Pydantic's BaseModel.
+It provides a centralized way to manage and access environment variables with type safety
+and default values. The settings are cached using lru_cache for efficient access.
+
+Key Features:
+- Type-safe environment variable handling
+- Default values for local development
+- Caching for improved performance
+- Support for CORS origins configuration
+"""
+
 from pydantic import BaseModel, Field
 from functools import lru_cache
 from typing import List
 
 class Settings(BaseModel):
+    """
+    Application settings model that defines and validates environment variables.
+
+    Attributes:
+        NEXT_PUBLIC_SUPABASE_URL (str): URL for Supabase backend service
+        NEXT_PUBLIC_SUPABASE_ANON_KEY (str): Anonymous key for Supabase authentication
+        STRIPE_SECRET_KEY (str): Secret key for Stripe API integration
+        CORS_ORIGINS (List[str]): List of allowed CORS origins
+
+    Config:
+        from_attributes: Enables ORM mode for Pydantic model
+    """
     NEXT_PUBLIC_SUPABASE_URL: str = Field(default="http://localhost:8000")
     NEXT_PUBLIC_SUPABASE_ANON_KEY: str = Field(default="test-key")
     STRIPE_SECRET_KEY: str = Field(default="test-key")
@@ -13,6 +39,21 @@ class Settings(BaseModel):
 
 @lru_cache()
 def get_settings() -> Settings:
+    """
+    Retrieve application settings with caching for improved performance.
+
+    This function loads environment variables from .env file if present,
+    falling back to default values if not found. The settings are cached
+    using lru_cache to prevent repeated environment variable lookups.
+
+    Returns:
+        Settings: An instance of Settings class containing all configuration values
+
+    Example:
+        >>> settings = get_settings()
+        >>> print(settings.NEXT_PUBLIC_SUPABASE_URL)
+        'http://localhost:8000'
+    """
     import os
     from dotenv import load_dotenv
     
