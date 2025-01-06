@@ -8,7 +8,6 @@ import {
   useDisclosure,
   IconButton,
   Container,
-  useColorMode,
   HStack,
   Menu,
   MenuButton,
@@ -21,6 +20,7 @@ import {
   DrawerContent,
   DrawerCloseButton,
 } from '@chakra-ui/react'
+import { useColorMode } from '@chakra-ui/color-mode'
 import { FiUser, FiMoon, FiSun, FiMenu } from 'react-icons/fi'
 
 type NavItem = {
