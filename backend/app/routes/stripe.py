@@ -36,7 +36,7 @@ Example Usage:
 """
 
 from fastapi import APIRouter, HTTPException, Body, Request
-from app.stripe.onboarding import create_account, create_account_session
+from app.stripe.onboarding import create_stripe_connected_account as create_account, create_stripe_account_session as create_account_session
 from app.stripe.dashboard import dashboard_session_handler
 from app.stripe.payments import create_checkout_session
 from app.stripe.payouts import setup_payouts
