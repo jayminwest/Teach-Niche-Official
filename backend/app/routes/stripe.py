@@ -40,7 +40,7 @@ from app.stripe.onboarding import create_stripe_connected_account as create_acco
 from app.stripe.dashboard import handle_dashboard_session_request as dashboard_session_handler
 from app.stripe.payments import create_checkout_session
 from app.stripe.payouts import handle_payout_configuration_request as setup_payouts
-from app.stripe.webhooks import stripe_webhook
+from app.stripe.webhooks import handle_stripe_webhook
 
 router = APIRouter(
     prefix="/api/stripe",
@@ -270,7 +270,7 @@ async def handle_stripe_webhook(request: Request) -> dict:
     try:
         payload = await request.body()
         sig_header = request.headers.get('Stripe-Signature')
-        response = stripe_webhook(payload, sig_header)
+        response = handle_stripe_webhook(payload, sig_header)
         return response
     except Exception as error:
         raise HTTPException(

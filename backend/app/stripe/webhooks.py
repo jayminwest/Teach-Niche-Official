@@ -69,7 +69,7 @@ def _handle_payment_method_attached(event_data: dict) -> None:
     # Add event handling logic
 
 
-def handle_stripe_webhook():
+def handle_stripe_webhook(payload: str, signature: str):
     """Main entry point for Stripe webhook processing.
     
     Orchestrates the webhook handling flow:
