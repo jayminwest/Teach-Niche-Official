@@ -12,8 +12,9 @@ export const Auth = () => {
       const { error } = await supabase.auth.signInWithOtp({ email })
       if (error) throw error
       alert('Check your email for the login link!')
-    } catch (error) {
-      alert(error.message)
+    } catch (error: any) {
+      const errorMessage = error?.message || 'An error occurred during sign in'
+      alert(errorMessage)
     } finally {
       setLoading(false)
     }
