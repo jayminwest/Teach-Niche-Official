@@ -45,7 +45,7 @@ def test_stripe_connected_account_creation(test_client):
     2. Provides a valid account ID in the response
     
     Args:
-        client: Flask test client fixture
+        test_client: FastAPI test client fixture
         
     Returns:
         str: The created account ID for use in subsequent tests
@@ -72,7 +72,7 @@ def test_stripe_account_session_creation(test_client):
     Raises:
         AssertionError: If response code isn't 200 or client secret is missing
     """
-    account_id = test_stripe_connected_account_creation(client)
+    account_id = test_stripe_connected_account_creation(test_client)
     response = test_client.post('/api/stripe_account_session', json={'account': account_id})
     assert response.status_code == 200
     client_secret = response.get_json().get('client_secret')
@@ -91,8 +91,8 @@ def test_onboarding(test_client):
     Raises:
         AssertionError: If any part of the onboarding flow fails
     """
-    test_stripe_connected_account_creation(client)
-    test_stripe_account_session_creation(client)
+    test_stripe_connected_account_creation(test_client)
+    test_stripe_account_session_creation(test_client)
     print("\n==========================================")
     print("✅ TEST PASSED: Stripe Onboarding")
     print("==========================================")
@@ -162,7 +162,7 @@ def test_payments(test_client):
     Raises:
         AssertionError: If any part of the payment flow fails
     """
-    test_checkout_session_creation(client)
+    test_checkout_session_creation(test_client)
     print("\n==========================================")
     print("✅ TEST PASSED: Stripe Payments")
     print("==========================================")
@@ -190,7 +190,7 @@ def test_payout_configuration(test_client):
     }
     
     # Mock the request object
-    with client.application.test_request_context(json=request_data):
+    response = test_client.post('/api/configure_payouts', json=request_data)
         response = handle_payout_configuration_request()
     assert response.status_code == 200
     status = response.get_json().get('status')
@@ -209,7 +209,7 @@ def test_payouts(test_client):
     Raises:
         AssertionError: If any part of the payout flow fails
     """
-    test_payout_configuration(client)
+    test_payout_configuration(test_client)
     print("\n==========================================")
     print("✅ TEST PASSED: Stripe Payouts")
     print("==========================================")
@@ -245,7 +245,7 @@ def test_webhook(test_client):
     Raises:
         AssertionError: If any part of the webhook flow fails
     """
-    test_webhook_validation(client)
+    test_webhook_validation(test_client)
     print("\n==========================================")
     print("✅ TEST PASSED: Stripe Webhooks")
     print("==========================================")
@@ -258,7 +258,7 @@ def test_tax_form_generation(test_client):
     2. Properly processes account information
     
     Args:
-        app_context: Flask application context fixture
+        test_client: FastAPI test client fixture
         
     Raises:
         AssertionError: If tax form generation fails or returns None
@@ -279,7 +279,7 @@ def test_compliance(test_client):
     Raises:
         AssertionError: If any part of the compliance flow fails
     """
-    test_tax_form_generation(app_context)
+    test_tax_form_generation(test_client)
     print("\n==========================================")
     print("✅ TEST PASSED: Stripe Compliance")
     print("==========================================")
