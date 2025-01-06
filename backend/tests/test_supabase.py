@@ -14,7 +14,7 @@ Note: All tests require a running Supabase instance with proper environment conf
 """
 import json
 
-def test_model_creation(client):
+def test_model_creation(test_client):
     """Test the creation of database models through Supabase integration.
     
     Validates that the model creation endpoint correctly interacts with Supabase
@@ -44,7 +44,7 @@ def test_model_creation(client):
     Raises:
         AssertionError: If response code isn't 200 or creation fails
     """
-    response = client.post('/create_model')
+    response = test_client.post('/api/create_model')
     assert response.status_code == 200
     status = response.get_json().get('status')
     assert status == 'model created successfully'
@@ -52,7 +52,7 @@ def test_model_creation(client):
     print("✅ TEST PASSED: Supabase Models")
     print("==========================================")
 
-def test_database_migrations(client):
+def test_database_migrations(test_client):
     """Test the application of database migrations through Supabase.
     
     Validates that database schema migrations are properly applied and
@@ -69,7 +69,7 @@ def test_database_migrations(client):
     Raises:
         AssertionError: If any test condition fails
     """
-    response = client.post('/apply_migration', json={'section': 'test_section'})
+    response = test_client.post('/api/apply_migration', json={'section': 'test_section'})
     assert response.status_code == 200
     status = response.get_json().get('status')
     assert status == 'migration applied successfully'
@@ -77,7 +77,7 @@ def test_database_migrations(client):
     print("✅ TEST PASSED: Supabase Migrations")
     print("==========================================")
 
-def test_user_authentication_workflow(client):
+def test_user_authentication_workflow(test_client):
     """Test the complete user authentication workflow through Supabase.
     
     Validates the end-to-end authentication process including:
@@ -97,20 +97,20 @@ def test_user_authentication_workflow(client):
         AssertionError: If any test condition fails
     """
     # Test sign-up    
-    response = client.post('/signup', json={'email': 'test@example.com', 'password': 'TestPassword123'})
+    response = test_client.post('/api/signup', json={'email': 'test@example.com', 'password': 'TestPassword123'})
     assert response.status_code == 200
     # Test sign-in
-    response = client.post('/signin', json={'email': 'test@example.com', 'password': 'TestPassword123'})    
+    response = test_client.post('/api/signin', json={'email': 'test@example.com', 'password': 'TestPassword123'})    
     assert response.status_code == 200
     # Test password reset
-    response = client.post('/reset_password', json={'email': 'test@example.com'})
+    response = test_client.post('/api/reset_password', json={'email': 'test@example.com'})
     assert response.status_code == 200
 
     print("\n==========================================")
     print("✅ TEST PASSED: Supabase Auth")
     print("==========================================")
 
-def test_crud_operations(client):
+def test_crud_operations(test_client):
     """Test CRUD (Create, Read, Update, Delete) operations through Supabase API.
     
     Validates the complete lifecycle of data management operations including:
@@ -133,18 +133,18 @@ def test_crud_operations(client):
     """
     table_name = "test_table"    
     # Test record creation
-    response = client.post('/create_record', json={'table': table_name, 'data': {'name': 'Test'}})
+    response = test_client.post('/api/create_record', json={'table': table_name, 'data': {'name': 'Test'}})
     assert response.status_code == 200
     record_id = response.get_json().get('id')
     assert record_id is not None
     # Test reading records
-    response = client.get('/read_records', params={'table': table_name})
+    response = test_client.get('/api/read_records', params={'table': table_name})
     assert response.status_code == 200    
     # Test updating a record
-    response = client.put('/update_record', json={'table': table_name, 'record_id': record_id, 'data': {'name': 'Updated Test'}})
+    response = test_client.put('/api/update_record', json={'table': table_name, 'record_id': record_id, 'data': {'name': 'Updated Test'}})
     assert response.status_code == 200
     # Test deleting a record
-    response = client.delete('/delete_record', json={'table': table_name, 'record_id': record_id})
+    response = test_client.delete('/api/delete_record', json={'table': table_name, 'record_id': record_id})
     assert response.status_code == 200
 
     print("\n==========================================")

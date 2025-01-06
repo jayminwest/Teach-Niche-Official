@@ -37,7 +37,7 @@ from backend.app.stripe.payments import create_checkout_session
 from backend.app.stripe.payouts import handle_payout_configuration_request
 from backend.app.stripe.compliance import generate_tax_form
 
-def test_stripe_connected_account_creation(client):
+def test_stripe_connected_account_creation(test_client):
     """Test Stripe account creation functionality.
     
     Verifies that the account creation endpoint:
@@ -53,13 +53,13 @@ def test_stripe_connected_account_creation(client):
     Raises:
         AssertionError: If response code isn't 200 or account ID is missing
     """
-    response = client.post('/account')
+    response = test_client.post('/api/account')
     assert response.status_code == 200
     account_id = response.get_json().get('account')
     assert account_id is not None
     return account_id
 
-def test_stripe_account_session_creation(client):
+def test_stripe_account_session_creation(test_client):
     """Test Stripe account session creation functionality.
     
     Verifies that the account session creation endpoint:
@@ -73,12 +73,12 @@ def test_stripe_account_session_creation(client):
         AssertionError: If response code isn't 200 or client secret is missing
     """
     account_id = test_stripe_connected_account_creation(client)
-    response = client.post('/stripe_account_session', json={'account': account_id})
+    response = test_client.post('/api/stripe_account_session', json={'account': account_id})
     assert response.status_code == 200
     client_secret = response.get_json().get('client_secret')
     assert client_secret is not None
 
-def test_onboarding(client):
+def test_onboarding(test_client):
     """Test complete Stripe onboarding flow.
     
     Combines account creation and session creation tests to verify the full
@@ -97,7 +97,7 @@ def test_onboarding(client):
     print("✅ TEST PASSED: Stripe Onboarding")
     print("==========================================")
 
-def test_dashboard_session_creation(client):
+def test_dashboard_session_creation(test_client):
     """Test Stripe dashboard session creation for connected accounts.
     
     Verifies that the dashboard session endpoint:
@@ -118,7 +118,7 @@ def test_dashboard_session_creation(client):
     print("✅ TEST PASSED: Stripe Dashboard")
     print("==========================================")
 
-def test_checkout_session_creation(client):
+def test_checkout_session_creation(test_client):
     """Test Stripe checkout session creation for payments.
     
     Verifies that the checkout session endpoint:
@@ -132,7 +132,7 @@ def test_checkout_session_creation(client):
     Raises:
         AssertionError: If response code isn't 200 or session ID is missing
     """
-    response = client.post('/create_checkout_session', json={
+    response = test_client.post('/api/create_checkout_session', json={
         'account': TEST_ACCOUNT_ID,
         'line_items': [
             {
@@ -149,7 +149,7 @@ def test_checkout_session_creation(client):
     session_id = response.get_json().get('id')
     assert session_id is not None
 
-def test_payments(client):
+def test_payments(test_client):
     """Test complete Stripe payment processing flow.
     
     Combines checkout session creation tests to verify the full
@@ -167,7 +167,7 @@ def test_payments(client):
     print("✅ TEST PASSED: Stripe Payments")
     print("==========================================")
 
-def test_payout_configuration(client):
+def test_payout_configuration(test_client):
     """Test Stripe payout schedule configuration.
     
     Verifies that the payout setup endpoint:
@@ -196,7 +196,7 @@ def test_payout_configuration(client):
     status = response.get_json().get('status')
     assert status == 'payouts setup successful'
 
-def test_payouts(client):
+def test_payouts(test_client):
     """Test complete Stripe payout configuration flow.
     
     Combines payout configuration tests to verify the full
@@ -214,7 +214,7 @@ def test_payouts(client):
     print("✅ TEST PASSED: Stripe Payouts")
     print("==========================================")
 
-def test_webhook_validation(client):
+def test_webhook_validation(test_client):
     """Test Stripe webhook signature validation.
     
     Verifies that the webhook endpoint:
@@ -229,10 +229,10 @@ def test_webhook_validation(client):
     """
     payload = json.dumps({'type': 'payment_intent.succeeded', 'data': {'object': {}}})
     headers = {'Stripe-Signature': 'test_signature'}
-    response = client.post('/webhook', data=payload, headers=headers)
+    response = test_client.post('/api/webhook', data=payload, headers=headers)
     assert response.status_code == 400
 
-def test_webhook(client):
+def test_webhook(test_client):
     """Test complete Stripe webhook handling flow.
     
     Combines webhook validation tests to verify the full
@@ -250,7 +250,7 @@ def test_webhook(client):
     print("✅ TEST PASSED: Stripe Webhooks")
     print("==========================================")
 
-def test_tax_form_generation(app_context):
+def test_tax_form_generation(test_client):
     """Test tax form generation for Stripe connected accounts.
     
     Verifies that the tax form generation:
@@ -266,7 +266,7 @@ def test_tax_form_generation(app_context):
     result = generate_tax_form(TEST_ACCOUNT_ID)
     assert result is not None
 
-def test_compliance(app_context):
+def test_compliance(test_client):
     """Test complete Stripe compliance workflow.
     
     Combines compliance-related tests to verify the full

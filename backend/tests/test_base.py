@@ -9,13 +9,8 @@ The tests are written using FastAPI's TestClient and follow pytest conventions.
 Each test verifies both successful and error scenarios for the API endpoints.
 """
 
-from fastapi.testclient import TestClient
-from main import app
 
-# Initialize the test client for making requests to the FastAPI application
-test_client = TestClient(app)
-
-def test_root_endpoint_health_check():
+def test_root_endpoint_health_check(test_client):
     """Verify the root endpoint returns a successful response.
     
     This test checks that the basic health check endpoint is working correctly.
@@ -25,11 +20,11 @@ def test_root_endpoint_health_check():
         - GET / returns 200 OK status
         - Response contains the expected welcome message
     """
-    response = test_client.get("/")
+    response = test_client.get("/api/health-check")
     assert response.status_code == 200
     assert response.text == '"Hello from the backend!"'
 
-def test_supabase_integration_endpoint():
+def test_supabase_integration_endpoint(test_client):
     """Test the Supabase integration endpoint.
     
     This test verifies the endpoint that checks Supabase connectivity.
@@ -41,10 +36,10 @@ def test_supabase_integration_endpoint():
             - 200 OK if Supabase is properly configured
             - 500 Internal Server Error if Supabase is not configured
     """
-    response = test_client.get("/test-supabase")
+    response = test_client.get("/api/test/supabase")
     assert response.status_code in [200, 500]
 
-def test_stripe_integration_endpoint():
+def test_stripe_integration_endpoint(test_client):
     """Test the Stripe integration endpoint.
     
     This test verifies the endpoint that checks Stripe connectivity.
@@ -56,5 +51,5 @@ def test_stripe_integration_endpoint():
             - 200 OK if Stripe is properly configured
             - 500 Internal Server Error if Stripe is not configured
     """
-    response = test_client.get("/test-stripe")
+    response = test_client.get("/api/test/stripe")
     assert response.status_code in [200, 500]
