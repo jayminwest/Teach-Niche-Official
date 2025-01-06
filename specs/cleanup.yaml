@@ -1,21 +1,21 @@
 # Cleanup configuration
-prompt: 
-"""Specification Template
-Ingest the information from this file, implement the Low-Level Tasks, and generate the code that will satisfy the High $
+prompt: |
+  Specification Template
+  Ingest the information from this file, implement the Low-Level Tasks, and generate the code that will satisfy the High $
 
-## High-Level Objective
-- Standardize this codebase. Enforce specific naming conventions (snake_case for files, functions, and variables; PascalCase for classes; UPPER_SNAKE_CASE for constants). All files should conform to our documentation standards that are defined below. 
-- Contextual Clarity for LLMs: Each file, function, and class must have detailed documentation that provides clear context for an LLM. Aider should add docstrings explaining the purpose, usage, inputs, and outputs. This documentation should be explicit and comprehensive so that an LLM can understand the code's intended use and functionality throughout the entire project. 
+  ## High-Level Objective
+  - Standardize this codebase. Enforce specific naming conventions (snake_case for files, functions, and variables; PascalCase for classes; UPPER_SNAKE_CASE for constants). All files should conform to our documentation standards that are defined below. 
+  - Contextual Clarity for LLMs: Each file, function, and class must have detailed documentation that provides clear context for an LLM. Aider should add docstrings explaining the purpose, usage, inputs, and outputs. This documentation should be explicit and comprehensive so that an LLM can understand the code's intended use and functionality throughout the entire project. 
 
-## Mid-Level Objective
-- Rename functions, variables, and files which do not adhere to the naming convetions. 
-- All documentation, comments, and names should be done with the intention of making them as easy for an LLM to understand as possible. This means including as much context as to what each funciton is doing. 
-- Break up larger, more complex functions into smaller, modular, and reusable functions. 
+  ## Mid-Level Objective
+  - Rename functions, variables, and files which do not adhere to the naming convetions. 
+  - All documentation, comments, and names should be done with the intention of making them as easy for an LLM to understand as possible. This means including as much context as to what each funciton is doing. 
+  - Break up larger, more complex functions into smaller, modular, and reusable functions. 
 
-## Implementation Notes
-- Use GOOGLE STYLE DOC STRINGS containing as much context as possible. 
-- Include a brief overview of the file's function in a doc string at the top of the file. 
-- snake_case for files, functions, and variables; PascalCase for classes; UPPER_SNAKE_CASE for constants"""
+  ## Implementation Notes
+  - Use GOOGLE STYLE DOC STRINGS containing as much context as possible. 
+  - Include a brief overview of the file's function in a doc string at the top of the file. 
+  - snake_case for files, functions, and variables; PascalCase for classes; UPPER_SNAKE_CASE for constants
 
 evaluator_model: gpt-4o
 max_iterations: 3
