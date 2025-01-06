@@ -13,7 +13,7 @@ USER node
 COPY --chown=node:node package*.json ./
 
 # Install dependencies as node user
-RUN npm install
+RUN npm install --legacy-peer-deps
 
 # Copy the rest of the files as node user
 COPY --chown=node:node . .
