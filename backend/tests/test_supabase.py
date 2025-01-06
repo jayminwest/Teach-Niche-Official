@@ -1,10 +1,36 @@
 """
-test_supabase.py
-This module contains tests for Supabase functionality.
+Supabase Integration Test Suite
+
+This module contains comprehensive tests for Supabase integration, including:
+- Model creation and validation
+- Database migrations
+- Authentication workflows
+- CRUD operations via API endpoints
+
+The tests are designed to validate the integration between our backend services and Supabase,
+ensuring data consistency, authentication security, and API reliability.
+
+Note: All tests require a running Supabase instance with proper environment configuration.
 """
 import json
 
-def test_models(client):
+def test_model_creation(client):
+    """Test the creation of database models through Supabase integration.
+    
+    Validates that the model creation endpoint correctly interacts with Supabase
+    to create new database models and returns appropriate responses.
+
+    Test Cases:
+        1. Model creation request returns HTTP 200 status
+        2. Response contains success status indicator
+        3. Response structure matches expected format
+
+    Args:
+        client: Flask test client fixture for making HTTP requests
+
+    Raises:
+        AssertionError: If any test condition fails
+    """
     """
     Test Supabase model creation.
 
@@ -26,19 +52,22 @@ def test_models(client):
     print("✅ TEST PASSED: Supabase Models")
     print("==========================================")
 
-def test_migrations(client):
-    """
-    Test Supabase migration application.
+def test_database_migrations(client):
+    """Test the application of database migrations through Supabase.
+    
+    Validates that database schema migrations are properly applied and
+    that the migration endpoint returns appropriate success indicators.
+
+    Test Cases:
+        1. Migration request returns HTTP 200 status
+        2. Response contains success status indicator
+        3. Migration section parameter is properly processed
 
     Args:
-        client: Flask test client fixture
-
-    Tests:
-        1. Migration endpoint returns 200
-        2. Response indicates successful migration
+        client: Flask test client fixture for making HTTP requests
 
     Raises:
-        AssertionError: If response code isn't 200 or migration fails
+        AssertionError: If any test condition fails
     """
     response = client.post('/apply_migration', json={'section': 'test_section'})
     assert response.status_code == 200
@@ -48,20 +77,24 @@ def test_migrations(client):
     print("✅ TEST PASSED: Supabase Migrations")
     print("==========================================")
 
-def test_auth(client):
-    """
-    Test Supabase authentication functionalities.
+def test_user_authentication_workflow(client):
+    """Test the complete user authentication workflow through Supabase.
+    
+    Validates the end-to-end authentication process including:
+    - User registration
+    - Account login
+    - Password recovery
+
+    Test Cases:
+        1. User registration returns HTTP 200 status
+        2. Successful login with valid credentials
+        3. Password reset request processing
 
     Args:
-        client: Flask test client fixture
-
-    Tests:
-        1. User sign-up endpoint returns 200
-        2. User sign-in endpoint returns 200
-        3. Password reset endpoint returns 200
+        client: Flask test client fixture for making HTTP requests
 
     Raises:
-        AssertionError: If response code isn't 200 or auth fails
+        AssertionError: If any test condition fails
     """
     # Test sign-up    
     response = client.post('/signup', json={'email': 'test@example.com', 'password': 'TestPassword123'})
@@ -77,21 +110,26 @@ def test_auth(client):
     print("✅ TEST PASSED: Supabase Auth")
     print("==========================================")
 
-def test_api(client):
-    """
-    Test Supabase CRUD operations via API endpoints.
+def test_crud_operations(client):
+    """Test CRUD (Create, Read, Update, Delete) operations through Supabase API.
+    
+    Validates the complete lifecycle of data management operations including:
+    - Record creation with proper data structure
+    - Data retrieval with correct response format
+    - Record updates with proper persistence
+    - Record deletion with proper cleanup
+
+    Test Cases:
+        1. Record creation returns HTTP 200 with valid ID
+        2. Data retrieval returns expected records
+        3. Record updates persist correctly
+        4. Record deletion completes successfully
 
     Args:
-        client: Flask test client fixture
-
-    Tests:
-        1. Record creation endpoint returns 200
-        2. Record reading endpoint returns 200
-        3. Record update endpoint returns 200
-        4. Record deletion endpoint returns 200
+        client: Flask test client fixture for making HTTP requests
 
     Raises:
-        AssertionError: If response code isn't 200 or CRUD operation fails
+        AssertionError: If any test condition fails
     """
     table_name = "test_table"    
     # Test record creation
