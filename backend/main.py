@@ -30,7 +30,7 @@ Environment Variables:
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.core.config import get_settings
-from app.routes.base import router as base_router
+from app.routes.base import api_router as base_router
 from app.routes.supabase import router as supabase_router
 from app.routes.stripe import router as stripe_router
 
