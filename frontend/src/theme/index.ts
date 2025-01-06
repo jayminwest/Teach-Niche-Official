@@ -11,7 +11,7 @@ const theme = extendTheme({
     // Your color palette
   },
   styles: {
-    global: (props: any) => ({
+    global: (props: { colorMode: 'light' | 'dark' }) => ({
       body: {
         bg: props.colorMode === 'dark' ? 'gray.800' : 'white',
         color: props.colorMode === 'dark' ? 'white' : 'gray.800',

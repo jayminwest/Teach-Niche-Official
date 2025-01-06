@@ -1,5 +1,4 @@
 import Link from 'next/link'
-import { useRef, useEffect } from 'react'
 import {
   Box,
   Flex,
@@ -46,7 +45,6 @@ const Header = () => {
   const { isOpen: isMenuOpen, onToggle: onMenuToggle, onClose: onMenuClose } = useDisclosure()
   const { isOpen: isProfileOpen, onToggle: onProfileToggle } = useDisclosure()
   const { colorMode, toggleColorMode } = useColorMode()
-  const isMobile = useBreakpointValue({ base: true, md: false })
 
   return (
     <Box 
