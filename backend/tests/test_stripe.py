@@ -191,7 +191,6 @@ def test_payout_configuration(test_client):
     
     # Mock the request object
     response = test_client.post('/api/configure_payouts', json=request_data)
-        response = handle_payout_configuration_request()
     assert response.status_code == 200
     status = response.get_json().get('status')
     assert status == 'payouts setup successful'
@@ -274,7 +273,7 @@ def test_compliance(test_client):
     required compliance documents can be properly generated.
     
     Args:
-        app_context: Flask application context fixture
+        test_client: FastAPI test client fixture
         
     Raises:
         AssertionError: If any part of the compliance flow fails
