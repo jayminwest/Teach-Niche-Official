@@ -181,12 +181,17 @@ def test_payout_configuration(client):
     Raises:
         AssertionError: If response code isn't 200 or setup status is incorrect
     """
-    response = handle_payout_configuration_request()
+    # Mock request data
+    request_data = {
         'account': TEST_ACCOUNT_ID,
         'interval': 'weekly',
         'delay_days': TEST_DELAY_DAYS,
-        'weekly_anchor': TEST_WEEKLY_ANCHOR,
-    })
+        'weekly_anchor': TEST_WEEKLY_ANCHOR
+    }
+    
+    # Mock the request object
+    with client.application.test_request_context(json=request_data):
+        response = handle_payout_configuration_request()
     assert response.status_code == 200
     status = response.get_json().get('status')
     assert status == 'payouts setup successful'
