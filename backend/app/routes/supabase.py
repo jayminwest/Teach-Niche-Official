@@ -15,9 +15,9 @@ from fastapi import APIRouter, HTTPException, Body
 from typing import Dict, Any
 
 from app.supabase.auth import (
-    sign_up_with_email,
-    sign_in_with_email,
-    send_password_reset_email
+    register_user_with_email as sign_up_with_email,
+    authenticate_user_with_email as sign_in_with_email,
+    initiate_password_reset as send_password_reset_email
 )
 from app.supabase.api import (
     create_record as create_db_record,
