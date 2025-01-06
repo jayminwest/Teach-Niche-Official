@@ -77,26 +77,25 @@ class CleanupProject:
             f.write(message + "\n")
 
     def cleanup_folder(self, folder_path: str):
-        """Process a single folder for cleanup"""
+        """Recursively process all Python files in folder and subfolders"""
         self.file_log(f"\n📂 Processing folder: {folder_path}")
         
-        # Get list of files in folder
-        files = [f for f in os.listdir(folder_path) 
-                if os.path.isfile(os.path.join(folder_path, f)) 
-                and f.endswith('.py')]  # Only process Python files
-        
-        for file in files:
-            file_path = os.path.join(folder_path, file)
-            self.file_log(f"📄 Processing file: {file}")
-            
-            # Get user confirmation before processing each file
-            confirm = input(f"Process {file}? (y/n): ").lower()
-            if confirm != 'y':
-                self.file_log(f"Skipping {file}")
-                continue
-                
-            # Process file with AIDER
-            self.process_file(file_path)
+        # Walk through all directories and subdirectories
+        for root, dirs, files in os.walk(folder_path):
+            # Process each Python file
+            for file in files:
+                if file.endswith('.py'):
+                    file_path = os.path.join(root, file)
+                    self.file_log(f"📄 Found Python file: {file_path}")
+                    
+                    # Get user confirmation before processing each file
+                    confirm = input(f"Process {file_path}? (y/n): ").lower()
+                    if confirm != 'y':
+                        self.file_log(f"Skipping {file_path}")
+                        continue
+                        
+                    # Process file with AIDER
+                    self.process_file(file_path)
 
     def process_file(self, file_path: str):
         """Process a single file using AIDER"""
@@ -118,7 +117,7 @@ class CleanupProject:
         for folder in self.config.context_editable:
             if os.path.isdir(folder):
                 # Add directory confirmation
-                confirm = input(f"\n📂 Process directory {folder}? (y/n): ").lower()
+                confirm = input(f"\n📂 Process directory {folder} and all subdirectories? (y/n): ").lower()
                 if confirm != 'y':
                     self.file_log(f"Skipping directory {folder}")
                     continue
