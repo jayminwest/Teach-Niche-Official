@@ -15,10 +15,8 @@ USER node
 # Copy package files as node user
 COPY --chown=node:node package*.json ./
 
-# Update npm and install dependencies as node user
-RUN npm install -g npm@latest && \
-    npm install --legacy-peer-deps --no-audit --no-fund && \
-    npm cache clean --force
+# Install dependencies as node user
+RUN npm install --legacy-peer-deps --no-audit --no-fund
 
 # Copy the rest of the files as node user
 COPY --chown=node:node . .
