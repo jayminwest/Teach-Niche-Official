@@ -12,7 +12,6 @@ prompt: |
   9. Add error handling where appropriate
   10. Remove duplicate code
 
-coder_model: gpt-4
 evaluator_model: gpt-4o
 max_iterations: 3
 

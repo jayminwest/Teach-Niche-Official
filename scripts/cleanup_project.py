@@ -12,7 +12,7 @@ import os
 
 class CleanupConfig(BaseModel):
     prompt: str
-    coder_model: str
+    coder_model: str = "deepseek/deepseek-chat"  # Set default model
     evaluator_model: Literal["gpt-4o", "gpt-4o-mini", "o1-mini", "o1-preview"]
     max_iterations: int
     context_editable: List[str]
