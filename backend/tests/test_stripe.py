@@ -34,7 +34,7 @@ TEST_DELAY_DAYS = 7
 from backend.app.stripe.onboarding import create_stripe_connected_account, create_stripe_account_session
 from backend.app.stripe.dashboard import handle_dashboard_session_request
 from backend.app.stripe.payments import create_checkout_session
-from backend.app.stripe.payouts import setup_payouts
+from backend.app.stripe.payouts import handle_payout_configuration_request
 from backend.app.stripe.compliance import generate_tax_form
 
 def test_stripe_connected_account_creation(client):
@@ -181,7 +181,7 @@ def test_payout_configuration(client):
     Raises:
         AssertionError: If response code isn't 200 or setup status is incorrect
     """
-    response = client.post('/setup_payouts', json={
+    response = handle_payout_configuration_request()
         'account': TEST_ACCOUNT_ID,
         'interval': 'weekly',
         'delay_days': TEST_DELAY_DAYS,
