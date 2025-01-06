@@ -17,7 +17,7 @@ prompt: |
   - Include a brief overview of the file's function in a doc string at the top of the file. 
   - snake_case for files, functions, and variables; PascalCase for classes; UPPER_SNAKE_CASE for constants
 
-evaluator_model: gpt-4o
+evaluator_model: deepseek/deepseek-chat
 max_iterations: 3
 
 # Folders/files to process

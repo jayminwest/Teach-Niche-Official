@@ -13,7 +13,7 @@ import os
 class CleanupConfig(BaseModel):
     prompt: str
     coder_model: str = "deepseek/deepseek-chat"  # Set default model
-    evaluator_model: Literal["gpt-4o", "gpt-4o-mini", "o1-mini", "o1-preview"]
+    evaluator_model: Literal["gpt-4o", "gpt-4o-mini", "o1-mini", "o1-preview", "deepseek/deepseek-chat"]
     max_iterations: int
     context_editable: List[str]
     context_read_only: List[str]
@@ -48,7 +48,7 @@ class CleanupProject:
         config = CleanupConfig(**config_dict)
 
         # Validate evaluator_model is one of the allowed values
-        allowed_evaluator_models = {"gpt-4o", "gpt-4o-mini", "o1-mini", "o1-preview"}
+        allowed_evaluator_models = {"gpt-4o", "gpt-4o-mini", "o1-mini", "o1-preview", "deepseek/deepseek-chat"}
         if config.evaluator_model not in allowed_evaluator_models:
             raise ValueError(
                 f"evaluator_model must be one of {allowed_evaluator_models}, "
