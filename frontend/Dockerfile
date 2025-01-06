@@ -6,6 +6,9 @@ WORKDIR /app
 COPY package*.json ./
 RUN npm install
 
+# Create required Next.js directories
+RUN mkdir -p pages app
+
 # Copy the rest of the files
 COPY . .
 
