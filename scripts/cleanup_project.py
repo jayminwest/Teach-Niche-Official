@@ -117,6 +117,12 @@ class CleanupProject:
         """Main cleanup loop"""
         for folder in self.config.context_editable:
             if os.path.isdir(folder):
+                # Add directory confirmation
+                confirm = input(f"\n📂 Process directory {folder}? (y/n): ").lower()
+                if confirm != 'y':
+                    self.file_log(f"Skipping directory {folder}")
+                    continue
+                    
                 self.cleanup_folder(folder)
             else:
                 self.file_log(f"{folder} is not a directory, skipping")
