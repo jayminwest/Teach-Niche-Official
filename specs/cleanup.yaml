@@ -1,0 +1,26 @@
+# Cleanup configuration
+prompt: |
+  Review and clean up the code following these guidelines:
+  1. Remove unused imports
+  2. Fix formatting according to PEP 8
+  3. Add or improve docstrings
+  4. Remove commented out code
+  5. Organize imports
+  6. Add type hints where missing
+  7. Fix any obvious bugs or issues
+  8. Improve variable names for clarity
+  9. Add error handling where appropriate
+  10. Remove duplicate code
+
+coder_model: gpt-4
+evaluator_model: gpt-4o
+max_iterations: 3
+
+# Folders/files to process
+context_editable:
+  - "backend/"
+  - "scripts/"
+
+# Reference files that shouldn't be modified
+context_read_only:
+  - "README.md"
