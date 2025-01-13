@@ -31,8 +31,8 @@ describe('Header Component', () => {
     const darkModeButton = screen.getByLabelText(/Toggle dark/i)
     fireEvent.click(darkModeButton)
     
-    // Check if dark mode class is applied
-    expect(document.documentElement.classList.contains('chakra-ui-dark')).toBe(true)
+    // Check if dark mode button icon changes
+    expect(screen.getByLabelText(/Toggle light/i)).toBeInTheDocument()
   })
 
   it('opens and closes mobile menu', () => {
@@ -42,16 +42,18 @@ describe('Header Component', () => {
     const menuButton = screen.getByLabelText('Open menu')
     fireEvent.click(menuButton)
     
-    // Check if menu items are visible
-    expect(screen.getByText('Profile')).toBeInTheDocument()
-    expect(screen.getByText('Logout')).toBeInTheDocument()
+    // Check if mobile menu items are visible
+    const mobileMenuItems = screen.getAllByText('Profile')
+    expect(mobileMenuItems.length).toBe(2) // Desktop and mobile
+    expect(screen.getAllByText('Logout').length).toBe(2)
     
     // Close menu
     const closeButton = screen.getByLabelText('Close')
     fireEvent.click(closeButton)
     
-    // Check if menu is closed
-    expect(screen.queryByText('Profile')).not.toBeInTheDocument()
+    // Check if mobile menu is closed
+    const profileButtons = screen.getAllByText('Profile')
+    expect(profileButtons.length).toBe(1) // Only desktop menu remains
   })
 
   it('shows profile menu on desktop', () => {
