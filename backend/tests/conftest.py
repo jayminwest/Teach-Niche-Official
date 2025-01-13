@@ -21,6 +21,7 @@ def test_client():
     Returns:
         TestClient: A configured test client instance for making HTTP requests to the API.
     """
+    from main import app
     with TestClient(app) as client:
         yield client
 

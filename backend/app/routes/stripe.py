@@ -83,7 +83,7 @@ async def create_stripe_account() -> dict:
     """
     try:
         account = create_account()
-        return JSONResponse(content={"account": account})
+        return {"account": account}
     except Exception as error:
         raise HTTPException(
             status_code=500,

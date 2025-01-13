@@ -34,7 +34,7 @@ router = APIRouter(
     responses={404: {"description": "Not found"}},
 )
 
-@router.post("/models")
+@router.post("/model")
 async def create_model() -> Dict[str, str]:
     """Create a new database model (placeholder implementation).
     
