@@ -1,41 +1,22 @@
-"""Test suite for Stripe integration functionality.
-
-This module contains comprehensive tests for all Stripe-related operations including:
-- Account onboarding and session management
-- Dashboard access
-- Payment processing
-- Payout configuration
-- Webhook handling
-- Compliance requirements
-
-The tests are designed to validate both successful scenarios and error handling
-for the Stripe API integration. Each test suite focuses on a specific area of
-Stripe functionality and includes detailed assertions to verify correct behavior.
-
-Note: These tests use a mock Stripe environment and should not be run against
-production accounts or with real payment information.
-"""
+"""Test suite for Stripe integration functionality."""
 
 import json
 import pytest
-import os
 
-# Constants for test data
-TEST_ACCOUNT_ID = "acct_test_id"
-TEST_PRODUCT_NAME = "Test Product"
-TEST_UNIT_AMOUNT = 1000
-TEST_CURRENCY = "usd"
-TEST_QUANTITY = 1
-TEST_WEEKLY_ANCHOR = "monday"
-TEST_DELAY_DAYS = 7
+@pytest.mark.stripe
+class TestStripeIntegration:
+    """Test class for Stripe integration functionality."""
 
-from app.stripe.onboarding import create_stripe_connected_account, create_stripe_account_session
-from app.stripe.dashboard import handle_dashboard_session_request
-from app.stripe.payments import create_checkout_session
-from app.stripe.payouts import handle_payout_configuration_request
-from app.stripe.compliance import generate_tax_form
+    # Constants for test data
+    TEST_ACCOUNT_ID = "acct_test_id"
+    TEST_PRODUCT_NAME = "Test Product"
+    TEST_UNIT_AMOUNT = 1000
+    TEST_CURRENCY = "usd"
+    TEST_QUANTITY = 1
+    TEST_WEEKLY_ANCHOR = "monday"
+    TEST_DELAY_DAYS = 7
 
-def test_stripe_connected_account_creation(test_client):
+    def test_stripe_connected_account_creation(self, test_client):
     """Test Stripe account creation functionality.
     
     Verifies that the account creation endpoint:

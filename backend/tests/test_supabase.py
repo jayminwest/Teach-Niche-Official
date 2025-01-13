@@ -1,20 +1,13 @@
-"""
-Supabase Integration Test Suite
+"""Test suite for Supabase integration functionality."""
 
-This module contains comprehensive tests for Supabase integration, including:
-- Model creation and validation
-- Database migrations
-- Authentication workflows
-- CRUD operations via API endpoints
-
-The tests are designed to validate the integration between our backend services and Supabase,
-ensuring data consistency, authentication security, and API reliability.
-
-Note: All tests require a running Supabase instance with proper environment configuration.
-"""
 import json
+import pytest
 
-def test_model_creation(test_client):
+@pytest.mark.supabase
+class TestSupabaseIntegration:
+    """Test class for Supabase integration functionality."""
+
+    def test_model_creation(self, test_client):
     """Test the creation of database models through Supabase integration.
     
     Validates that the model creation endpoint correctly interacts with Supabase

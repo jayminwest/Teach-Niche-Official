@@ -1,50 +1,22 @@
-"""Test configuration and fixtures for the backend application.
-
-This module provides pytest fixtures and setup/teardown functionality for testing
-the FastAPI application. It handles environment variable configuration and provides
-a test client for making HTTP requests to the API endpoints.
-"""
+"""Test configuration and fixtures for the backend application."""
 
 import pytest
 from fastapi.testclient import TestClient
 import os
 from main import create_fastapi_app
 
-# Ensure tests are discovered by pytest
-pytest_plugins = ["tests"]
-
-def pytest_collection_modifyitems(config, items):
-    """Modify test collection to ensure proper ordering."""
-    # Sort tests by name to ensure consistent execution order
-    items.sort(key=lambda item: item.nodeid)
-
 # Create FastAPI app instance
 app = create_fastapi_app()
 
-@pytest.fixture
+@pytest.fixture(scope="module")
 def test_client():
-    """Fixture that provides a configured TestClient for FastAPI application testing.
-    
-    Returns:
-        TestClient: A configured test client instance for making HTTP requests to the API.
-    """
-    from main import app
+    """Fixture that provides a configured TestClient for FastAPI application testing."""
     with TestClient(app) as client:
         yield client
 
 @pytest.fixture(autouse=True)
 def setup_test_environment():
-    """Fixture that automatically sets up and tears down test environment variables.
-    
-    This fixture runs before and after each test to:
-    1. Set required environment variables for testing
-    2. Clean up environment variables after test completion
-    
-    Environment Variables Configured:
-        - NEXT_PUBLIC_SUPABASE_URL: Test Supabase URL
-        - NEXT_PUBLIC_SUPABASE_ANON_KEY: Test Supabase anonymous key
-        - STRIPE_SECRET_KEY: Test Stripe secret key
-    """
+    """Fixture that automatically sets up and tears down test environment variables."""
     # Setup test environment variables
     os.environ["NEXT_PUBLIC_SUPABASE_URL"] = "http://localhost:8000"
     os.environ["NEXT_PUBLIC_SUPABASE_ANON_KEY"] = "test-key"
@@ -56,3 +28,9 @@ def setup_test_environment():
     os.environ.pop("NEXT_PUBLIC_SUPABASE_URL", None)
     os.environ.pop("NEXT_PUBLIC_SUPABASE_ANON_KEY", None)
     os.environ.pop("STRIPE_SECRET_KEY", None)
+
+@pytest.fixture
+def mock_stripe():
+    """Fixture for mocking Stripe API calls."""
+    # Add any Stripe-specific mocks here
+    yield
