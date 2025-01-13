@@ -73,9 +73,9 @@ def create_fastapi_app() -> FastAPI:
     )
 
     # Register all API routers
-    app.include_router(base_router, prefix="/api/v1")
-    app.include_router(supabase_router, prefix="/api/v1/supabase")
-    app.include_router(stripe_router, prefix="/api/v1/stripe")
+    app.include_router(base_router)
+    app.include_router(supabase_router, prefix="/supabase")
+    app.include_router(stripe_router, prefix="/stripe")
 
     return app
 
