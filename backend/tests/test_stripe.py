@@ -51,9 +51,10 @@ def test_stripe_connected_account_creation(test_client):
     Raises:
         AssertionError: If response code isn't 200 or account ID is missing
     """
-    response = test_client.post('/api/account')
+    response = test_client.post('/api/stripe/account')
     assert response.status_code == 200
-    account_id = response.get_json().get('account')
+    account_data = response.json()
+    account_id = account_data['account']['id']
     assert account_id is not None
     return account_id
 
