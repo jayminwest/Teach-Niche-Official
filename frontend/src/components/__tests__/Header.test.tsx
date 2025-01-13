@@ -51,11 +51,10 @@ describe('Header Component', () => {
     const closeButton = screen.getByLabelText('Close')
     fireEvent.click(closeButton)
     
-    // Check if mobile menu is closed by verifying only desktop profile menu is visible
-    const profileButtons = screen.getAllByText('Profile')
-    expect(profileButtons.length).toBe(2) // Both remain in DOM
-    // Verify mobile menu items are not visible
-    expect(screen.queryByText('Logout')).not.toBeInTheDocument()
+    // Check if mobile menu is closed by verifying it's not visible
+    expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
+    // Desktop profile menu should still be visible
+    expect(screen.getByLabelText('User menu')).toBeInTheDocument()
   })
 
   it('shows profile menu on desktop', () => {
