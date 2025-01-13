@@ -7,16 +7,11 @@ import sys
 from pathlib import Path
 
 # Add backend to Python path
-sys.path.append(str(Path(__file__).parent.parent))
+sys.path.insert(0, str(Path(__file__).parent.parent))
 
-# Debugging paths
-print("Python Path:")
-print(sys.path)
-print("\nCurrent Directory:", os.getcwd())
-print("\nTest Directory:", str(Path(__file__).parent))
-
+# Initialize the app module
+import backend.app
 from backend.main import create_fastapi_app
-import backend.app.core.config
 
 # Create FastAPI app instance
 app = create_fastapi_app()
