@@ -1,10 +1,3 @@
-import sys
-import os
-
-# Add the backend directory to Python path
-backend_path = os.path.join(os.path.dirname(__file__), '..')
-sys.path.append(backend_path)
-
 """Test configuration and fixtures for the backend application.
 
 This module provides pytest fixtures and setup/teardown functionality for testing
@@ -15,7 +8,7 @@ a test client for making HTTP requests to the API endpoints.
 import pytest
 from fastapi.testclient import TestClient
 import os
-from backend.main import app
+from main import app
 
 @pytest.fixture
 def test_client():
