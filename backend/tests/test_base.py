@@ -1,17 +1,11 @@
-"""Test suite for basic API endpoints and functionality.
-
-This module contains tests that verify the core functionality of the backend API,
-including basic health checks and integration tests with external services like
-Supabase and Stripe. These tests are designed to run against a live instance of
-the FastAPI application.
-
-The tests are written using FastAPI's TestClient and follow pytest conventions.
-Each test verifies both successful and error scenarios for the API endpoints.
-"""
+"""Test suite for basic API endpoints and functionality."""
 
 import pytest
+from fastapi.testclient import TestClient
 
 @pytest.mark.asyncio
+class TestBaseEndpoints:
+    """Test class for basic API endpoints."""
 
 def test_root_endpoint_health_check(test_client):
     """Verify the root endpoint returns a successful response.

@@ -13,6 +13,11 @@ from main import create_fastapi_app
 # Ensure tests are discovered by pytest
 pytest_plugins = ["tests"]
 
+def pytest_collection_modifyitems(config, items):
+    """Modify test collection to ensure proper ordering."""
+    # Sort tests by name to ensure consistent execution order
+    items.sort(key=lambda item: item.nodeid)
+
 # Create FastAPI app instance
 app = create_fastapi_app()
 
