@@ -1,5 +1,5 @@
 [project]
-name = "teach-niche-backend"
+name = "backend"
 version = "0.1.0"
 description = "Backend for Teach Niche"
 authors = [
@@ -14,12 +14,13 @@ dependencies = [
     "stripe",
     "pydantic",
     "flask",
-    "send_from_directory",
     "pytest",
-    "requests",
-    "jsonify",
-    "json",
-    "os",
-    "dotenv",
-    "python-dotenv"
+    "requests"
 ]
+
+[build-system]
+requires = ["setuptools>=42"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["backend"]
