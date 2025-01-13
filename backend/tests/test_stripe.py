@@ -55,8 +55,7 @@ def test_stripe_connected_account_creation(test_client):
     assert response.status_code == 200
     account_data = response.json()
     assert 'account' in account_data
-    assert 'id' in account_data['account']
-    account_id = account_data['account']['id']
+    account_id = account_data['account']
     assert account_id is not None
     return account_id
 
@@ -74,9 +73,11 @@ def test_stripe_account_session_creation(test_client):
         AssertionError: If response code isn't 200 or client secret is missing
     """
     account_id = test_stripe_connected_account_creation(test_client)
-    response = test_client.post('/api/stripe_account_session', json={'account': account_id})
+    response = test_client.post('/api/stripe/account_session', json={'account_id': account_id})
     assert response.status_code == 200
-    client_secret = response.get_json().get('client_secret')
+    response_data = response.json()
+    assert 'client_secret' in response_data
+    client_secret = response_data['client_secret']
     assert client_secret is not None
 
 def test_onboarding(test_client):
