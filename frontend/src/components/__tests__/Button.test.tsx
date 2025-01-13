@@ -54,6 +54,7 @@ describe('Button', () => {
     expect(button).toBeDisabled()
     expect(button).toHaveClass('bg-blue-500')
     expect(button).toHaveClass('text-white')
+    expect(button).toHaveClass('opacity-50')
     expect(button).not.toHaveClass('hover:bg-blue-600')
   })
 
