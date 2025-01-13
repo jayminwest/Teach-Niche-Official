@@ -29,11 +29,11 @@ TEST_QUANTITY = 1
 TEST_WEEKLY_ANCHOR = "monday"
 TEST_DELAY_DAYS = 7
 
-from backend.app.stripe.onboarding import create_stripe_connected_account, create_stripe_account_session
-from backend.app.stripe.dashboard import handle_dashboard_session_request
-from backend.app.stripe.payments import create_checkout_session
-from backend.app.stripe.payouts import handle_payout_configuration_request
-from backend.app.stripe.compliance import generate_tax_form
+from app.stripe.onboarding import create_stripe_connected_account, create_stripe_account_session
+from app.stripe.dashboard import handle_dashboard_session_request
+from app.stripe.payments import create_checkout_session
+from app.stripe.payouts import handle_payout_configuration_request
+from app.stripe.compliance import generate_tax_form
 
 def test_stripe_connected_account_creation(test_client):
     """Test Stripe account creation functionality.
