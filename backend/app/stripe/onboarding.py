@@ -11,21 +11,24 @@ The module integrates with Stripe's API to manage account creation and onboardin
 ensuring proper configuration of account capabilities and controller settings.
 """
 
-from flask import request, jsonify
+from fastapi import HTTPException
+from fastapi.responses import JSONResponse
 from app.stripe.client import stripe
 
-def _get_account_id_from_request():
-    """Extracts the account ID from the request JSON data.
+def _get_account_id_from_request(data: dict):
+    """Extracts the account ID from the request data.
     
+    Args:
+        data (dict): The request data dictionary
+        
     Returns:
-        str: The account ID from the request JSON
+        str: The account ID from the request data
         
     Raises:
-        ValueError: If the account ID is missing or invalid
+        HTTPException: If the account ID is missing or invalid
     """
-    data = request.get_json()
     if not data or 'account' not in data:
-        raise ValueError("Missing account ID in request")
+        raise HTTPException(status_code=400, detail="Missing account ID in request")
     return data['account']
 
 def _create_stripe_account_session(account_id):
@@ -44,30 +47,26 @@ def _create_stripe_account_session(account_id):
         },
     )
 
-def create_stripe_account_session():
+async def create_stripe_account_session(data: dict):
     """Creates a Stripe account session for onboarding new connected accounts.
 
-    This function initiates an Account Session for a connected Stripe account to enable
-    the account onboarding components. It retrieves the account ID from the request
-    and creates a session with onboarding capabilities enabled.
+    Args:
+        data (dict): Request data containing account ID
 
     Returns:
-        tuple: A Flask response tuple containing:
-            - JSON response with client_secret for the account session
-            - HTTP status code (200 for success, 400 for bad request, 500 for server errors)
+        JSONResponse: Response containing client_secret for the account session
 
     Raises:
-        ValueError: If the account ID is missing from the request
-        Exception: Captures any Stripe API or processing errors
+        HTTPException: If account ID is missing or session creation fails
     """
     try:
-        account_id = _get_account_id_from_request()
+        account_id = _get_account_id_from_request(data)
         session = _create_stripe_account_session(account_id)
-        return jsonify({'client_secret': session.client_secret}), 200
-    except ValueError as e:
-        return jsonify({'error': str(e)}), 400
+        return JSONResponse(content={'client_secret': session.client_secret})
+    except HTTPException:
+        raise
     except Exception as e:
-        return jsonify({'error': str(e)}), 500
+        raise HTTPException(status_code=500, detail=str(e))
 
 def _get_account_controller_settings():
     """Returns the default controller settings for new Stripe accounts.

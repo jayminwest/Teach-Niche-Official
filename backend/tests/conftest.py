@@ -10,6 +10,7 @@ from fastapi.testclient import TestClient
 import os
 from fastapi.testclient import TestClient
 from main import create_fastapi_app
+from fastapi import FastAPI
 
 app = create_fastapi_app()
 
@@ -20,7 +21,8 @@ def test_client():
     Returns:
         TestClient: A configured test client instance for making HTTP requests to the API.
     """
-    return TestClient(app)
+    with TestClient(app) as client:
+        yield client
 
 @pytest.fixture(autouse=True)
 def setup_test_environment():

@@ -36,6 +36,7 @@ Example Usage:
 """
 
 from fastapi import APIRouter, HTTPException, Body, Request
+from fastapi.responses import JSONResponse
 from app.stripe.onboarding import create_stripe_connected_account as create_account, create_stripe_account_session as create_account_session
 from app.stripe.dashboard import handle_dashboard_session_request as dashboard_session_handler
 from app.stripe.payments import create_checkout_session
@@ -82,7 +83,7 @@ async def create_stripe_account() -> dict:
     """
     try:
         account = create_account()
-        return {"account": account}
+        return JSONResponse(content={"account": account})
     except Exception as error:
         raise HTTPException(
             status_code=500,
