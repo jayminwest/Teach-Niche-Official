@@ -6,7 +6,8 @@ WORKDIR /app
 COPY requirements.txt requirements.txt
 
 # Install dependencies
-RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt && \
+    pip install pytest pytest-cov
 
 # Copy the rest of the application
 COPY . .
