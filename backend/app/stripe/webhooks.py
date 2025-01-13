@@ -10,21 +10,14 @@ Key Features:
 - Comprehensive error handling
 - Standardized response format
 
-The main entry point is handle_stripe_webhook() which orchestrates the webhook processing flow.
+The main entry point is the /webhook route which orchestrates the webhook processing flow.
 """
 
-from flask import request, jsonify
+from fastapi import APIRouter, Request, HTTPException
 from app.stripe.client import stripe
 from app.core.config import get_settings
 
-
-def _extract_webhook_payload_and_signature():
-    """Extracts and returns the raw payload and signature from the incoming request.
-    
-    Returns:
-        tuple: (payload: str, signature: str) containing the raw request data and Stripe signature
-    """
-    return request.get_data(as_text=True), request.headers.get('Stripe-Signature')
+router = APIRouter()
 
 
 def _verify_stripe_event(payload: str, signature: str) -> dict:
@@ -69,7 +62,8 @@ def _handle_payment_method_attached(event_data: dict) -> None:
     # Add event handling logic
 
 
-def handle_stripe_webhook(payload: str, signature: str):
+@router.post("/webhook")
+async def handle_stripe_webhook(request: Request):
     """Main entry point for Stripe webhook processing.
     
     Orchestrates the webhook handling flow:
@@ -79,13 +73,12 @@ def handle_stripe_webhook(payload: str, signature: str):
     4. Returns standardized response
     
     Returns:
-        tuple: JSON response and HTTP status code
-            Format: (jsonify({'status': 'success'}), 200) on success
-                    (jsonify({'error': 'message'}), 400) on error
+        dict: Response dictionary with status
     """
     try:
-        payload, signature = _extract_webhook_payload_and_signature()
-        event = _verify_stripe_event(payload, signature)
+        payload = await request.body()
+        signature = request.headers.get('stripe-signature')
+        event = _verify_stripe_event(payload.decode('utf-8'), signature)
         
         # Route to appropriate event handler
         if event['type'] == 'payment_intent.succeeded':
@@ -93,11 +86,11 @@ def handle_stripe_webhook(payload: str, signature: str):
         elif event['type'] == 'payment_method.attached':
             _handle_payment_method_attached(event['data'])
         else:
-            return jsonify({'error': 'Unhandled event type'}), 400
+            raise HTTPException(status_code=400, detail='Unhandled event type')
             
-        return jsonify({'status': 'success'}), 200
+        return {'status': 'success'}
         
     except ValueError as e:
-        return jsonify({'error': 'Invalid payload'}), 400
+        raise HTTPException(status_code=400, detail='Invalid payload')
     except stripe.error.SignatureVerificationError as e:
-        return jsonify({'error': 'Invalid signature'}), 400
+        raise HTTPException(status_code=400, detail='Invalid signature')
