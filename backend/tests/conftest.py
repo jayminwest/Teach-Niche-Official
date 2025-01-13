@@ -10,6 +10,7 @@ from pathlib import Path
 sys.path.append(str(Path(__file__).parent.parent))
 
 from backend.main import create_fastapi_app
+import backend.app.core.config
 
 # Create FastAPI app instance
 app = create_fastapi_app()
