@@ -16,14 +16,9 @@ app = create_fastapi_app()
 
 @pytest.fixture
 def test_client():
-    """Fixture that provides a configured TestClient for FastAPI application testing.
-    
-    Returns:
-        TestClient: A configured test client instance for making HTTP requests to the API.
-    """
+    """Fixture that provides a configured TestClient for FastAPI application testing."""
     from main import app
-    with TestClient(app) as client:
-        yield client
+    return TestClient(app)
 
 @pytest.fixture(autouse=True)
 def setup_test_environment():

@@ -171,6 +171,29 @@ async def initiate_password_reset(email: str = Body(..., embed=True)) -> Dict[st
             detail=f"Password reset failed: {str(error)}"
         )
 
+@router.post("/signup")
+async def signup(email: str = Body(...), password: str = Body(...)):
+    """Register a new user with email and password."""
+    try:
+        return sign_up_with_email(email, password)
+    except Exception as error:
+        raise HTTPException(
+            status_code=400,
+            detail=f"Signup failed: {str(error)}"
+        )
+
+@router.post("/migrate")
+async def migrate(section: str = Body(...)):
+    """Apply database migrations for a specific section."""
+    try:
+        apply_migration(section)
+        return {"status": "migration successful"}
+    except Exception as error:
+        raise HTTPException(
+            status_code=500,
+            detail=f"Migration failed: {str(error)}"
+        )
+
 @router.post("/create_record")
 async def create_record_endpoint(table: str = Body(...), data: dict = Body(...)):
     """Endpoint to create a record in the database."""
