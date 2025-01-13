@@ -232,21 +232,21 @@ class TestStripeIntegration:
 
     def test_webhook_validation(self, test_client):
         """Test Stripe webhook signature validation.
-    
-    Verifies that the webhook endpoint:
-    1. Properly validates incoming requests
-    2. Returns appropriate status codes for invalid signatures
-    
-    Args:
-        client: Flask test client fixture
-        
-    Raises:
-        AssertionError: If response code isn't 400 for invalid signature
-    """
-    payload = json.dumps({'type': 'payment_intent.succeeded', 'data': {'object': {}}})
-    headers = {'Stripe-Signature': 'test_signature'}
+
+        Verifies that the webhook endpoint:
+        1. Properly validates incoming requests
+        2. Returns appropriate status codes for invalid signatures
+
+        Args:
+            test_client: FastAPI test client fixture
+
+        Raises:
+            AssertionError: If response code isn't 400 for invalid signature
+        """
+        payload = json.dumps({'type': 'payment_intent.succeeded', 'data': {'object': {}}})
+        headers = {'Stripe-Signature': 'test_signature'}
         response = test_client.post('/api/v1/stripe/webhook', data=payload, headers=headers)
-    assert response.status_code == 400
+        assert response.status_code == 400
 
     def test_webhook(self, test_client):
         """Test complete Stripe webhook handling flow.
