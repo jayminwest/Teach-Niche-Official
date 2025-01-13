@@ -52,7 +52,9 @@ describe('Button', () => {
     render(<Button label="Disabled" disabled />)
     const button = screen.getByRole('button', { name: /disabled/i })
     expect(button).toBeDisabled()
-    expect(button).toHaveClass('cursor-not-allowed')
+    expect(button).toHaveClass('bg-blue-500')
+    expect(button).toHaveClass('text-white')
+    expect(button).not.toHaveClass('hover:bg-blue-600')
   })
 
   it('applies custom class names', () => {
