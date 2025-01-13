@@ -11,7 +11,7 @@ export const Button = ({
   className = '', 
   ...props 
 }: ButtonProps) => {
-  const baseStyles = 'px-4 py-2 rounded-md transition-colors focus:outline-none focus:ring-2'
+  const baseStyles = `px-4 py-2 rounded-md transition-colors focus:outline-none focus:ring-2 ${props.disabled && 'opacity-50'}`
   const variants = {
     primary: `bg-blue-500 text-white ${!props.disabled && 'hover:bg-blue-600'} focus:ring-blue-300`,
     secondary: `bg-gray-200 text-gray-800 ${!props.disabled && 'hover:bg-gray-300'} focus:ring-gray-200`
