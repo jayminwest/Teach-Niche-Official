@@ -3,7 +3,7 @@
 import pytest
 from fastapi.testclient import TestClient
 import os
-from main import create_fastapi_app
+from backend.main import create_fastapi_app
 
 # Create FastAPI app instance
 app = create_fastapi_app()
