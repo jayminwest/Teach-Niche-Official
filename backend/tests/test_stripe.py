@@ -179,31 +179,30 @@ class TestStripeIntegration:
 
     def test_payout_configuration(self, test_client):
         """Test Stripe payout schedule configuration.
-    
-    Verifies that the payout setup endpoint:
-    1. Returns a 200 status code
-    2. Correctly processes payout parameters
-    3. Returns a success status
-    
-    Args:
-        client: Flask test client fixture
+
+        Verifies that the payout setup endpoint:
+        1. Returns a 200 status code
+        2. Correctly processes payout parameters
+        3. Returns a success status
+
+        Args:
+            test_client: FastAPI test client fixture
+
+        Raises:
+            AssertionError: If response code isn't 200 or setup status is incorrect
+        """
+        # Mock request data
+        request_data = {
+            'account': self.TEST_ACCOUNT_ID,
+            'interval': 'weekly',
+            'delay_days': self.TEST_DELAY_DAYS,
+            'weekly_anchor': self.TEST_WEEKLY_ANCHOR
+        }
         
-    Raises:
-        AssertionError: If response code isn't 200 or setup status is incorrect
-    """
-    # Mock request data
-    request_data = {
-        'account': TEST_ACCOUNT_ID,
-        'interval': 'weekly',
-        'delay_days': TEST_DELAY_DAYS,
-        'weekly_anchor': TEST_WEEKLY_ANCHOR
-    }
-    
-    # Mock the request object
         response = test_client.post('/api/v1/stripe/payouts', json=request_data)
-    assert response.status_code == 200
-    status = response.get_json().get('status')
-    assert status == 'payouts setup successful'
+        assert response.status_code == 200
+        status = response.json().get('status')
+        assert status == 'payouts setup successful'
 
     def test_payouts(self, test_client):
         """Test complete Stripe payout configuration flow.
