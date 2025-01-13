@@ -44,14 +44,15 @@ describe('Button', () => {
   it('renders with secondary variant', () => {
     render(<Button label="Secondary" variant="secondary" />)
     const button = screen.getByRole('button', { name: /secondary/i })
-    expect(button).toHaveClass('bg-gray-500')
+    expect(button).toHaveClass('bg-gray-200')
+    expect(button).toHaveClass('text-gray-800')
   })
 
   it('renders disabled state', () => {
     render(<Button label="Disabled" disabled />)
     const button = screen.getByRole('button', { name: /disabled/i })
     expect(button).toBeDisabled()
-    expect(button).toHaveClass('opacity-50')
+    expect(button).toHaveClass('cursor-not-allowed')
   })
 
   it('applies custom class names', () => {
