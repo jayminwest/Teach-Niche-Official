@@ -51,9 +51,9 @@ describe('Header Component', () => {
     const closeButton = screen.getByLabelText('Close')
     fireEvent.click(closeButton)
     
-    // Check if mobile menu is hidden
+    // Check if mobile menu is hidden by checking transform style
     const dialog = screen.getByRole('dialog')
-    expect(dialog).not.toBeVisible()
+    expect(dialog).toHaveStyle('transform: translateX(100%)')
     
     // Desktop profile menu should still be visible
     expect(screen.getByLabelText('User menu')).toBeInTheDocument()
