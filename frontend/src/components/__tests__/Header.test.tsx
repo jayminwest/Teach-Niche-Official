@@ -1,4 +1,4 @@
-import { render, screen, fireEvent } from '@testing-library/react'
+import { render, screen, fireEvent, waitFor } from '@testing-library/react'
 import { ChakraProvider } from '@chakra-ui/react'
 import Header from '../Header'
 import { theme } from '../../lib/chakra'
@@ -35,7 +35,7 @@ describe('Header Component', () => {
     expect(screen.getByLabelText(/Toggle light/i)).toBeInTheDocument()
   })
 
-  it('opens and closes mobile menu', () => {
+  it('opens and closes mobile menu', async () => {
     renderHeader()
     
     // Open menu
@@ -51,9 +51,11 @@ describe('Header Component', () => {
     const closeButton = screen.getByLabelText('Close')
     fireEvent.click(closeButton)
     
-    // Instead of checking aria-hidden, verify the menu is closed by checking visibility
-    const dialog = screen.queryByRole('dialog')
-    expect(dialog).not.toBeInTheDocument()
+    // Wait for the modal to animate out
+    await waitFor(() => {
+      const dialog = screen.queryByRole('dialog')
+      expect(dialog).not.toBeInTheDocument()
+    })
     
     // Desktop profile menu should still be visible
     expect(screen.getByLabelText('User menu')).toBeInTheDocument()
