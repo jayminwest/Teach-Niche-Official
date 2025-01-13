@@ -52,7 +52,7 @@ class TestStripeIntegration:
         # Create a test account first
         account_response = test_client.post('/api/v1/stripe/account')
         account_id = account_response.json()['account']
-    response = test_client.post('/api/v1/stripe/account/session', json={'account_id': account_id})
+        response = test_client.post('/api/v1/stripe/account/session', json={'account_id': account_id})
     assert response.status_code == 200
     response_data = response.json()
     assert 'client_secret' in response_data
@@ -120,7 +120,7 @@ class TestStripeIntegration:
     Raises:
         AssertionError: If response code isn't 200 or session ID is missing
     """
-    response = test_client.post('/api/v1/stripe/checkout_session', json={
+        response = test_client.post('/api/v1/stripe/checkout_session', json={
         'account': TEST_ACCOUNT_ID,
         'line_items': [
             {
@@ -192,7 +192,7 @@ class TestStripeIntegration:
     }
     
     # Mock the request object
-    response = test_client.post('/api/v1/stripe/payouts', json=request_data)
+        response = test_client.post('/api/v1/stripe/payouts', json=request_data)
     assert response.status_code == 200
     status = response.get_json().get('status')
     assert status == 'payouts setup successful'
@@ -238,7 +238,7 @@ class TestStripeIntegration:
     """
     payload = json.dumps({'type': 'payment_intent.succeeded', 'data': {'object': {}}})
     headers = {'Stripe-Signature': 'test_signature'}
-    response = test_client.post('/api/v1/stripe/webhook', data=payload, headers=headers)
+        response = test_client.post('/api/v1/stripe/webhook', data=payload, headers=headers)
     assert response.status_code == 400
 
     def test_webhook(self, test_client):
@@ -280,7 +280,7 @@ class TestStripeIntegration:
                                  json={'account_id': self.TEST_ACCOUNT_ID})
         assert response.status_code == 200
         result = response.json()
-    assert result is not None
+        assert result is not None
 
     def test_compliance(self, test_client):
         """Test complete Stripe compliance workflow.

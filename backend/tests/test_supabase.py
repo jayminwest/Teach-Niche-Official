@@ -46,22 +46,22 @@ class TestSupabaseIntegration:
         print("==========================================")
 
     def test_database_migrations(self, test_client):
-    """Test the application of database migrations through Supabase.
-    
-    Validates that database schema migrations are properly applied and
-    that the migration endpoint returns appropriate success indicators.
+        """Test the application of database migrations through Supabase.
+        
+        Validates that database schema migrations are properly applied and
+        that the migration endpoint returns appropriate success indicators.
 
-    Test Cases:
-        1. Migration request returns HTTP 200 status
-        2. Response contains success status indicator
-        3. Migration section parameter is properly processed
+        Test Cases:
+            1. Migration request returns HTTP 200 status
+            2. Response contains success status indicator
+            3. Migration section parameter is properly processed
 
-    Args:
-        client: Flask test client fixture for making HTTP requests
+        Args:
+            test_client: FastAPI test client fixture
 
-    Raises:
-        AssertionError: If any test condition fails
-    """
+        Raises:
+            AssertionError: If any test condition fails
+        """
     response = test_client.post('/api/supabase/migrate', json={'section': 'test_section'})
     assert response.status_code == 200
     status = response.get_json().get('status')
