@@ -134,7 +134,7 @@ def test_checkout_session_creation(test_client):
     Raises:
         AssertionError: If response code isn't 200 or session ID is missing
     """
-    response = test_client.post('/api/create_checkout_session', json={
+    response = test_client.post('/api/stripe/checkout_session', json={
         'account': TEST_ACCOUNT_ID,
         'line_items': [
             {
@@ -192,7 +192,7 @@ def test_payout_configuration(test_client):
     }
     
     # Mock the request object
-    response = test_client.post('/api/configure_payouts', json=request_data)
+    response = test_client.post('/api/stripe/payouts', json=request_data)
     assert response.status_code == 200
     status = response.get_json().get('status')
     assert status == 'payouts setup successful'
@@ -230,7 +230,7 @@ def test_webhook_validation(test_client):
     """
     payload = json.dumps({'type': 'payment_intent.succeeded', 'data': {'object': {}}})
     headers = {'Stripe-Signature': 'test_signature'}
-    response = test_client.post('/api/webhook', data=payload, headers=headers)
+    response = test_client.post('/api/stripe/webhook', data=payload, headers=headers)
     assert response.status_code == 400
 
 def test_webhook(test_client):

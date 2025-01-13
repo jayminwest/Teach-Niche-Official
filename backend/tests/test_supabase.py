@@ -44,7 +44,7 @@ def test_model_creation(test_client):
     Raises:
         AssertionError: If response code isn't 200 or creation fails
     """
-    response = test_client.post('/api/create_model')
+    response = test_client.post('/api/supabase/model')
     assert response.status_code == 200
     status = response.get_json().get('status')
     assert status == 'model created successfully'
@@ -69,7 +69,7 @@ def test_database_migrations(test_client):
     Raises:
         AssertionError: If any test condition fails
     """
-    response = test_client.post('/api/apply_migration', json={'section': 'test_section'})
+    response = test_client.post('/api/supabase/migrate', json={'section': 'test_section'})
     assert response.status_code == 200
     status = response.get_json().get('status')
     assert status == 'migration applied successfully'
@@ -97,7 +97,7 @@ def test_user_authentication_workflow(test_client):
         AssertionError: If any test condition fails
     """
     # Test sign-up    
-    response = test_client.post('/api/signup', json={'email': 'test@example.com', 'password': 'TestPassword123'})
+    response = test_client.post('/api/supabase/signup', json={'email': 'test@example.com', 'password': 'TestPassword123'})
     assert response.status_code == 200
     # Test sign-in
     response = test_client.post('/api/signin', json={'email': 'test@example.com', 'password': 'TestPassword123'})    
