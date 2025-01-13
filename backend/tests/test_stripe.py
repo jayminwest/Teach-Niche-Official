@@ -51,7 +51,7 @@ def test_stripe_connected_account_creation(test_client):
     Raises:
         AssertionError: If response code isn't 200 or account ID is missing
     """
-    response = test_client.post('/api/stripe/account')
+    response = test_client.post('/api/v1/stripe/account')
     assert response.status_code == 200
     account_data = response.json()
     assert 'account' in account_data
@@ -73,7 +73,7 @@ def test_stripe_account_session_creation(test_client):
         AssertionError: If response code isn't 200 or client secret is missing
     """
     account_id = test_stripe_connected_account_creation(test_client)
-    response = test_client.post('/api/stripe/account_session', json={'account_id': account_id})
+    response = test_client.post('/api/v1/stripe/account/session', json={'account_id': account_id})
     assert response.status_code == 200
     response_data = response.json()
     assert 'client_secret' in response_data
@@ -134,7 +134,7 @@ def test_checkout_session_creation(test_client):
     Raises:
         AssertionError: If response code isn't 200 or session ID is missing
     """
-    response = test_client.post('/api/stripe/checkout_session', json={
+    response = test_client.post('/api/v1/stripe/checkout_session', json={
         'account': TEST_ACCOUNT_ID,
         'line_items': [
             {
@@ -192,7 +192,7 @@ def test_payout_configuration(test_client):
     }
     
     # Mock the request object
-    response = test_client.post('/api/stripe/payouts', json=request_data)
+    response = test_client.post('/api/v1/stripe/payouts', json=request_data)
     assert response.status_code == 200
     status = response.get_json().get('status')
     assert status == 'payouts setup successful'
@@ -230,7 +230,7 @@ def test_webhook_validation(test_client):
     """
     payload = json.dumps({'type': 'payment_intent.succeeded', 'data': {'object': {}}})
     headers = {'Stripe-Signature': 'test_signature'}
-    response = test_client.post('/api/stripe/webhook', data=payload, headers=headers)
+    response = test_client.post('/api/v1/stripe/webhook', data=payload, headers=headers)
     assert response.status_code == 400
 
 def test_webhook(test_client):

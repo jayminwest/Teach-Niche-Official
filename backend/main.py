@@ -32,8 +32,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.core.config import get_settings
 from app.routes.base import api_router as base_router
 from app.routes.supabase import router as supabase_router
-from app.routes.stripe import router as stripe_router
-from app.stripe.onboarding import router as onboarding_router
+from app.stripe import router as stripe_router
 
 # Initialize application settings
 APP_SETTINGS = get_settings()
@@ -76,8 +75,7 @@ def create_fastapi_app() -> FastAPI:
     # Register all API routers
     app.include_router(base_router)
     app.include_router(supabase_router, prefix="/supabase")
-    app.include_router(stripe_router, prefix="/stripe")
-    app.include_router(onboarding_router, prefix="/stripe")
+    app.include_router(stripe_router, prefix="/api/v1/stripe")
 
     return app
 
