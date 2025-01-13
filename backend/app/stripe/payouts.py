@@ -8,14 +8,14 @@ Key Features:
 - Configures payout schedules (interval, delay days, weekly anchor)
 - Handles API requests and responses
 - Provides error handling for Stripe API operations
-
-Dependencies:
-- flask: For handling HTTP requests and responses
-- stripe: For interacting with the Stripe API
 """
 
-from flask import request, jsonify
+from fastapi import APIRouter, HTTPException
+from fastapi.responses import JSONResponse
 from app.stripe.client import stripe
+
+# Create the router instance
+router = APIRouter()
 
 def validate_payout_parameters(data: dict) -> dict:
     """
@@ -32,12 +32,12 @@ def validate_payout_parameters(data: dict) -> dict:
             - weekly_anchor (str): Anchor day for weekly payouts
 
     Raises:
-        ValueError: If required parameters are missing or invalid
+        HTTPException: If required parameters are missing or invalid
     """
     required_params = ['account']
     for param in required_params:
         if param not in data:
-            raise ValueError(f"Missing required parameter: {param}")
+            raise HTTPException(status_code=400, detail=f"Missing required parameter: {param}")
 
     return {
         'connected_account_id': data['account'],
@@ -75,25 +75,22 @@ def configure_stripe_payout_schedule(account_id: str, interval: str, delay_days:
         }
     )
 
-def handle_payout_configuration_request() -> tuple:
+@router.post("/payouts")
+async def handle_payout_configuration_request(data: dict):
     """
     Handles the HTTP request for configuring payout settings.
 
-    This function serves as the main entry point for the payout configuration endpoint.
-    It validates input, configures payouts, and handles any errors that occur.
+    Args:
+        data (dict): Request data containing payout configuration
 
     Returns:
-        tuple: A Flask response tuple containing:
-            - JSON response (dict): Success message or error details
-            - HTTP status code (int): 200 for success, 500 for errors
+        JSONResponse: Response containing status or error details
 
-    Example Response:
-        Success: ({'status': 'payouts setup successful'}, 200)
-        Error: ({'error': 'error message'}, 500)
+    Raises:
+        HTTPException: If any error occurs during processing
     """
     try:
-        request_data = request.get_json()
-        payout_params = validate_payout_parameters(request_data)
+        payout_params = validate_payout_parameters(data)
         
         configure_stripe_payout_schedule(
             account_id=payout_params['connected_account_id'],
@@ -102,10 +99,10 @@ def handle_payout_configuration_request() -> tuple:
             weekly_anchor=payout_params['weekly_anchor']
         )
         
-        return jsonify({'status': 'payouts setup successful'}), 200
-    except ValueError as ve:
-        return jsonify({'error': f'Invalid input: {str(ve)}'}), 400
+        return JSONResponse(content={'status': 'payouts setup successful'})
+    except HTTPException:
+        raise
     except stripe.error.StripeError as se:
-        return jsonify({'error': f'Stripe API error: {str(se)}'}), 500
+        raise HTTPException(status_code=500, detail=f'Stripe API error: {str(se)}')
     except Exception as e:
-        return jsonify({'error': f'Unexpected error: {str(e)}'}), 500
+        raise HTTPException(status_code=500, detail=f'Unexpected error: {str(e)}')
