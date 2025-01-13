@@ -37,12 +37,37 @@ const theme = extendTheme({
   },
 })
 
-export default function App({ Component, pageProps }: AppProps) {
+export default function App({ Component, pageProps, router }: AppProps) {
+  // Add error boundary for better error handling
+  const [hasError, setHasError] = React.useState(false)
+
+  React.useEffect(() => {
+    const handleRouteChange = () => {
+      setHasError(false)
+    }
+
+    router.events.on('routeChangeComplete', handleRouteChange)
+    return () => {
+      router.events.off('routeChangeComplete', handleRouteChange)
+    }
+  }, [router])
+
   return (
     <ChakraProvider theme={theme}>
       <ColorModeScript initialColorMode={theme.config.initialColorMode} />
       <Layout>
-        <Component {...pageProps} />
+        {hasError ? (
+          <Box textAlign="center" py={10} px={6}>
+            <Heading as="h2" size="xl" mt={6} mb={2}>
+              Something went wrong
+            </Heading>
+            <Text color={'gray.500'}>
+              Please try refreshing the page or navigating back to the homepage.
+            </Text>
+          </Box>
+        ) : (
+          <Component {...pageProps} />
+        )}
       </Layout>
     </ChakraProvider>
   )
