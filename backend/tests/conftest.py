@@ -3,6 +3,12 @@
 import pytest
 from fastapi.testclient import TestClient
 import os
+import sys
+from pathlib import Path
+
+# Add backend to Python path
+sys.path.append(str(Path(__file__).parent.parent))
+
 from backend.main import create_fastapi_app
 
 # Create FastAPI app instance

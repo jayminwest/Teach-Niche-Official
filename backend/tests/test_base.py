@@ -28,3 +28,11 @@ class TestBaseEndpoints:
         """Test the Stripe integration endpoint."""
         response = test_client.get("/api/test/stripe")
         assert response.status_code in [status.HTTP_200_OK, status.HTTP_500_INTERNAL_SERVER_ERROR]
+
+    def test_module_import(self):
+        """Test that backend modules can be imported."""
+        try:
+            from backend.app.core.config import get_settings
+            assert get_settings is not None
+        except ImportError as e:
+            pytest.fail(f"Failed to import backend module: {e}")
