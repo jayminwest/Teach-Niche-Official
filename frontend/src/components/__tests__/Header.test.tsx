@@ -51,9 +51,9 @@ describe('Header Component', () => {
     const closeButton = screen.getByLabelText('Close')
     fireEvent.click(closeButton)
     
-    // Instead of checking aria-hidden, verify the menu is closed by checking visibility
-    const dialog = screen.queryByRole('dialog')
-    expect(dialog).not.toBeInTheDocument()
+    // Check if mobile menu is hidden
+    const dialog = screen.getByRole('dialog')
+    expect(dialog).toHaveStyle('transform: translateX(100%)')
     
     // Desktop profile menu should still be visible
     expect(screen.getByLabelText('User menu')).toBeInTheDocument()
