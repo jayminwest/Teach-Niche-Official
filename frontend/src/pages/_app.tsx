@@ -1,5 +1,6 @@
 import type { AppProps } from 'next/app'
-import { ChakraProvider, extendTheme } from '@chakra-ui/react'
+import React from 'react'
+import { ChakraProvider, extendTheme, Box, Heading, Text } from '@chakra-ui/react'
 import { ColorModeScript } from '@chakra-ui/react'
 import Layout from '../components/Layout'
 
