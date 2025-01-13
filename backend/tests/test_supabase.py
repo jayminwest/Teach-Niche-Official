@@ -24,28 +24,28 @@ class TestSupabaseIntegration:
         Raises:
             AssertionError: If any test condition fails
         """
-    """
-    Test Supabase model creation.
+        """
+        Test Supabase model creation.
 
-    Args:
-        client: Flask test client fixture
+        Args:
+            test_client: FastAPI test client fixture
 
-    Tests:
-        1. Model creation returns 200
-        2. Response indicates successful creation
+        Tests:
+            1. Model creation returns 200
+            2. Response indicates successful creation
 
-    Raises:
-        AssertionError: If response code isn't 200 or creation fails
-    """
-    response = test_client.post('/api/supabase/model')
-    assert response.status_code == 200
-    status = response.get_json().get('status')
-    assert status == 'model created successfully'
-    print("\n==========================================")
-    print("✅ TEST PASSED: Supabase Models")
-    print("==========================================")
+        Raises:
+            AssertionError: If response code isn't 200 or creation fails
+        """
+        response = test_client.post('/api/supabase/model')
+        assert response.status_code == 200
+        status = response.get_json().get('status')
+        assert status == 'model created successfully'
+        print("\n==========================================")
+        print("✅ TEST PASSED: Supabase Models")
+        print("==========================================")
 
-def test_database_migrations(test_client):
+    def test_database_migrations(self, test_client):
     """Test the application of database migrations through Supabase.
     
     Validates that database schema migrations are properly applied and
@@ -70,7 +70,7 @@ def test_database_migrations(test_client):
     print("✅ TEST PASSED: Supabase Migrations")
     print("==========================================")
 
-def test_user_authentication_workflow(test_client):
+    def test_user_authentication_workflow(self, test_client):
     """Test the complete user authentication workflow through Supabase.
     
     Validates the end-to-end authentication process including:
@@ -103,7 +103,7 @@ def test_user_authentication_workflow(test_client):
     print("✅ TEST PASSED: Supabase Auth")
     print("==========================================")
 
-def test_crud_operations(test_client):
+    def test_crud_operations(self, test_client):
     """Test CRUD (Create, Read, Update, Delete) operations through Supabase API.
     
     Validates the complete lifecycle of data management operations including:
