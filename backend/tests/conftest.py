@@ -11,6 +11,14 @@ import os
 from fastapi.testclient import TestClient
 from main import create_fastapi_app
 from fastapi import FastAPI
+from app.routes.stripe import router as stripe_router
+from app.routes.supabase import router as supabase_router
+
+def create_fastapi_app() -> FastAPI:
+    app = FastAPI()
+    app.include_router(stripe_router, prefix="/api/stripe")
+    app.include_router(supabase_router, prefix="/api/supabase")
+    return app
 
 app = create_fastapi_app()
 
