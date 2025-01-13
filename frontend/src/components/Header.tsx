@@ -1,6 +1,5 @@
 import Link from 'next/link'
 import { useState } from 'react'
-import { FiUser, FiMoon, FiSun, FiMenu } from 'react-icons/fi'
 
 type NavItem = {
   href: string
@@ -55,7 +54,7 @@ const Header = () => {
               className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full"
               aria-label={`Toggle ${isDarkMode ? 'light' : 'dark'} mode`}
             >
-              {isDarkMode ? <FiSun /> : <FiMoon />}
+              {isDarkMode ? '☀️' : '🌙'}
             </button>
             
             {/* Desktop Profile Menu */}
@@ -65,7 +64,7 @@ const Header = () => {
                 className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full"
                 aria-label="User menu"
               >
-                <FiUser />
+                👤
               </button>
               {isProfileOpen && (
                 <div className="absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white dark:bg-gray-700">
@@ -88,7 +87,7 @@ const Header = () => {
               onClick={toggleMenu}
               aria-label="Open menu"
             >
-              <FiMenu />
+              ☰
             </button>
           </div>
         </div>
