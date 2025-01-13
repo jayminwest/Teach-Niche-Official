@@ -1,3 +1,7 @@
+import sys
+import os
+sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(__file__))))
+
 """Test configuration and fixtures for the backend application.
 
 This module provides pytest fixtures and setup/teardown functionality for testing
@@ -8,7 +12,7 @@ a test client for making HTTP requests to the API endpoints.
 import pytest
 from fastapi.testclient import TestClient
 import os
-from app.main import app
+from backend.app.main import app
 
 @pytest.fixture
 def test_client():
