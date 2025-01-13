@@ -121,6 +121,9 @@ def create_stripe_connected_account():
             capabilities=_get_account_capabilities(),
             country="US",
         )
-        return jsonify({'account': account.id}), 200
+        return JSONResponse(content={'account': account.id})
     except Exception as e:
-        return jsonify({'error': str(e)}), 500
+        raise HTTPException(
+            status_code=500,
+            detail=f"Stripe account creation failed: {str(e)}"
+        )
