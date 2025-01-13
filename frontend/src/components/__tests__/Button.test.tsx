@@ -40,4 +40,37 @@ describe('Button', () => {
     await userEvent.click(screen.getByRole('button', { name: /click me/i }))
     expect(handleClick).toHaveBeenCalledTimes(1)
   })
+
+  it('renders with secondary variant', () => {
+    render(<Button label="Secondary" variant="secondary" />)
+    const button = screen.getByRole('button', { name: /secondary/i })
+    expect(button).toHaveClass('bg-gray-500')
+  })
+
+  it('renders disabled state', () => {
+    render(<Button label="Disabled" disabled />)
+    const button = screen.getByRole('button', { name: /disabled/i })
+    expect(button).toBeDisabled()
+    expect(button).toHaveClass('opacity-50')
+  })
+
+  it('applies custom class names', () => {
+    render(<Button label="Custom" className="custom-class" />)
+    const button = screen.getByRole('button', { name: /custom/i })
+    expect(button).toHaveClass('custom-class')
+  })
+
+  it('has proper accessibility attributes', () => {
+    render(<Button label="Accessible" aria-label="Test Label" />)
+    const button = screen.getByRole('button', { name: /test label/i })
+    expect(button).toHaveAttribute('aria-label', 'Test Label')
+  })
+
+  it('does not call onClick when disabled', async () => {
+    const handleClick = jest.fn()
+    render(<Button label="Disabled Click" onClick={handleClick} disabled />)
+    
+    await userEvent.click(screen.getByRole('button', { name: /disabled click/i }))
+    expect(handleClick).not.toHaveBeenCalled()
+  })
 })
