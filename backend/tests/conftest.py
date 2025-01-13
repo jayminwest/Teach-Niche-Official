@@ -15,7 +15,7 @@ a test client for making HTTP requests to the API endpoints.
 import pytest
 from fastapi.testclient import TestClient
 import os
-from app.main import app
+from backend.main import app
 
 @pytest.fixture
 def test_client():
