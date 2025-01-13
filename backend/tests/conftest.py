@@ -6,11 +6,12 @@ import os
 import sys
 from pathlib import Path
 
-# Add backend to Python path
-sys.path.insert(0, str(Path(__file__).parent.parent))
+# Add project root to Python path
+project_root = str(Path(__file__).parent.parent.parent)
+if project_root not in sys.path:
+    sys.path.insert(0, project_root)
 
 # Initialize the app module
-import backend.app
 from backend.main import create_fastapi_app
 
 # Create FastAPI app instance
