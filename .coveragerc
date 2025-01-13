@@ -1,0 +1,14 @@
+[run]
+source = backend
+branch = True
+omit =
+    */tests/*
+    */__init__.py
+    */migrations/*
+    */venv/*
+    */node_modules/*
+
+[report]
+show_missing = True
+skip_covered = True
+precision = 2

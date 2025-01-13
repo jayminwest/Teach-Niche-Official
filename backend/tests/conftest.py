@@ -7,7 +7,7 @@ import sys
 from pathlib import Path
 
 # Add project root to Python path
-project_root = str(Path(__file__).parent.parent.parent)
+project_root = str(Path(__file__).parent.parent)
 if project_root not in sys.path:
     sys.path.insert(0, project_root)
 
@@ -16,6 +16,9 @@ from backend.main import create_fastapi_app
 
 # Create FastAPI app instance
 app = create_fastapi_app()
+
+# Ensure backend is imported for coverage
+import backend
 
 @pytest.fixture(scope="module")
 def test_client():
