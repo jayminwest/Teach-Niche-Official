@@ -54,6 +54,8 @@ def test_stripe_connected_account_creation(test_client):
     response = test_client.post('/api/stripe/account')
     assert response.status_code == 200
     account_data = response.json()
+    assert 'account' in account_data
+    assert 'id' in account_data['account']
     account_id = account_data['account']['id']
     assert account_id is not None
     return account_id
