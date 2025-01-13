@@ -7,7 +7,8 @@ import sys
 from pathlib import Path
 
 # Add backend to Python path
-sys.path.append(str(Path(__file__).parent.parent))
+sys.path.insert(0, "/app")
+sys.path.insert(0, str(Path(__file__).parent.parent))
 
 from backend.main import create_fastapi_app
 import backend.app.core.config
