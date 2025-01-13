@@ -35,6 +35,9 @@ A full-stack application with Next.js frontend and Python backend.
    - Navigate to frontend directory
    - Install dependencies: npm install
    - Start development server: npm run dev
+   - Run tests: npm test
+   - Run tests in watch mode: npm run test:watch
+   - Generate test coverage report: npm run test:coverage
 
 2. Backend:
    - Navigate to backend directory
