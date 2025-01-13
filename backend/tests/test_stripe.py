@@ -38,104 +38,112 @@ class TestStripeIntegration:
 
     def test_stripe_account_session_creation(self, test_client):
         """Test Stripe account session creation functionality.
-    
-    Verifies that the account session creation endpoint:
-    1. Returns a 200 status code
-    2. Provides a valid client secret in the response
-    
-    Args:
-        client: Flask test client fixture
-        
-    Raises:
-        AssertionError: If response code isn't 200 or client secret is missing
-    """
+
+        Verifies that the account session creation endpoint:
+        1. Returns a 200 status code
+        2. Provides a valid client secret in the response
+
+        Args:
+            test_client: FastAPI test client fixture
+
+        Raises:
+            AssertionError: If response code isn't 200 or client secret is missing
+        """
         # Create a test account first
         account_response = test_client.post('/api/v1/stripe/account')
         account_id = account_response.json()['account']
-        response = test_client.post('/api/v1/stripe/account/session', json={'account_id': account_id})
-    assert response.status_code == 200
-    response_data = response.json()
-    assert 'client_secret' in response_data
-    client_secret = response_data['client_secret']
-    assert client_secret is not None
+        response = test_client.post(
+            '/api/v1/stripe/account/session',
+            json={'account_id': account_id}
+        )
+        assert response.status_code == 200
+        response_data = response.json()
+        assert 'client_secret' in response_data
+        client_secret = response_data['client_secret']
+        assert client_secret is not None
 
     def test_onboarding(self, test_client):
         """Test complete Stripe onboarding flow.
-    
-    Combines account creation and session creation tests to verify the full
-    onboarding workflow. This test ensures that both steps work together
-    correctly and that the generated credentials are valid.
-    
-    Args:
-        client: Flask test client fixture
-        
-    Raises:
-        AssertionError: If any part of the onboarding flow fails
-    """
+
+        Combines account creation and session creation tests to verify the full
+        onboarding workflow. This test ensures that both steps work together
+        correctly and that the generated credentials are valid.
+
+        Args:
+            test_client: FastAPI test client fixture
+
+        Raises:
+            AssertionError: If any part of the onboarding flow fails
+        """
         # Test account creation
         account_response = test_client.post('/api/v1/stripe/account')
         assert account_response.status_code == 200
         
         # Test session creation
         account_id = account_response.json()['account']
-        session_response = test_client.post('/api/v1/stripe/account/session', 
-                                         json={'account_id': account_id})
+        session_response = test_client.post(
+            '/api/v1/stripe/account/session',
+            json={'account_id': account_id}
+        )
         assert session_response.status_code == 200
-    print("\n==========================================")
-    print("✅ TEST PASSED: Stripe Onboarding")
-    print("==========================================")
+        print("\n==========================================")
+        print("✅ TEST PASSED: Stripe Onboarding")
+        print("==========================================")
 
     def test_dashboard_session_creation(self, test_client):
         """Test Stripe dashboard session creation for connected accounts.
-    
-    Verifies that the dashboard session endpoint:
-    1. Returns a 200 status code
-    2. Provides a valid client secret in the response
-    
-    Args:
-        client: Flask test client fixture
-        
-    Raises:
-        AssertionError: If response code isn't 200 or client secret is missing
-    """
+
+        Verifies that the dashboard session endpoint:
+        1. Returns a 200 status code
+        2. Provides a valid client secret in the response
+
+        Args:
+            test_client: FastAPI test client fixture
+
+        Raises:
+            AssertionError: If response code isn't 200 or client secret is missing
+        """
         response = test_client.post('/api/v1/stripe/dashboard')
-    assert response.status_code == 200
-    client_secret = response.get_json().get('client_secret')
-    assert client_secret is not None
-    print("\n==========================================")
-    print("✅ TEST PASSED: Stripe Dashboard")
-    print("==========================================")
+        assert response.status_code == 200
+        client_secret = response.json().get('client_secret')
+        assert client_secret is not None
+        print("\n==========================================")
+        print("✅ TEST PASSED: Stripe Dashboard")
+        print("==========================================")
 
     def test_checkout_session_creation(self, test_client):
         """Test Stripe checkout session creation for payments.
-    
-    Verifies that the checkout session endpoint:
-    1. Returns a 200 status code
-    2. Provides a valid session ID in the response
-    3. Correctly processes product data
-    
-    Args:
-        client: Flask test client fixture
-        
-    Raises:
-        AssertionError: If response code isn't 200 or session ID is missing
-    """
-        response = test_client.post('/api/v1/stripe/checkout_session', json={
-        'account': TEST_ACCOUNT_ID,
-        'line_items': [
-            {
-                "price_data": {
-                    "currency": TEST_CURRENCY,
-                    "product_data": {"name": TEST_PRODUCT_NAME},
-                    "unit_amount": TEST_UNIT_AMOUNT,
-                },
-                "quantity": TEST_QUANTITY,
-            },
-        ],
-    })
-    assert response.status_code == 200
-    session_id = response.get_json().get('id')
-    assert session_id is not None
+
+        Verifies that the checkout session endpoint:
+        1. Returns a 200 status code
+        2. Provides a valid session ID in the response
+        3. Correctly processes product data
+
+        Args:
+            test_client: FastAPI test client fixture
+
+        Raises:
+            AssertionError: If response code isn't 200 or session ID is missing
+        """
+        response = test_client.post(
+            '/api/v1/stripe/checkout_session',
+            json={
+                'account': self.TEST_ACCOUNT_ID,
+                'line_items': [
+                    {
+                        "price_data": {
+                            "currency": self.TEST_CURRENCY,
+                            "product_data": {"name": self.TEST_PRODUCT_NAME},
+                            "unit_amount": self.TEST_UNIT_AMOUNT,
+                        },
+                        "quantity": self.TEST_QUANTITY,
+                    },
+                ],
+            }
+        )
+        assert response.status_code == 200
+        session_id = response.json().get('id')
+        assert session_id is not None
 
     def test_payments(self, test_client):
         """Test complete Stripe payment processing flow.
