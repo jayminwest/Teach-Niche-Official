@@ -7,8 +7,13 @@ const nextConfig = {
   reactStrictMode: true,
   webpack: (config) => {
     config.cache = false
+    config.experiments = {
+      ...config.experiments,
+      topLevelAwait: true,
+    }
     return config
   },
+  swcMinify: true,
   // Add these options for better hot reloading
   onDemandEntries: {
     // period (in ms) where the server will keep pages in the buffer
