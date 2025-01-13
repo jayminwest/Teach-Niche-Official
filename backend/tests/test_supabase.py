@@ -8,22 +8,22 @@ class TestSupabaseIntegration:
     """Test class for Supabase integration functionality."""
 
     def test_model_creation(self, test_client):
-    """Test the creation of database models through Supabase integration.
-    
-    Validates that the model creation endpoint correctly interacts with Supabase
-    to create new database models and returns appropriate responses.
+        """Test the creation of database models through Supabase integration.
+        
+        Validates that the model creation endpoint correctly interacts with Supabase
+        to create new database models and returns appropriate responses.
 
-    Test Cases:
-        1. Model creation request returns HTTP 200 status
-        2. Response contains success status indicator
-        3. Response structure matches expected format
+        Test Cases:
+            1. Model creation request returns HTTP 200 status
+            2. Response contains success status indicator
+            3. Response structure matches expected format
 
-    Args:
-        client: Flask test client fixture for making HTTP requests
+        Args:
+            client: Flask test client fixture for making HTTP requests
 
-    Raises:
-        AssertionError: If any test condition fails
-    """
+        Raises:
+            AssertionError: If any test condition fails
+        """
     """
     Test Supabase model creation.
 

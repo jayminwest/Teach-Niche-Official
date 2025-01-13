@@ -17,21 +17,21 @@ class TestStripeIntegration:
     TEST_DELAY_DAYS = 7
 
     def test_stripe_connected_account_creation(self, test_client):
-    """Test Stripe account creation functionality.
-    
-    Verifies that the account creation endpoint:
-    1. Returns a 200 status code
-    2. Provides a valid account ID in the response
-    
-    Args:
-        test_client: FastAPI test client fixture
+        """Test Stripe account creation functionality.
         
-    Returns:
-        str: The created account ID for use in subsequent tests
+        Verifies that the account creation endpoint:
+        1. Returns a 200 status code
+        2. Provides a valid account ID in the response
         
-    Raises:
-        AssertionError: If response code isn't 200 or account ID is missing
-    """
+        Args:
+            test_client: FastAPI test client fixture
+            
+        Returns:
+            str: The created account ID for use in subsequent tests
+            
+        Raises:
+            AssertionError: If response code isn't 200 or account ID is missing
+        """
     response = test_client.post('/api/v1/stripe/account')
     assert response.status_code == 200
     account_data = response.json()
