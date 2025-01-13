@@ -51,11 +51,9 @@ describe('Header Component', () => {
     const closeButton = screen.getByLabelText('Close')
     fireEvent.click(closeButton)
     
-    // Check if mobile menu is closed by verifying it's hidden
-    const dialog = screen.queryByRole('dialog')
-    expect(dialog).toBeInTheDocument() // Still in DOM
-    // Check that the dialog is translated off-screen
-    expect(dialog).toHaveStyle(expect.stringContaining('transform: translateX(100%)')) // Hidden off-screen
+    // Instead of checking styles directly, verify the menu is closed by checking aria-hidden
+    const dialog = screen.getByRole('dialog')
+    expect(dialog).toHaveAttribute('aria-hidden', 'true')
     
     // Desktop profile menu should still be visible
     expect(screen.getByLabelText('User menu')).toBeInTheDocument()
