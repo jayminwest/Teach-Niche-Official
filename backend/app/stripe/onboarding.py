@@ -11,9 +11,11 @@ The module integrates with Stripe's API to manage account creation and onboardin
 ensuring proper configuration of account capabilities and controller settings.
 """
 
-from fastapi import HTTPException
+from fastapi import APIRouter, HTTPException
 from fastapi.responses import JSONResponse
 from app.stripe.client import stripe
+
+router = APIRouter()
 
 def _get_account_id_from_request(data: dict):
     """Extracts the account ID from the request data.
@@ -47,6 +49,7 @@ def _create_stripe_account_session(account_id):
         },
     )
 
+@router.post("/account/session")
 async def create_stripe_account_session(data: dict):
     """Creates a Stripe account session for onboarding new connected accounts.
 
@@ -91,6 +94,7 @@ def _get_account_capabilities():
         "transfers": {"requested": True}
     }
 
+@router.post("/account")
 def create_stripe_connected_account():
     """Creates a new Stripe connected account with configured settings.
 
