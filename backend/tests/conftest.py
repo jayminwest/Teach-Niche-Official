@@ -8,10 +8,12 @@ a test client for making HTTP requests to the API endpoints.
 import pytest
 from fastapi.testclient import TestClient
 import os
-from fastapi.testclient import TestClient
 from main import create_fastapi_app
-from fastapi import FastAPI
 
+# Ensure tests are discovered by pytest
+pytest_plugins = ["tests"]
+
+# Create FastAPI app instance
 app = create_fastapi_app()
 
 @pytest.fixture

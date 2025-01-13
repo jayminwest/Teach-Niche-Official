@@ -9,6 +9,9 @@ The tests are written using FastAPI's TestClient and follow pytest conventions.
 Each test verifies both successful and error scenarios for the API endpoints.
 """
 
+import pytest
+
+@pytest.mark.asyncio
 
 def test_root_endpoint_health_check(test_client):
     """Verify the root endpoint returns a successful response.
