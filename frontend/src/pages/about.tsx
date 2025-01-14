@@ -10,9 +10,8 @@ const About: NextPage<AboutProps> = ({ showHero = false }) => {
   const textColor = useColorModeValue('gray.600', 'gray.400')
 
   return (
-    <Layout showHeader showHero={false} headerProps={{ showHeading: false }}>
-      <Box p={8}>
-        <VStack spacing={{ base: 6, md: 8 }} align="stretch">
+    <Layout showHeader showHero={false}>
+      <VStack spacing={{ base: 6, md: 8 }} align="stretch">
         <Box>
           <Heading 
             size={{ base: "xl", md: "2xl" }} 
@@ -24,8 +23,7 @@ const About: NextPage<AboutProps> = ({ showHero = false }) => {
             Learn more about our mission and team.
           </Text>
         </Box>
-        </VStack>
-      </Box>
+      </VStack>
     </Layout>
   )
 }
