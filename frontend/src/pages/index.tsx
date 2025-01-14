@@ -7,7 +7,7 @@ export default function Home() {
   const router = useRouter()
 
   React.useEffect(() => {
-    const handleRouteChangeError = (err: any) => {
+    const handleRouteChangeError = (err: { cancelled?: boolean }) => {
       if (err.cancelled) {
         console.log('Route change cancelled')
       }
