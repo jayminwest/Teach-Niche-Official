@@ -14,8 +14,6 @@
 "dependencies": {
   "@chakra-ui/next-js": "2.4.3",
   "@chakra-ui/react": "2.4.3",
-  "@chakra-ui/system": "2.4.3",
-  "@chakra-ui/theme": "2.4.3",
   "@emotion/react": "^11.11.1",
   "@emotion/styled": "^11.11.0",
   "@supabase/supabase-js": "^2.39.0",
