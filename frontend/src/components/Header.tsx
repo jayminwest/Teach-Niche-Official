@@ -160,3 +160,8 @@ const Header = () => {
 }
 
 export default Header 
+import Link from 'next/link';
+import { Button } from './Button';
+        <Link href="/my-purchased-lessons">
+          <Button variant="ghost">My Purchased Lessons</Button>
+        </Link>
