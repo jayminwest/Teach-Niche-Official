@@ -7,11 +7,27 @@ export default function ResetPasswordPage() {
   const [email, setEmail] = useState('')
   const router = useRouter()
 
+  const { resetPassword } = useAuth()
+  const [isLoading, setIsLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+  const [success, setSuccess] = useState(false)
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    // Add logic to send a password reset email
-    console.log('Reset password for:', email)
-    router.push('/auth/login') // Redirect to login page after submission
+    setIsLoading(true)
+    setError(null)
+    
+    try {
+      await resetPassword(email)
+      setSuccess(true)
+      setTimeout(() => {
+        router.push('/auth/login')
+      }, 3000)
+    } catch (err: any) {
+      setError(err.message)
+    } finally {
+      setIsLoading(false)
+    }
   }
 
   return (
@@ -30,9 +46,25 @@ export default function ResetPasswordPage() {
               placeholder="Enter your email"
             />
           </FormControl>
-          <Button type="submit" colorScheme="blue" w="full">
+          <Button 
+            type="submit" 
+            colorScheme="blue" 
+            w="full"
+            isLoading={isLoading}
+            loadingText="Sending..."
+          >
             Send Reset Link
           </Button>
+          {error && (
+            <Text color="red.500" textAlign="center">
+              {error}
+            </Text>
+          )}
+          {success && (
+            <Text color="green.500" textAlign="center">
+              Password reset email sent! Redirecting to login...
+            </Text>
+          )}
         </VStack>
         <Text mt={4} textAlign="center">
           Remember your password?{' '}
