@@ -1,8 +1,13 @@
 import { Heading, Text, VStack, Box, useColorModeValue } from '@chakra-ui/react'
 import { useRouter } from 'next/router'
 import React from 'react'
+import Layout from '../components/Layout'
 
-export default function Home() {
+interface HomeProps {
+  showHero?: boolean
+}
+
+export default function Home({ showHero = true }: HomeProps) {
   const textColor = useColorModeValue('gray.600', 'gray.400')
   const router = useRouter()
 
@@ -20,7 +25,8 @@ export default function Home() {
   }, [router])
 
   return (
-    <VStack spacing={{ base: 6, md: 8 }} align="stretch">
+    <Layout showHero={showHero}>
+      <VStack spacing={{ base: 6, md: 8 }} align="stretch">
       <Box>
         <Heading 
           size={{ base: "xl", md: "2xl" }} 
@@ -32,7 +38,8 @@ export default function Home() {
           Start your learning journey today
         </Text>
       </Box>
-    </VStack>
+      </VStack>
+    </Layout>
   )
 }
 
