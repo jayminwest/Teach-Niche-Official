@@ -7,12 +7,13 @@ type LayoutProps = {
   children: ReactNode
   showHero?: boolean
   showHeader?: boolean
+  headerProps?: Record<string, any>
 }
 
-const Layout = ({ children, showHero = false, showHeader = true }: LayoutProps) => {
+const Layout = ({ children, showHero = false, showHeader = true, headerProps = {} }: LayoutProps) => {
   return (
     <Box minH="100vh">
-      {showHeader !== false && <Header />}
+      {showHeader !== false && <Header {...headerProps} />}
       {showHero && <Hero />}
       <Container 
         as="main" 
