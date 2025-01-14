@@ -10,7 +10,7 @@ const theme = extendTheme({
     useSystemColorMode: false,
   },
   styles: {
-    global: ({ colorMode }) => ({
+    global: ({ colorMode }: { colorMode: 'light' | 'dark' }) => ({
       body: {
         bg: colorMode === 'light' ? 'gray.50' : 'gray.800',
       },
