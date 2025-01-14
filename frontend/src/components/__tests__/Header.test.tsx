@@ -1,19 +1,25 @@
 import { render, screen, fireEvent, waitFor } from '@testing-library/react'
-import { useAuth } from '../../context/AuthContext'
 import { ChakraProvider } from '@chakra-ui/react'
 import Header from '../Header'
 import { theme } from '../../lib/chakra'
+
+// Mock the auth context
+jest.mock('../../context/AuthContext', () => ({
+  useAuth: jest.fn(),
+}))
+
+import { useAuth } from '../../context/AuthContext'
 
 describe('Header Component', () => {
   const mockUseAuth = useAuth as jest.MockedFunction<typeof useAuth>
   
   const renderHeader = (isAuthenticated = false) => {
-    mockUseAuth.mockReturnValue({
+    mockUseAuth.mockImplementation(() => ({
       user: isAuthenticated ? { email: 'test@example.com' } : null,
       login: jest.fn(),
       logout: jest.fn(),
       signup: jest.fn(),
-    })
+    }))
     
     return render(
       <ChakraProvider theme={theme}>
