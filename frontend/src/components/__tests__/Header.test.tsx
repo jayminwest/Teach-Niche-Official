@@ -60,8 +60,8 @@ describe('Header Component', () => {
     
     // Check if mobile menu items are visible
     await waitFor(() => {
-      expect(screen.getByText('Profile')).toBeInTheDocument()
-      expect(screen.getByText('Logout')).toBeInTheDocument()
+      expect(screen.getByRole('menuitem', { name: 'Profile' })).toBeInTheDocument()
+      expect(screen.getByRole('menuitem', { name: 'Logout' })).toBeInTheDocument()
     })
     
     // Close menu

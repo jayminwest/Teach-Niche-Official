@@ -6,7 +6,7 @@ interface LessonsProps {
   showHero?: boolean
 }
 
-const Lessons: NextPage<LessonsProps> = ({ showHero = false }) => {
+const Lessons: NextPage<LessonsProps> = ({ showHero }) => {
   const textColor = useColorModeValue('gray.600', 'gray.400')
 
   return (
@@ -26,8 +26,5 @@ const Lessons: NextPage<LessonsProps> = ({ showHero = false }) => {
   )
 }
 
-Lessons.defaultProps = {
-  showHero: false
-}
 
 export default Lessons
