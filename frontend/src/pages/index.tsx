@@ -25,7 +25,6 @@ export default function Home({ showHero = true }: HomeProps) {
   }, [router])
 
   return (
-    <Layout showHero={showHero}>
       <VStack spacing={{ base: 6, md: 8 }} align="stretch">
       <Box>
         <Heading 
@@ -39,7 +38,6 @@ export default function Home({ showHero = true }: HomeProps) {
         </Text>
       </Box>
       </VStack>
-    </Layout>
   )
 }
 

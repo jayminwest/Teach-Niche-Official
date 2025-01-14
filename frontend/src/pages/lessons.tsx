@@ -10,7 +10,6 @@ const Lessons: NextPage<LessonsProps> = ({ showHero = false }) => {
   const textColor = useColorModeValue('gray.600', 'gray.400')
 
   return (
-    <Layout showHero={showHero}>
       <VStack spacing={{ base: 6, md: 8 }} align="stretch">
         <Box>
           <Heading 
@@ -24,7 +23,6 @@ const Lessons: NextPage<LessonsProps> = ({ showHero = false }) => {
           </Text>
         </Box>
       </VStack>
-    </Layout>
   )
 }
 

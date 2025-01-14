@@ -102,22 +102,22 @@ export default function App({ Component, pageProps, router }: AppProps) {
   return (
     <ChakraProvider theme={theme}>
       <ColorModeScript initialColorMode={theme.config.initialColorMode} />
-      <Layout showHeader={!hasError}>
-        <ErrorBoundary>
-          {hasError ? (
-            <Box textAlign="center" py={10} px={6}>
-              <Heading as="h2" size="xl" mt={6} mb={2}>
-                Something went wrong
-              </Heading>
-              <Text color={'gray.500'}>
-                Please try refreshing the page or navigating back to the homepage.
-              </Text>
-            </Box>
-          ) : (
+      <ErrorBoundary>
+        {hasError ? (
+          <Box textAlign="center" py={10} px={6}>
+            <Heading as="h2" size="xl" mt={6} mb={2}>
+              Something went wrong
+            </Heading>
+            <Text color={'gray.500'}>
+              Please try refreshing the page or navigating back to the homepage.
+            </Text>
+          </Box>
+        ) : (
+          <Layout showHeader={!hasError} showHero={pageProps.showHero}>
             <Component {...pageProps} />
-          )}
-        </ErrorBoundary>
-      </Layout>
+          </Layout>
+        )}
+      </ErrorBoundary>
     </ChakraProvider>
   )
 } 
