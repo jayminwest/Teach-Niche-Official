@@ -1,6 +1,7 @@
 import type { AppProps } from 'next/app'
 import React from 'react'
 import { ChakraProvider, extendTheme, Box, Heading, Text, Button } from '@chakra-ui/react'
+import { AuthProvider } from '../context/AuthContext'
 import { ColorModeScript } from '@chakra-ui/react'
 import Layout from '../components/Layout'
 
@@ -102,7 +103,8 @@ export default function App({ Component, pageProps, router }: AppProps) {
   return (
     <ChakraProvider theme={theme}>
       <ColorModeScript initialColorMode={theme.config.initialColorMode} />
-      <ErrorBoundary>
+      <AuthProvider>
+        <ErrorBoundary>
         {hasError ? (
           <Box textAlign="center" py={10} px={6}>
             <Heading as="h2" size="xl" mt={6} mb={2}>
@@ -117,7 +119,8 @@ export default function App({ Component, pageProps, router }: AppProps) {
             <Component {...pageProps} />
           </Layout>
         )}
-      </ErrorBoundary>
+        </ErrorBoundary>
+      </AuthProvider>
     </ChakraProvider>
   )
 } 
