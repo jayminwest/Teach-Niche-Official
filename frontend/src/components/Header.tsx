@@ -47,7 +47,7 @@ const Header = () => {
   const { isOpen: isMenuOpen, onToggle: onMenuToggle, onClose: onMenuClose } = useDisclosure()
   const { isOpen: isProfileOpen, onToggle: onProfileToggle } = useDisclosure()
   const { colorMode, toggleColorMode } = useColorMode()
-  const { user } = useAuth()
+  const { user, logout } = useAuth()
 
   return (
     <Box 
@@ -113,7 +113,7 @@ const Header = () => {
                   {user ? (
                     <>
                       <MenuItem as={Link} href="/profile">Profile</MenuItem>
-                      <MenuItem as={Link} href="/logout">Logout</MenuItem>
+                      <MenuItem onClick={logout}>Logout</MenuItem>
                     </>
                   ) : (
                     <>
@@ -160,11 +160,16 @@ const Header = () => {
                         Profile
                       </Button>
                     </Link>
-                    <Link href="/logout">
-                      <Button w="full" variant="ghost" onClick={onMenuClose}>
-                        Logout
-                      </Button>
-                    </Link>
+                    <Button 
+                      w="full" 
+                      variant="ghost" 
+                      onClick={() => {
+                        logout()
+                        onMenuClose()
+                      }}
+                    >
+                      Logout
+                    </Button>
                   </>
                 ) : (
                   <>
