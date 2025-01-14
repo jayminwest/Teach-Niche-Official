@@ -1,15 +1,24 @@
 import { render, screen } from '@testing-library/react'
+import { MockedProvider } from '@apollo/client/testing'
 import Lessons from '../lessons'
 
 describe('Lessons Page', () => {
+  const renderPage = () => {
+    return render(
+      <MockedProvider>
+        <Lessons />
+      </MockedProvider>
+    )
+  }
+
   it('renders the page title', () => {
-    render(<Lessons />)
+    renderPage()
     const heading = screen.getByRole('heading', { name: /lessons/i })
     expect(heading).toBeInTheDocument()
   })
 
   it('renders the description text', () => {
-    render(<Lessons />)
+    renderPage()
     const description = screen.getByText(/explore our collection/i)
     expect(description).toBeInTheDocument()
   })
