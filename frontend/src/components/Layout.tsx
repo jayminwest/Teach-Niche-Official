@@ -9,7 +9,7 @@ type LayoutProps = {
   showHeader?: boolean
 }
 
-const Layout = ({ children, showHero = false }: LayoutProps) => {
+const Layout = ({ children, showHero = false, showHeader = true }: LayoutProps) => {
   return (
     <Box minH="100vh">
       {showHeader !== false && <Header />}
