@@ -59,6 +59,13 @@ export const AuthForm = ({ type }: AuthFormProps) => {
         >
           {type === 'login' ? 'Login' : 'Sign Up'}
         </Button>
+        {type === 'login' && (
+          <Text mt={2} textAlign="center">
+            <Link href="/auth/reset-password" color="blue.500">
+              Forgot password?
+            </Link>
+          </Text>
+        )}
       </Stack>
     </Box>
   )

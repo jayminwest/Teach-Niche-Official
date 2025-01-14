@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import { useAuth } from '../../context/AuthContext'
 import {
   Box,
   Flex,
@@ -37,6 +38,8 @@ const NAV_ITEMS: NavItem[] = [
 
 const PROFILE_MENU_ITEMS: NavItem[] = [
   { href: '/profile', label: 'Profile' },
+  { href: '/auth/login', label: 'Login' },
+  { href: '/auth/signup', label: 'Sign Up' },
   { href: '/logout', label: 'Logout' },
 ] as const
 
@@ -44,6 +47,7 @@ const Header = () => {
   const { isOpen: isMenuOpen, onToggle: onMenuToggle, onClose: onMenuClose } = useDisclosure()
   const { isOpen: isProfileOpen, onToggle: onProfileToggle } = useDisclosure()
   const { colorMode, toggleColorMode } = useColorMode()
+  const { user } = useAuth()
 
   return (
     <Box 
@@ -106,11 +110,17 @@ const Header = () => {
                   onClick={onProfileToggle}
                 />
                 <MenuList>
-                  {PROFILE_MENU_ITEMS.map(({ href, label }) => (
-                    <MenuItem key={href} as={Link} href={href}>
-                      {label}
-                    </MenuItem>
-                  ))}
+                  {user ? (
+                    <>
+                      <MenuItem as={Link} href="/profile">Profile</MenuItem>
+                      <MenuItem as={Link} href="/logout">Logout</MenuItem>
+                    </>
+                  ) : (
+                    <>
+                      <MenuItem as={Link} href="/auth/login">Login</MenuItem>
+                      <MenuItem as={Link} href="/auth/signup">Sign Up</MenuItem>
+                    </>
+                  )}
                 </MenuList>
               </Menu>
             </Box>
@@ -143,13 +153,33 @@ const Header = () => {
                 </Link>
               ))}
               <Box pt={4} borderTopWidth={1}>
-                {PROFILE_MENU_ITEMS.map(({ href, label }) => (
-                  <Link key={href} href={href}>
-                    <Button w="full" variant="ghost" onClick={onMenuClose}>
-                      {label}
-                    </Button>
-                  </Link>
-                ))}
+                {user ? (
+                  <>
+                    <Link href="/profile">
+                      <Button w="full" variant="ghost" onClick={onMenuClose}>
+                        Profile
+                      </Button>
+                    </Link>
+                    <Link href="/logout">
+                      <Button w="full" variant="ghost" onClick={onMenuClose}>
+                        Logout
+                      </Button>
+                    </Link>
+                  </>
+                ) : (
+                  <>
+                    <Link href="/auth/login">
+                      <Button w="full" variant="ghost" onClick={onMenuClose}>
+                        Login
+                      </Button>
+                    </Link>
+                    <Link href="/auth/signup">
+                      <Button w="full" variant="ghost" onClick={onMenuClose}>
+                        Sign Up
+                      </Button>
+                    </Link>
+                  </>
+                )}
               </Box>
             </VStack>
           </DrawerBody>
