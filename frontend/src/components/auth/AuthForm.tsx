@@ -18,12 +18,14 @@ export const AuthForm = ({ type }: AuthFormProps) => {
     
     try {
       if (type === 'login') {
-        await signIn(email, password)
+        const { error } = await signIn(email, password)
+        if (error) throw error
       } else {
-        await signUp(email, password)
+        const { error } = await signUp(email, password)
+        if (error) throw error
       }
     } catch (err: any) {
-      setError(err.message)
+      setError(err.message || 'An error occurred. Please try again.')
     }
   }
 
