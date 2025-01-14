@@ -2,6 +2,7 @@ import { Box, Button, Container, FormControl, FormLabel, Heading, Input, Link, T
 import { useRouter } from 'next/router'
 import { useState } from 'react'
 import NextLink from 'next/link'
+import { useAuth } from '@/context/AuthContext'
 
 export default function ResetPasswordPage() {
   const [email, setEmail] = useState('')
