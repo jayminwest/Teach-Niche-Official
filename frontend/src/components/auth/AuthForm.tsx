@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Box, Button, FormControl, FormErrorMessage, FormLabel, Input, Stack } from '@chakra-ui/react'
+import { Box, Button, FormControl, FormErrorMessage, FormLabel, Input, Stack, Text, Link } from '@chakra-ui/react'
 import { useAuth } from '../../context/AuthContext'
 
 interface AuthFormProps {
