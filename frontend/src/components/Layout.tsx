@@ -6,12 +6,13 @@ import Hero from './Hero'
 type LayoutProps = {
   children: ReactNode
   showHero?: boolean
+  showHeader?: boolean
 }
 
 const Layout = ({ children, showHero = false }: LayoutProps) => {
   return (
     <Box minH="100vh">
-      <Header />
+      {showHeader !== false && <Header />}
       {showHero && <Hero />}
       <Container 
         as="main" 
