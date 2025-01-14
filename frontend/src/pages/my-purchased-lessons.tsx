@@ -37,15 +37,7 @@ const MyPurchasedLessonsPage = () => {
 
   return (
     <Layout showHeader showHero={false}>
-      <VStack spacing={{ base: 6, md: 8 }} align="stretch">
-        <Box>
-          <Heading 
-            size={{ base: "xl", md: "2xl" }} 
-            mb={{ base: 2, md: 4 }}
-          >
-            My Purchased Lessons
-          </Heading>
-        </Box>
+      <VStack spacing={{ base: 6, md: 8 }} align="stretch" pt={4}>
         {loading ? (
           <Text>Loading...</Text>
         ) : lessons.length > 0 ? (

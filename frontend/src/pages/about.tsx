@@ -11,18 +11,10 @@ const About: NextPage<AboutProps> = ({ showHero = false }) => {
 
   return (
     <Layout showHeader showHero={false}>
-      <VStack spacing={{ base: 6, md: 8 }} align="stretch">
-        <Box>
-          <Heading 
-            size={{ base: "xl", md: "2xl" }} 
-            mb={{ base: 2, md: 4 }}
-          >
-            About Us
-          </Heading>
-          <Text fontSize={{ base: "md", md: "lg" }} color={textColor}>
-            Learn more about our mission and team.
-          </Text>
-        </Box>
+      <VStack spacing={{ base: 6, md: 8 }} align="stretch" pt={4}>
+        <Text fontSize={{ base: "md", md: "lg" }} color={textColor}>
+          Learn more about our mission and team.
+        </Text>
       </VStack>
     </Layout>
   )
