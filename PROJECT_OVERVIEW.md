@@ -1,14 +1,15 @@
 # Project Overview
 
 ## High Level Overview
-This is a full-stack web application with a Next.js frontend and FastAPI backend, integrating with Stripe for payments and Supabase for authentication and database functionality. The project has a strong focus on e-learning capabilities, with features like lessons, purchases, and user profiles.
+This is a full-stack web application with a Next.js frontend and FastAPI backend, integrating with Stripe for payments, Vimeo for video storage, and Supabase for authentication and database functionality. The project has a strong focus on e-learning capabilities, with features like lessons, purchases, and user profiles.
 
 Key components:
-1. Frontend: Next.js with TypeScript, Chakra UI, and Tailwind CSS
-2. Backend: FastAPI with Stripe integration
+1. Frontend: Next.js with TypeScript and Tailwind CSS
+2. Backend: FastAPI with Stripe and Vimeo integration
 3. Infrastructure: Dockerized with production-ready configurations
 4. Authentication: Supabase-based auth system
 5. Payments: Comprehensive Stripe integration
+6. Video Storage: Vimeo for secure video hosting and delivery
 
 ## Mid Level Breakdown
 
@@ -36,18 +37,18 @@ Key dependencies:
 
 ### Frontend Architecture
 The frontend provides:
-1. User Interface: Built with Chakra UI components
+1. User Interface: Built with custom components and Tailwind CSS
 2. Authentication Flow: Login, signup, password reset
-3. Lesson Management: Viewing and purchasing lessons
+3. Lesson Management: Viewing and purchasing lessons with Vimeo video integration
 4. Profile Management: User profile and purchased content
 5. Theme System: Customizable UI theme
 
 Key dependencies:
 - Next.js (React framework)
-- Chakra UI (component library)
 - Tailwind CSS (utility-first CSS)
 - Supabase (client-side auth)
 - TypeScript (type safety)
+- Vimeo Player (video playback)
 
 ### Interaction Flow
 1. Authentication:
@@ -56,8 +57,11 @@ Key dependencies:
    - Frontend → Backend → Stripe API
 3. Content Delivery:
    - Frontend → Backend → Supabase Database
-4. Webhooks:
+4. Video Delivery:
+   - Frontend → Vimeo API → Backend
+5. Webhooks:
    - Stripe → Backend → Database updates
+   - Vimeo → Backend → Database updates
 
 ## Low Level Details
 
@@ -86,6 +90,7 @@ Key dependencies:
    - Reusable UI components (Button, Card, Section)
    - Layout system with header/hero customization
    - Auth-specific components (forms, context)
+   - Vimeo video player integration
 
 2. State Management:
    - Auth context for user state
