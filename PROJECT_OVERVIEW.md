@@ -1,7 +1,12 @@
 # Project Overview
 
 ## High Level Overview
-This is a full-stack web application with a Next.js frontend and FastAPI backend, integrating with Stripe for payments, Vimeo for video storage, and Supabase for authentication and database functionality. The project has a strong focus on e-learning capabilities, with features like lessons, purchases, and user profiles.
+This is a marketplace application with a Next.js frontend and FastAPI backend, using Stripe Connect for payment processing, Vimeo for video storage, and Supabase for authentication and database functionality. The project enables creators to sell lessons and courses, with marketplace features including:
+
+1. Creator onboarding via Stripe Connect
+2. Payout management for creators
+3. Marketplace fee structure
+4. E-learning capabilities with features like lessons, purchases, and user profiles
 
 Key components:
 1. Frontend: Next.js with TypeScript and Tailwind CSS
@@ -16,12 +21,14 @@ Key components:
 ### Backend Architecture
 The backend serves as:
 1. API Gateway: Handles all frontend requests
-2. Payment Processor: Manages Stripe integration including:
-   - Checkout sessions
+2. Payment Processor: Manages Stripe Connect integration including:
+   - Marketplace account creation
+   - Connected account onboarding
+   - Split payments
+   - Payout scheduling
    - Webhooks
-   - Payouts
    - Compliance
-   - Onboarding
+   - Marketplace fee management
 3. Authentication Proxy: Interfaces with Supabase for:
    - Email/password auth
    - Google auth
@@ -54,7 +61,9 @@ Key dependencies:
 1. Authentication:
    - Frontend → Supabase API → Backend
 2. Payments:
-   - Frontend → Backend → Stripe API
+   - Frontend → Backend → Stripe Connect API
+   - Marketplace fee calculations
+   - Split payments between platform and creators
 3. Content Delivery:
    - Frontend → Backend → Supabase Database
 4. Video Delivery:
