@@ -1,7 +1,7 @@
 # Project Overview
 
 ## High Level Overview
-This is a marketplace application with a Next.js frontend and FastAPI backend, using Stripe Connect for payment processing, Vimeo for video storage, and Supabase for authentication and database functionality. The project enables creators to sell lessons, with marketplace features including:
+This is a marketplace application with a Next.js frontend and a 100% Python backend using FastAPI, using Stripe Connect for payment processing, Vimeo for video storage, and Supabase for authentication and database functionality. The project enables creators to sell lessons, with marketplace features including:
 
 1. Creator onboarding via Stripe Connect
 2. Payout management for creators
@@ -23,8 +23,8 @@ Key components:
 
 ## Mid Level Breakdown
 
-### Backend Architecture
-The backend serves as:
+### Backend Architecture (Python)
+The backend, written entirely in Python, serves as:
 1. API Gateway: Handles all frontend requests
 2. Payment Processor: Manages Stripe Connect integration including:
    - Marketplace account creation
@@ -40,7 +40,7 @@ The backend serves as:
    - Password resets
 4. Configuration Management: Uses Pydantic models for settings
 
-Key dependencies:
+Key dependencies (Python):
 - FastAPI (web framework)
 - Stripe (payment processing)
 - Supabase (auth/database)
