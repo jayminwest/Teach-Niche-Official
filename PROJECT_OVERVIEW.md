@@ -6,7 +6,12 @@ This is a marketplace application with a Next.js frontend and FastAPI backend, u
 1. Creator onboarding via Stripe Connect
 2. Payout management for creators
 3. Marketplace fee structure
-4. E-learning capabilities with features like lessons, purchases, and user profiles
+4. E-learning capabilities with features including:
+   - Lesson creation and management
+   - Video upload and processing
+   - Lesson metadata (title, description, price)
+   - Purchases and access control
+   - User profiles and progress tracking
 
 Key components:
 1. Frontend: Next.js with TypeScript and Tailwind CSS
@@ -46,7 +51,13 @@ Key dependencies:
 The frontend provides:
 1. User Interface: Built with custom components and Tailwind CSS
 2. Authentication Flow: Login, signup, password reset
-3. Lesson Management: Viewing and purchasing lessons with Vimeo video integration
+3. Lesson Management:
+   - Lesson creation interface
+   - Video upload to Vimeo
+   - Metadata editing
+   - Pricing configuration
+   - Viewing and purchasing lessons
+   - Vimeo video integration
 4. Profile Management: User profile and purchased content
 5. Theme System: Customizable UI theme
 
@@ -64,8 +75,11 @@ Key dependencies:
    - Frontend → Backend → Stripe Connect API
    - Marketplace fee calculations
    - Split payments between platform and creators
-3. Content Delivery:
-   - Frontend → Backend → Supabase Database
+3. Content Creation & Delivery:
+   - Lesson creation UI → Backend → Vimeo/Supabase
+   - Video processing pipeline
+   - Metadata storage in Supabase
+   - Content delivery to learners
 4. Video Delivery:
    - Frontend → Vimeo API → Backend
 5. Webhooks:
@@ -99,6 +113,8 @@ Key dependencies:
    - Reusable UI components (Button, Card, Section)
    - Layout system with header/hero customization
    - Auth-specific components (forms, context)
+   - Lesson creation form components
+   - Video upload interface
    - Vimeo video player integration
 
 2. State Management:
