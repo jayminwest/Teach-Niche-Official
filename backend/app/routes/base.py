@@ -22,7 +22,7 @@ async def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(s
 
 @api_router.get("/")
 async def read_root():
-    return "Hello from the backend!"
+    return {"message": "Hello from the backend!"}
 
 @api_router.post("/auth/signup")
 async def signup(email: str, password: str):
@@ -56,3 +56,23 @@ async def google_signin(google_token: str):
 @api_router.get("/protected")
 async def protected_route(user = Depends(get_current_user)):
     return {"message": "You are authenticated", "user": user}
+
+@api_router.get("/health-check")
+async def health_check():
+    return {"status": "ok"}
+
+@api_router.get("/test/supabase")
+async def test_supabase():
+    try:
+        # Add actual Supabase test logic here
+        return {"status": "ok"}
+    except Exception:
+        return {"status": "error"}, 500
+
+@api_router.get("/test/stripe")
+async def test_stripe():
+    try:
+        # Add actual Stripe test logic here
+        return {"status": "ok"}
+    except Exception:
+        return {"status": "error"}, 500
