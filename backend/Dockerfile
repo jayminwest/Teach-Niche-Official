@@ -1,16 +1,16 @@
 FROM docker.io/library/python:3.11-slim
 
-WORKDIR /app/backend
+WORKDIR /app
 
 # Copy requirements first to leverage Docker cache
-COPY backend/requirements.txt requirements.txt
+COPY ./requirements.txt requirements.txt
 
 # Install dependencies
 RUN pip install --no-cache-dir -r requirements.txt && \
     pip install pytest pytest-cov
 
 # Copy the rest of the application
-COPY backend/ .
+COPY . .
 
 # Add user and set permissions
 RUN useradd -m appuser && \
