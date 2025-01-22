@@ -54,7 +54,7 @@ async def handle_dashboard_session_request(account_id: str = Body(..., embed=Tru
                 return JSONResponse(content={
                     'client_secret': session.client_secret,
                     'warning': 'Created new test account',
-                    'account_id': new_account.id
+                    'account_id': account.id
                 })
             except Exception as error:
                 raise HTTPException(
