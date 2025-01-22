@@ -35,9 +35,11 @@ async def handle_dashboard_session_request(account_id: str = Body(..., embed=Tru
         if "No such account" in str(error):
             # If account doesn't exist, create a new test account
             try:
-                new_account = onboarding.create_stripe_connected_account()
+                # Create new Stripe account and get the account object
+                account = onboarding.create_stripe_connected_account()
+                # Create session with the new account's ID
                 session = stripe.AccountSession.create(
-                    account=new_account.id,
+                    account=account.id,
                     components={
                         "payments": {
                             "enabled": True,
