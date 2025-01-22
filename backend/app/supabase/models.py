@@ -1,15 +1,15 @@
-"""
-models.py
+from pydantic import BaseModel as PydanticBaseModel
+from typing import Optional
+from datetime import datetime
 
-This module will contain database models and schemas for the application.
-"""
-
-class BaseModel:
+class BaseModel(PydanticBaseModel):
     """
     BaseModel serves as a base class for all database models.
-
-    Attributes:
-        None at this time.
     """
+    id: Optional[int] = None
+    created_at: Optional[datetime] = None
+    updated_at: Optional[datetime] = None
 
-    pass
+    class Config:
+        orm_mode = True
+        allow_population_by_field_name = True

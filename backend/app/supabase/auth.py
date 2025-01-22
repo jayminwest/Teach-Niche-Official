@@ -1,12 +1,30 @@
+from typing import Dict, Any
+from pydantic import BaseModel, EmailStr
 from app.supabase.client import get_supabase_client
 
-def sign_up_with_email(email: str, password: str) -> dict:
+class AuthResponse(BaseModel):
+    user: Dict[str, Any]
+    session: Dict[str, Any]
+    error: Optional[str] = None
+
+def sign_up_with_email(email: EmailStr, password: str) -> AuthResponse:
     """Register a new user using email and password."""
     supabase = get_supabase_client()
-    response = supabase.auth.sign_up({"email": email, "password": password})
-    if response.get("error"):
-        raise Exception(f"Sign-up failed: {response['error']}")
-    return response
+    try:
+        response = supabase.auth.sign_up({
+            "email": email,
+            "password": password
+        })
+        
+        if response.get("error"):
+            return AuthResponse(error=response['error'])
+            
+        return AuthResponse(
+            user=response.get('user', {}),
+            session=response.get('session', {})
+        )
+    except Exception as e:
+        return AuthResponse(error=str(e))
 
 def sign_in_with_email(email: str, password: str) -> dict:
     """Authenticate a user using email and password."""

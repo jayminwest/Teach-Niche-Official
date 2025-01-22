@@ -1,12 +1,13 @@
-"""
-api.py
+from typing import Dict, Any, List, Optional
+from pydantic import BaseModel
+from app.supabase.client import get_supabase_client
 
-This module handles CRUD operations with Supabase.
-"""
+class APIResponse(BaseModel):
+    status: str
+    data: Optional[Dict[str, Any]] = None
+    error: Optional[str] = None
 
-from app.supabase.client import supabase
-
-def create_record(table: str, data: dict) -> dict:
+def create_record(table: str, data: Dict[str, Any]) -> APIResponse:
     """
     Inserts a new record into the specified table.
 
