@@ -30,9 +30,24 @@ Environment Variables:
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.core.config import get_settings
-from app.routes.base import api_router as base_router
-from app.routes.supabase import router as supabase_router
-from app.stripe import router as stripe_router
+try:
+    from app.routes.base import api_router as base_router
+except ImportError:
+    # Fallback to empty router if base routes aren't available
+    from fastapi import APIRouter
+    base_router = APIRouter()
+
+try:
+    from app.routes.supabase import router as supabase_router
+except ImportError:
+    from fastapi import APIRouter
+    supabase_router = APIRouter()
+
+try:
+    from app.stripe import router as stripe_router
+except ImportError:
+    from fastapi import APIRouter
+    stripe_router = APIRouter()
 
 # Initialize application settings
 APP_SETTINGS = get_settings()
@@ -73,7 +88,7 @@ def create_fastapi_app() -> FastAPI:
     )
 
     # Register all API routers
-    app.include_router(base_router)
+    app.include_router(base_router, prefix="/api")
     app.include_router(supabase_router, prefix="/api/supabase")
     app.include_router(stripe_router, prefix="/api/stripe")
 

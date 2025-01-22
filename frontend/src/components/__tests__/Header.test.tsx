@@ -3,8 +3,24 @@ import { ChakraProvider } from '@chakra-ui/react'
 import Header from '../Header'
 import { theme } from '../../lib/chakra'
 
+// Mock the auth context
+jest.mock('../../context/AuthContext', () => ({
+  useAuth: jest.fn(),
+}))
+
+import { useAuth } from '../../context/AuthContext'
+
 describe('Header Component', () => {
-  const renderHeader = () => {
+  const mockUseAuth = useAuth as jest.MockedFunction<typeof useAuth>
+  
+  const renderHeader = (isAuthenticated = false) => {
+    mockUseAuth.mockImplementation(() => ({
+      user: isAuthenticated ? { email: 'test@example.com' } : null,
+      login: jest.fn(),
+      logout: jest.fn(),
+      signup: jest.fn(),
+    }))
+    
     return render(
       <ChakraProvider theme={theme}>
         <Header />
@@ -36,40 +52,43 @@ describe('Header Component', () => {
   })
 
   it('opens and closes mobile menu', async () => {
-    renderHeader()
+    renderHeader(true)
     
     // Open menu
     const menuButton = screen.getByLabelText('Open menu')
     fireEvent.click(menuButton)
     
     // Check if mobile menu items are visible
-    const mobileMenuItems = screen.getAllByText('Profile')
-    expect(mobileMenuItems.length).toBe(2) // Desktop and mobile
-    expect(screen.getAllByText('Logout').length).toBe(2)
+    await waitFor(() => {
+      expect(screen.getByRole('button', { name: 'Profile' })).toBeInTheDocument()
+      expect(screen.getByRole('button', { name: 'Logout' })).toBeInTheDocument()
+    })
     
     // Close menu
     const closeButton = screen.getByLabelText('Close')
     fireEvent.click(closeButton)
     
-    // Wait for the modal to animate out
+    // Check if mobile menu is hidden by checking transform style
+    const dialog = screen.getByRole('dialog')
     await waitFor(() => {
-      const dialog = screen.queryByRole('dialog')
-      expect(dialog).not.toBeInTheDocument()
+      expect(dialog.style.transform).toContain('translateX(100%)')
     })
     
     // Desktop profile menu should still be visible
     expect(screen.getByLabelText('User menu')).toBeInTheDocument()
   })
 
-  it('shows profile menu on desktop', () => {
-    renderHeader()
+  it('shows profile menu on desktop', async () => {
+    renderHeader(true)
     
     // Open profile menu
     const profileButton = screen.getByLabelText('User menu')
     fireEvent.click(profileButton)
     
     // Check profile menu items
-    expect(screen.getByText('Profile')).toBeInTheDocument()
-    expect(screen.getByText('Logout')).toBeInTheDocument()
+    await waitFor(() => {
+      expect(screen.getByText('Profile')).toBeInTheDocument()
+      expect(screen.getByText('Logout')).toBeInTheDocument()
+    })
   })
 })

@@ -1,6 +1,7 @@
 import type { AppProps } from 'next/app'
 import React from 'react'
-import { ChakraProvider, extendTheme, Box, Heading, Text } from '@chakra-ui/react'
+import { ChakraProvider, extendTheme, Box, Heading, Text, Button } from '@chakra-ui/react'
+import { AuthProvider } from '../context/AuthContext'
 import { ColorModeScript } from '@chakra-ui/react'
 import Layout from '../components/Layout'
 
@@ -10,7 +11,7 @@ const theme = extendTheme({
     useSystemColorMode: false,
   },
   styles: {
-    global: ({ colorMode }) => ({
+    global: ({ colorMode }: { colorMode: 'light' | 'dark' }) => ({
       body: {
         bg: colorMode === 'light' ? 'gray.50' : 'gray.800',
       },
@@ -38,6 +39,44 @@ const theme = extendTheme({
   },
 })
 
+class ErrorBoundary extends React.Component<{ children: React.ReactNode }, { hasError: boolean }> {
+  constructor(props: { children: React.ReactNode }) {
+    super(props)
+    this.state = { hasError: false }
+  }
+
+  static getDerivedStateFromError() {
+    return { hasError: true }
+  }
+
+  componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
+    console.error('ErrorBoundary caught an error:', error, errorInfo)
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return (
+        <Box textAlign="center" py={10} px={6}>
+          <Heading as="h2" size="xl" mt={6} mb={2}>
+            Something went wrong
+          </Heading>
+          <Text color={'gray.500'} mb={4}>
+            We're sorry for the inconvenience. Please try refreshing the page.
+          </Text>
+          <Button
+            colorScheme="blue"
+            onClick={() => window.location.reload()}
+          >
+            Refresh Page
+          </Button>
+        </Box>
+      )
+    }
+
+    return this.props.children
+  }
+}
+
 export default function App({ Component, pageProps, router }: AppProps) {
   // Add error boundary for better error handling
   const [hasError, setHasError] = React.useState(false)
@@ -47,16 +86,25 @@ export default function App({ Component, pageProps, router }: AppProps) {
       setHasError(false)
     }
 
+    const handleError = (error: Error) => {
+      console.error('Application error:', error)
+      setHasError(true)
+    }
+
     router.events.on('routeChangeComplete', handleRouteChange)
+    window.addEventListener('error', handleError)
+    
     return () => {
       router.events.off('routeChangeComplete', handleRouteChange)
+      window.removeEventListener('error', handleError)
     }
   }, [router])
 
   return (
     <ChakraProvider theme={theme}>
       <ColorModeScript initialColorMode={theme.config.initialColorMode} />
-      <Layout>
+      <AuthProvider>
+        <ErrorBoundary>
         {hasError ? (
           <Box textAlign="center" py={10} px={6}>
             <Heading as="h2" size="xl" mt={6} mb={2}>
@@ -67,9 +115,12 @@ export default function App({ Component, pageProps, router }: AppProps) {
             </Text>
           </Box>
         ) : (
-          <Component {...pageProps} />
+          <Layout showHeader={!hasError} showHero={pageProps.showHero}>
+            <Component {...pageProps} />
+          </Layout>
         )}
-      </Layout>
+        </ErrorBoundary>
+      </AuthProvider>
     </ChakraProvider>
   )
 } 
