@@ -103,7 +103,8 @@ class TestStripeIntegration:
         )
         assert session_response.status_code == 200
 
-    def test_dashboard_session_creation(self, test_client):
+    @mock.patch('app.stripe.dashboard.stripe.AccountSession.create')
+    def test_dashboard_session_creation(self, mock_session, test_client):
         """Test Stripe dashboard session creation for connected accounts.
 
         Verifies that the dashboard session endpoint:
@@ -116,17 +117,16 @@ class TestStripeIntegration:
         Raises:
             AssertionError: If response code isn't 200 or client secret is missing
         """
-        # Create test account first
-        account_response = test_client.post('/api/v1/stripe/account')
-        account_id = account_response.json()['account']
+        # Mock the Stripe API response
+        mock_session.return_value = SimpleNamespace(client_secret='test_secret_123')
         
         response = test_client.post(
-            '/api/v1/stripe/dashboard_session',
-            json={'account_id': account_id}
+            '/api/v1/stripe/dashboard/session',
+            json={'account_id': 'test_account_123'}
         )
         assert response.status_code == 200
         client_secret = response.json().get('client_secret')
-        assert client_secret is not None
+        assert client_secret == 'test_secret_123'
 
     @mock.patch('app.stripe.payments.stripe.checkout.Session.create')
     def test_checkout_session_creation(self, mock_checkout, test_client):
