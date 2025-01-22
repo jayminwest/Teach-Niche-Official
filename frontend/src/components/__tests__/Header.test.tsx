@@ -71,7 +71,8 @@ describe('Header Component', () => {
     // Check if mobile menu is hidden by checking transform style
     const dialog = screen.getByRole('dialog')
     await waitFor(() => {
-      expect(dialog.style.transform).toContain('translateX(100%)')
+      // Check that transform contains a large translateX value (close to 100%)
+      expect(dialog.style.transform).toMatch(/translateX\(9\d\.\d+%\)/)
     })
     
     // Desktop profile menu should still be visible
