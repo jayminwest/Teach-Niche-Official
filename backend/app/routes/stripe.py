@@ -37,12 +37,12 @@ Example Usage:
 
 from fastapi import APIRouter, HTTPException, Body, Request
 from fastapi.responses import JSONResponse
-from app.stripe.onboarding import create_stripe_connected_account as create_account
-from app.stripe.onboarding import create_stripe_account_session as create_account_session
-from app.stripe.dashboard import handle_dashboard_session_request as dashboard_session_handler
-from app.stripe.payments import create_checkout_session
-from app.stripe.payouts import handle_payout_configuration_request as setup_payouts
-from app.stripe.webhooks import handle_stripe_webhook as handle_webhook
+import app.stripe.onboarding as onboarding
+import app.stripe.payments as payments
+import app.stripe.payouts as payouts
+import app.stripe.dashboard as dashboard
+import app.stripe.compliance as compliance
+import app.stripe.webhooks as webhooks
 
 router = APIRouter(
     prefix="/v1/stripe",
@@ -90,7 +90,7 @@ async def create_stripe_account() -> dict:
         }
     """
     try:
-        account = onboarding.create_account()
+        account = onboarding.create_stripe_connected_account()
         return {"account": account}
     except Exception as error:
         raise HTTPException(
@@ -127,7 +127,7 @@ async def create_stripe_account_session(account_id: str = Body(..., embed=True))
         }
     """
     try:
-        session = onboarding.create_account_session(account_id)
+        session = onboarding.create_stripe_account_session(account_id)
         return {"client_secret": session}
     except Exception as error:
         raise HTTPException(
@@ -163,7 +163,7 @@ async def create_stripe_dashboard_session(account_id: str = Body(..., embed=True
         }
     """
     try:
-        session = dashboard.dashboard_session_handler(account_id)
+        session = dashboard.handle_dashboard_session_request(account_id)
         return {"client_secret": session}
     except Exception as error:
         raise HTTPException(
@@ -242,7 +242,7 @@ async def configure_stripe_payouts(
         {'status': 'payouts configured successfully'}
     """
     try:
-        response, status_code = payouts.setup_payouts()
+        response, status_code = payouts.handle_payout_configuration_request()
         if status_code != 200:
             raise HTTPException(
                 status_code=status_code,
