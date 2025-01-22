@@ -185,9 +185,6 @@ class TestStripeIntegration:
             ],
         })
         assert response.status_code == 200
-    print("\n==========================================")
-    print("✅ TEST PASSED: Stripe Payments")
-    print("==========================================")
 
     def test_payout_configuration(self, test_client):
         """Test Stripe payout schedule configuration.
@@ -238,9 +235,6 @@ class TestStripeIntegration:
         }
         response = test_client.post('/api/v1/stripe/payouts', json=request_data)
         assert response.status_code == 200
-    print("\n==========================================")
-    print("✅ TEST PASSED: Stripe Payouts")
-    print("==========================================")
 
     def test_webhook_validation(self, test_client):
         """Test Stripe webhook signature validation.
@@ -278,9 +272,6 @@ class TestStripeIntegration:
         headers = {'Stripe-Signature': 'test_signature'}
         response = test_client.post('/api/v1/stripe/webhook', data=payload, headers=headers)
         assert response.status_code == 400
-    print("\n==========================================")
-    print("✅ TEST PASSED: Stripe Webhooks")
-    print("==========================================")
 
     def test_tax_form_generation(self, test_client):
         """Test tax form generation for Stripe connected accounts.
@@ -318,6 +309,3 @@ class TestStripeIntegration:
         response = test_client.post('/api/v1/stripe/tax_forms', 
                                  json={'account_id': self.TEST_ACCOUNT_ID})
         assert response.status_code == 200
-    print("\n==========================================")
-    print("✅ TEST PASSED: Stripe Compliance")
-    print("==========================================")
