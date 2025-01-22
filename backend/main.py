@@ -89,7 +89,7 @@ def create_fastapi_app() -> FastAPI:
 
     # Register all API routers
     app.include_router(base_router, prefix="/api")
-    app.include_router(supabase_router, prefix="/api/supabase")
+    app.include_router(supabase_router, prefix="/api")
     app.include_router(stripe_router, prefix="/api/stripe")
 
     return app
