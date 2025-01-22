@@ -17,7 +17,7 @@ from fastapi import APIRouter, Request, HTTPException
 from app.stripe.client import stripe
 from app.core.config import get_settings
 
-router = APIRouter(prefix="/stripe")
+router = APIRouter(prefix="/api/v1/stripe")
 
 # Initialize Stripe with config settings
 stripe.api_key = get_settings().STRIPE_SECRET_KEY
