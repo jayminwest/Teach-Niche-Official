@@ -77,13 +77,13 @@ class TestSupabaseIntegration:
             AssertionError: If any test condition fails
         """
         # Test sign-up    
-        response = test_client.post('/auth/register', json={'email': 'test@example.com', 'password': 'TestPassword123'})
+        response = test_client.post('/api/auth/register', json={'email': 'test@example.com', 'password': 'TestPassword123'})
         assert response.status_code == 200
         # Test sign-in
-        response = test_client.post('/auth/login', json={'email': 'test@example.com', 'password': 'TestPassword123'})    
+        response = test_client.post('/api/auth/login', json={'email': 'test@example.com', 'password': 'TestPassword123'})    
         assert response.status_code == 200
         # Test password reset
-        response = test_client.post('/auth/password-reset', json={'email': 'test@example.com'})
+        response = test_client.post('/api/auth/password-reset', json={'email': 'test@example.com'})
         assert response.status_code == 200
 
         print("\n==========================================")
