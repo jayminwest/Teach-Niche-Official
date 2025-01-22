@@ -6,8 +6,11 @@ import os
 import sys
 from pathlib import Path
 
-# Add backend to Python path
-sys.path.insert(0, str(Path(__file__).parent.parent))
+# Add both project root and backend to Python path
+project_root = str(Path(__file__).parent.parent.parent)
+backend_path = str(Path(__file__).parent.parent)
+sys.path.insert(0, project_root)
+sys.path.insert(0, backend_path)
 
 # Initialize the app module
 from backend.main import create_fastapi_app
