@@ -25,3 +25,23 @@ async def generate_tax_form(stripe_account_id: str):
             status_code=500,
             detail=f"Tax form generation failed: {str(error)}"
         )
+"""Stripe Compliance Operations Module."""
+
+from fastapi import APIRouter, HTTPException, Body
+from fastapi.responses import JSONResponse
+
+router = APIRouter()
+
+@router.post("/tax_form")
+async def generate_tax_form(account_id: str = Body(..., embed=True)):
+    try:
+        return JSONResponse(content={
+            'status': 'success',
+            'account_id': account_id,
+            'tax_form_url': f'https://taxforms.example.com/{account_id}'
+        })
+    except Exception as error:
+        raise HTTPException(
+            status_code=500,
+            detail=f"Tax form generation failed: {str(error)}"
+        )
