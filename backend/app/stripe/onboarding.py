@@ -29,9 +29,16 @@ def _get_account_id_from_request(data: dict):
     Raises:
         HTTPException: If the account ID is missing or invalid
     """
-    if not data or 'account' not in data:
-        raise HTTPException(status_code=400, detail="Missing account ID in request")
-    return data['account']
+    if not data:
+        raise HTTPException(status_code=400, detail="Request data is required")
+    
+    account_id = data.get('account') or data.get('account_id')
+    if not account_id:
+        raise HTTPException(
+            status_code=400, 
+            detail="Missing account ID in request. Use 'account' or 'account_id'"
+        )
+    return account_id
 
 def _create_stripe_account_session(account_id):
     """Creates a Stripe account session with onboarding enabled.
