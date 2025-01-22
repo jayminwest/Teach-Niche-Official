@@ -103,7 +103,7 @@ def create_fastapi_app() -> FastAPI:
     # Stripe routers
     app.include_router(stripe_onboarding_router, prefix="/api/v1/stripe", tags=["stripe"])
     app.include_router(stripe_payments_router, prefix="/api/v1/stripe", tags=["stripe"])
-    app.include_router(stripe_dashboard_router, prefix="/api/v1/stripe", tags=["stripe"])
+    app.include_router(stripe_dashboard_router, prefix="/api/v1/stripe/dashboard", tags=["stripe"])
     app.include_router(stripe_payouts_router, prefix="/api/v1/stripe", tags=["stripe"])
     app.include_router(stripe_webhooks_router, prefix="/api/v1/stripe", tags=["stripe"])
     app.include_router(stripe_compliance_router, prefix="/api/v1/stripe", tags=["stripe"])

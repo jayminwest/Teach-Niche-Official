@@ -8,7 +8,7 @@ class TestStripeIntegration:
     """Test class for Stripe integration functionality."""
 
     # Constants for test data
-    TEST_ACCOUNT_ID = "acct_test_id"
+    TEST_ACCOUNT_ID = None  # Will be set during account creation
     TEST_PRODUCT_NAME = "Test Product"
     TEST_UNIT_AMOUNT = 1000
     TEST_CURRENCY = "usd"
@@ -17,6 +17,10 @@ class TestStripeIntegration:
     TEST_DELAY_DAYS = 7
 
     def test_stripe_connected_account_creation(self, test_client):
+        # Store the created account ID for subsequent tests
+        response = test_client.post('/api/v1/stripe/account')
+        account_data = response.json()
+        TestStripeIntegration.TEST_ACCOUNT_ID = account_data['account']
         """Test Stripe account creation functionality.
         
         Verifies that the account creation endpoint:

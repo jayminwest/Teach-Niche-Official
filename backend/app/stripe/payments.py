@@ -41,9 +41,9 @@ async def create_checkout_session(data: dict):
         checkout_session = stripe.checkout.Session.create(
             line_items=line_items,
             payment_intent_data={
-                "application_fee_amount": 123,  # TODO: Make this configurable
+                "application_fee_amount": 123,
                 "transfer_data": {"destination": connected_account_id},
-            },
+            } if connected_account_id else {"application_fee_amount": 123},
             mode="payment",
             ui_mode="embedded",
             return_url="https://example.com/checkout/return?session_id={CHECKOUT_SESSION_ID}",
