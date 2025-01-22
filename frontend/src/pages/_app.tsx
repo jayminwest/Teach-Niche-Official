@@ -86,13 +86,13 @@ export default function App({ Component, pageProps, router }: AppProps) {
       setHasError(false)
     }
 
-    const handleError = (error: Error) => {
-      console.error('Application error:', error)
+    const handleError = (event: ErrorEvent) => {
+      console.error('Application error:', event.error)
       setHasError(true)
     }
 
     router.events.on('routeChangeComplete', handleRouteChange)
-    window.addEventListener('error', handleError)
+    window.addEventListener('error', handleError as EventListener)
     
     return () => {
       router.events.off('routeChangeComplete', handleRouteChange)
