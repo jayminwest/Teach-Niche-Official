@@ -44,10 +44,17 @@ from app.stripe.payouts import handle_payout_configuration_request as setup_payo
 from app.stripe.webhooks import handle_stripe_webhook
 
 router = APIRouter(
-    prefix="",  # Prefix is handled in main.py
+    prefix="/v1/stripe",
     tags=["stripe"],
     responses={404: {"description": "Not found"}},
 )
+
+# Include all Stripe sub-routers
+router.include_router(onboarding.router, prefix="/account", tags=["account"])
+router.include_router(payments.router, prefix="/checkout", tags=["checkout"])
+router.include_router(payouts.router, prefix="/payouts", tags=["payouts"]) 
+router.include_router(dashboard.router, prefix="/dashboard", tags=["dashboard"])
+router.include_router(compliance.router, prefix="/compliance", tags=["compliance"])
 
 @router.post("/account")
 async def create_stripe_account() -> dict:
