@@ -290,7 +290,7 @@ class TestStripeIntegration:
         response = test_client.post('/api/v1/stripe/webhook', data=payload, headers=headers)
         assert response.status_code == 400
 
-    @mock.patch('app.stripe.compliance.stripe.tax.Transaction.create_form')
+    @mock.patch('app.stripe.compliance.stripe.tax.Transaction.create')
     def test_tax_form_generation(self, mock_tax_form, test_client):
         """Test tax form generation for Stripe connected accounts.
     
