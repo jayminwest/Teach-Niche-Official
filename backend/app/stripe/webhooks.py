@@ -17,7 +17,7 @@ from fastapi import APIRouter, Request, HTTPException
 from app.stripe.client import stripe
 from app.core.config import get_settings
 
-router = APIRouter()
+router = APIRouter(prefix="/webhook")
 
 
 def _verify_stripe_event(payload: str, signature: str) -> dict:

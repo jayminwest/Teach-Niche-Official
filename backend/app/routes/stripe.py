@@ -44,7 +44,7 @@ from app.stripe.payouts import handle_payout_configuration_request as setup_payo
 from app.stripe.webhooks import handle_stripe_webhook
 
 router = APIRouter(
-    prefix="/api/stripe",
+    prefix="",  # Prefix is handled in main.py
     tags=["stripe"],
     responses={404: {"description": "Not found"}},
 )

@@ -1,27 +1,21 @@
-from flask import request, jsonify
+"""
+Stripe Dashboard Session Management Module
+
+This module handles the creation and management of Stripe Dashboard sessions for connected accounts.
+"""
+
+from fastapi import APIRouter, HTTPException
+from fastapi.responses import JSONResponse
 from app.stripe.client import stripe
 
-def dashboard_session_handler():
-    """
-    Create a Stripe Dashboard session for a connected account.
+router = APIRouter(prefix="/dashboard")
 
-    Generates an Account Session object that provides access to specific components of the Stripe Dashboard
-    for the given connected account.
-
-    Parameters:
-        None (retrieves `account` from the JSON data in the Flask `request` object)
-
-    Returns:
-        tuple: A Flask `jsonify` response containing the `client_secret` of the account session, and an HTTP status code.
-
-    Exception Handling:
-        - Catches any exception and returns a 500 error response with the error message.
-    """
+@router.post("/dashboard_session")
+async def handle_dashboard_session_request(account_id: str):
+    """Handle incoming requests for Stripe Dashboard sessions."""
     try:
-        connected_account_id = request.get_json().get('account')
-
-        account_session = stripe.AccountSession.create(
-            account=connected_account_id,
+        session = stripe.AccountSession.create(
+            account=account_id,
             components={
                 "payments": {
                     "enabled": True,
@@ -33,7 +27,9 @@ def dashboard_session_handler():
                 },
             },
         )
-
-        return jsonify({'client_secret': account_session.client_secret})
-    except Exception as e:
-        return jsonify({'error': str(e)}), 500
+        return JSONResponse(content={'client_secret': session.client_secret})
+    except Exception as error:
+        raise HTTPException(
+            status_code=500,
+            detail=f"Dashboard session creation failed: {str(error)}"
+        )
