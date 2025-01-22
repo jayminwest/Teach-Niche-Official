@@ -34,25 +34,31 @@ async def handle_dashboard_session_request(account_id: str = Body(..., embed=Tru
     except stripe.error.InvalidRequestError as error:
         if "No such account" in str(error):
             # If account doesn't exist, create a new test account
-            new_account = onboarding.create_stripe_connected_account()
-            session = stripe.AccountSession.create(
-                account=new_account.id,
-                components={
-                    "payments": {
-                        "enabled": True,
-                        "features": {
-                            "refund_management": True,
-                            "dispute_management": True,
-                            "capture_payments": True
-                        }
+            try:
+                new_account = onboarding.create_stripe_connected_account()
+                session = stripe.AccountSession.create(
+                    account=new_account.id,
+                    components={
+                        "payments": {
+                            "enabled": True,
+                            "features": {
+                                "refund_management": True,
+                                "dispute_management": True,
+                                "capture_payments": True
+                            }
+                        },
                     },
-                },
-            )
-            return JSONResponse(content={
-                'client_secret': session.client_secret,
-                'warning': 'Created new test account',
-                'account_id': new_account.id
-            })
+                )
+                return JSONResponse(content={
+                    'client_secret': session.client_secret,
+                    'warning': 'Created new test account',
+                    'account_id': new_account.id
+                })
+            except Exception as error:
+                raise HTTPException(
+                    status_code=500,
+                    detail=f"Test account creation failed: {str(error)}"
+                )
         raise HTTPException(status_code=400, detail=str(error))
     except Exception as error:
         raise HTTPException(
