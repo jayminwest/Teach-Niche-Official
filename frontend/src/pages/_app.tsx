@@ -110,7 +110,6 @@ export default function App({ Component, pageProps, router }: AppProps) {
             <Heading as="h2" size="xl" mt={6} mb={2}>
               Something went wrong
             </Heading>
-            {/* eslint-disable-next-line react/no-unescaped-entities */}
             <Text color={'gray.500'}>
               Please try refreshing the page or navigating back to the homepage.
             </Text>
