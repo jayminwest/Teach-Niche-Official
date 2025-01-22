@@ -2,6 +2,7 @@
 
 import pytest
 from fastapi import status
+from backend.app.core.config import get_settings
 
 @pytest.mark.asyncio
 class TestBaseEndpoints:
