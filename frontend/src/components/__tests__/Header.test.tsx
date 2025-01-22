@@ -72,7 +72,7 @@ describe('Header Component', () => {
     const dialog = screen.getByRole('dialog')
     await waitFor(() => {
       // Check that transform contains a large translateX value (close to 100%)
-      expect(dialog.style.transform).toMatch(/translateX\(9\d\.\d+%\)/)
+      expect(dialog.style.transform).toMatch(/translateX\(100%\)/)
     })
     
     // Desktop profile menu should still be visible
