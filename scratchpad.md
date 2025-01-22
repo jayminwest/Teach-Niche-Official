@@ -15,7 +15,7 @@
 | profiles                 | vimeo_access_token         | text                     | YES         |
 | purchases                | id                         | uuid                     | NO          |
 | purchases                | user_id                    | uuid                     | YES         |
-| purchases                | tutorial_id                | uuid                     | YES         |
+| purchases                | lesson_id                  | uuid                     | YES         |
 | purchases                | purchase_date              | timestamp with time zone | YES         |
 | purchases                | stripe_session_id          | text                     | YES         |
 | purchases                | creator_id                 | uuid                     | YES         |
@@ -30,14 +30,14 @@
 | purchases                | updated_at                 | timestamp with time zone | YES         |
 | reviews                  | id                         | integer                  | NO          |
 | reviews                  | user_id                    | uuid                     | YES         |
-| reviews                  | tutorial_id                | uuid                     | YES         |
+| reviews                  | lesson_id                  | uuid                     | YES         |
 | reviews                  | rating                     | integer                  | YES         |
 | reviews                  | comment                    | text                     | YES         |
 | reviews                  | created_at                 | timestamp with time zone | YES         |
-| tutorial_categories      | id                         | integer                  | NO          |
-| tutorial_categories      | name                       | text                     | NO          |
-| tutorial_categories      | tutorial_id                | text                     | YES         |
-| tutorial_categories      | category_id                | text                     | YES         |
+| lesson_categories        | id                         | integer                  | NO          |
+| lesson_categories        | name                       | text                     | NO          |
+| lesson_categories        | lesson_id                  | text                     | YES         |
+| lesson_categories        | category_id                | text                     | YES         |
 | tutorials                | id                         | uuid                     | NO          |
 | tutorials                | title                      | text                     | NO          |
 | tutorials                | description                | text                     | YES         |
