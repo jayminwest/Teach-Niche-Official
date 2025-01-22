@@ -1,8 +1,8 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   env: {
-    NEXT_PUBLIC_SUPABASE_URL: process.env.NEXT_PUBLIC_SUPABASE_URL,
-    NEXT_PUBLIC_SUPABASE_ANON_KEY: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
+    // Environment variables are automatically forwarded to the client
+    // when prefixed with NEXT_PUBLIC_ per Next.js conventions
   },
   reactStrictMode: true,
   webpack: (config) => {

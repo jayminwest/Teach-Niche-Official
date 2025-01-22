@@ -4,6 +4,9 @@ WORKDIR /app
 
 # Install dependencies first for better caching
 COPY package*.json ./
+ARG NEXT_PUBLIC_SUPABASE_URL
+ARG NEXT_PUBLIC_SUPABASE_ANON_KEY
+ENV NEXT_TELEMETRY_DISABLED=1
 RUN npm install --legacy-peer-deps
 
 # Create required Next.js directories
