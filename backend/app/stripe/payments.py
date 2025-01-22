@@ -34,17 +34,25 @@ async def create_checkout_session(data: dict):
     Raises:
         HTTPException: If session creation fails
     """
+    from app.stripe.client import get_stripe_client
+    from fastapi import HTTPException
+    
+    stripe = get_stripe_client()
     try:
         connected_account_id = data.get('account')
         line_items = data.get('line_items')
+        
+        if not line_items:
+            raise ValueError("Missing line_items in request")
 
         checkout_session = stripe.checkout.Session.create(
+            payment_method_types=['card'],
             line_items=line_items,
+            mode="payment",
             payment_intent_data={
                 "application_fee_amount": 123,
                 "transfer_data": {"destination": connected_account_id},
             } if connected_account_id else {"application_fee_amount": 123},
-            mode="payment",
             ui_mode="embedded",
             return_url="https://example.com/checkout/return?session_id={CHECKOUT_SESSION_ID}",
         )

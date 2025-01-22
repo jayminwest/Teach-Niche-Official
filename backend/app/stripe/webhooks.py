@@ -34,8 +34,20 @@ def _verify_stripe_event(payload: str, signature: str) -> dict:
         ValueError: If payload is invalid
         stripe.error.SignatureVerificationError: If signature verification fails
     """
+    from app.core.config import get_settings
+    from fastapi import HTTPException
+    
     endpoint_secret = get_settings().STRIPE_WEBHOOK_SECRET
-    return stripe.Webhook.construct_event(payload, signature, endpoint_secret)
+    try:
+        return stripe.Webhook.construct_event(
+            payload, 
+            signature, 
+            endpoint_secret
+        )
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail="Invalid payload format") from e
+    except stripe.error.SignatureVerificationError as e:
+        raise HTTPException(status_code=401, detail="Invalid signature") from e
 
 
 def _handle_payment_intent_succeeded(event_data: dict) -> None:
