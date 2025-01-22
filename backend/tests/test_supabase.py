@@ -24,7 +24,7 @@ class TestSupabaseIntegration:
         Raises:
             AssertionError: If any test condition fails
         """
-        response = test_client.post('/model')
+        response = test_client.post('/api/model')
         assert response.status_code == 200
         status = response.get_json().get('status')
         assert status == 'model created successfully'
@@ -49,7 +49,7 @@ class TestSupabaseIntegration:
         Raises:
             AssertionError: If any test condition fails
         """
-        response = test_client.post('/migrate', json={'section': 'test_section'})
+        response = test_client.post('/api/migrations', json={'section': 'test_section'})
         assert response.status_code == 200
         status = response.get_json().get('status')
         assert status == 'migration applied successfully'
