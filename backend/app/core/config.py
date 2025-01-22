@@ -32,6 +32,7 @@ class Settings(BaseModel):
     NEXT_PUBLIC_SUPABASE_URL: str = Field(default="http://localhost:8000")
     NEXT_PUBLIC_SUPABASE_ANON_KEY: str = Field(default="test-key")
     STRIPE_SECRET_KEY: str = Field(default="test-key")
+    STRIPE_WEBHOOK_SECRET: str = Field(default="test-webhook-secret")
     CORS_ORIGINS: List[str] = ["http://localhost:3000"]
 
     class Config:
