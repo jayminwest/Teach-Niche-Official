@@ -1,6 +1,6 @@
 """Stripe Compliance and Tax Form Handling"""
 
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Body
 from app.stripe.client import stripe
 
 router = APIRouter(prefix="/stripe/compliance")
