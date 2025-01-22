@@ -51,6 +51,6 @@ def mock_stripe():
 @pytest.fixture
 def mock_supabase(mocker):
     """Fixture for mocking Supabase client"""
-    mock = mocker.patch("app.supabase.client.get_supabase_client")
+    mock = mocker.patch("backend.app.supabase.client.get_supabase_client")
     mock.return_value.table.return_value.insert.return_value.execute.return_value.data = [{'id': 'test-model-id'}]
     return mock

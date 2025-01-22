@@ -98,8 +98,9 @@ def create_fastapi_app() -> FastAPI:
     )
 
     # Register all API routers with versioned prefix
+    # Register all API routers with versioned prefix
     app.include_router(base_router, prefix="/api")
-    app.include_router(supabase_router, prefix="/api/supabase")
+    app.include_router(supabase_router, prefix="/api/supabase/v1")
     # Stripe routers
     app.include_router(stripe_onboarding_router, prefix="/api/v1/stripe", tags=["stripe"])
     app.include_router(stripe_payments_router, prefix="/api/v1/stripe", tags=["stripe"])

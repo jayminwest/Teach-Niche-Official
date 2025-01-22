@@ -24,7 +24,7 @@ class TestSupabaseIntegration:
         Raises:
             AssertionError: If any test condition fails
         """
-        response = test_client.post('/api/supabase/model')
+        response = test_client.post('/api/supabase/v1/model')
         assert response.status_code == 200
         status = response.get_json().get('status')
         assert status == 'model created successfully'
