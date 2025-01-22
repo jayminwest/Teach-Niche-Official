@@ -11,7 +11,7 @@ from app.stripe.client import stripe
 router = APIRouter(prefix="/dashboard")
 
 @router.post("/dashboard_session")
-async def handle_dashboard_session_request(account_id: str):
+async def handle_dashboard_session_request(account_id: str = Body(..., embed=True)):
     """Handle incoming requests for Stripe Dashboard sessions."""
     try:
         session = stripe.AccountSession.create(

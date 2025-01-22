@@ -116,7 +116,14 @@ class TestStripeIntegration:
         Raises:
             AssertionError: If response code isn't 200 or client secret is missing
         """
-        response = test_client.post('/api/v1/stripe/dashboard')
+        # Create test account first
+        account_response = test_client.post('/api/v1/stripe/account')
+        account_id = account_response.json()['account']
+        
+        response = test_client.post(
+            '/api/v1/stripe/dashboard/dashboard_session',
+            json={'account_id': account_id}
+        )
         assert response.status_code == 200
         client_secret = response.json().get('client_secret')
         assert client_secret is not None
