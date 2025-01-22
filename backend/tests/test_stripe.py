@@ -167,7 +167,8 @@ class TestStripeIntegration:
         session_id = response.json().get('id')
         assert session_id is not None
 
-    def test_payments(self, test_client):
+    @mock.patch('app.stripe.payments.stripe.checkout.Session.create')
+    def test_payments(self, mock_checkout, test_client):
         """Test complete Stripe payment processing flow.
     
     Combines checkout session creation tests to verify the full
@@ -175,11 +176,14 @@ class TestStripeIntegration:
     sessions can be created with valid product data.
     
     Args:
-        client: Flask test client fixture
+        test_client: FastAPI test client fixture
         
     Raises:
         AssertionError: If any part of the payment flow fails
     """
+        # Mock the Stripe API response
+        mock_checkout.return_value = SimpleNamespace(id='test_session_123')
+        
         # Test checkout session creation
         response = test_client.post('/api/v1/stripe/checkout_session', json={
             'account': self.TEST_ACCOUNT_ID,
