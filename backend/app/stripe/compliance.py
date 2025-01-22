@@ -6,13 +6,26 @@ from app.stripe.client import stripe
 router = APIRouter(prefix="/stripe/compliance")
 
 @router.post("/tax_forms")
-async def handle_tax_form_generation(data: dict):
+async def handle_tax_form_generation(
+    account_id: str = Body(..., embed=True),
+    form_type: str = Body("us_1099_k"),
+    year: int = Body(2023)
+):
+    """Generate tax forms for a Stripe connected account."""
     try:
-        # In production, implement proper tax form generation logic
-        # This is a mock implementation
-        return {"status": "success", "form_id": "tax_form_123"}
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        form = stripe.Tax.Transaction.create_form(
+            type=form_type,
+            year=year,
+            account=account_id,
+            expand=['pdf']
+        )
+        return {
+            "id": form.id,
+            "pdf_url": form.pdf.url,
+            "status": form.status
+        }
+    except stripe.error.StripeError as e:
+        raise HTTPException(status_code=400, detail=str(e))
 
 @router.post("/compliance_check")
 async def handle_compliance_check(data: dict):

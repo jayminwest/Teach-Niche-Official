@@ -290,24 +290,42 @@ class TestStripeIntegration:
         response = test_client.post('/api/v1/stripe/webhook', data=payload, headers=headers)
         assert response.status_code == 400
 
-    def test_tax_form_generation(self, test_client):
+    @mock.patch('app.stripe.compliance.stripe.Tax.Transaction.create_form')
+    def test_tax_form_generation(self, mock_tax_form, test_client):
         """Test tax form generation for Stripe connected accounts.
     
     Verifies that the tax form generation:
-    1. Returns a non-None result
+    1. Returns valid tax form data
     2. Properly processes account information
+    3. Includes PDF URL
     
     Args:
         test_client: FastAPI test client fixture
         
     Raises:
-        AssertionError: If tax form generation fails or returns None
+        AssertionError: If tax form generation fails validation
     """
-        response = test_client.post('/api/v1/stripe/tax_forms', 
-                                 json={'account_id': self.TEST_ACCOUNT_ID})
+        # Mock Stripe response
+        mock_tax_form.return_value = SimpleNamespace(
+            id='tax_form_123',
+            status='ready',
+            pdf=SimpleNamespace(url='https://example.com/tax_form.pdf')
+        )
+        
+        response = test_client.post(
+            '/api/v1/stripe/compliance/tax_forms',
+            json={
+                'account_id': self.TEST_ACCOUNT_ID,
+                'form_type': 'us_1099_k',
+                'year': 2023
+            },
+            headers={"Idempotency-Key": "test_key_123"}
+        )
         assert response.status_code == 200
         result = response.json()
-        assert result is not None
+        assert result['id'] == 'tax_form_123'
+        assert 'pdf_url' in result
+        assert result['status'] == 'ready'
 
     def test_compliance(self, test_client):
         """Test complete Stripe compliance workflow.
