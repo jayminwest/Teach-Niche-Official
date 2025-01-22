@@ -36,20 +36,29 @@ router = APIRouter(
 
 @router.post("/model")
 async def create_model() -> Dict[str, str]:
-    """Create a new database model (placeholder implementation).
+    """Create a new database model with Supabase integration.
     
-    This endpoint currently serves as a placeholder for future model creation functionality.
-    It will be expanded to handle actual model creation and validation logic.
+    This endpoint handles model creation in the Supabase database.
     
     Returns:
-        Dict[str, str]: A dictionary containing the operation status.
+        Dict[str, str]: A dictionary containing the operation status and created model ID.
         
-    Example:
-        >>> response = await create_model()
-        >>> print(response)
-        {'status': 'model created successfully'}
+    Raises:
+        HTTPException: If model creation fails
     """
-    return {"status": "model created successfully"}
+    try:
+        client = get_supabase_client()
+        # Example model creation - adjust fields as needed
+        result = client.table("models").insert({
+            "name": "New Model",
+            "description": "Automatically created model"
+        }).execute()
+        return {"status": "model created successfully", "id": result.data[0]['id']}
+    except Exception as e:
+        raise HTTPException(
+            status_code=500,
+            detail=f"Model creation failed: {str(e)}"
+        )
 
 @router.post("/migrations")
 async def apply_database_migration(section: str = Body(..., embed=True)) -> Dict[str, str]:
