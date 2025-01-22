@@ -19,6 +19,7 @@ from app.supabase.auth import (
     authenticate_user_with_email as sign_in_with_email,
     initiate_password_reset as send_password_reset_email
 )
+from app.supabase.client import get_supabase_client
 from app.supabase.api import (
     create_record as create_db_record,
     read_records as read_db_records,
