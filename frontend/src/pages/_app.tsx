@@ -92,7 +92,7 @@ export default function App({ Component, pageProps, router }: AppProps) {
     }
 
     router.events.on('routeChangeComplete', handleRouteChange)
-    window.addEventListener('error', handleError as EventListener)
+    window.addEventListener('error', (event) => handleError(event.error))
     
     return () => {
       router.events.off('routeChangeComplete', handleRouteChange)
