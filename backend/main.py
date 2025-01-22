@@ -44,10 +44,20 @@ except ImportError:
     supabase_router = APIRouter()
 
 try:
-    from app.routes.stripe import router as stripe_router
+    from app.stripe.onboarding import router as stripe_onboarding_router
+    from app.stripe.payments import router as stripe_payments_router 
+    from app.stripe.dashboard import router as stripe_dashboard_router
+    from app.stripe.payouts import router as stripe_payouts_router
+    from app.stripe.webhooks import router as stripe_webhooks_router
+    from app.stripe.compliance import router as stripe_compliance_router
 except ImportError:
     from fastapi import APIRouter
-    stripe_router = APIRouter()
+    stripe_onboarding_router = APIRouter()
+    stripe_payments_router = APIRouter()
+    stripe_dashboard_router = APIRouter() 
+    stripe_payouts_router = APIRouter()
+    stripe_webhooks_router = APIRouter()
+    stripe_compliance_router = APIRouter()
 
 # Initialize application settings
 APP_SETTINGS = get_settings()
@@ -90,7 +100,13 @@ def create_fastapi_app() -> FastAPI:
     # Register all API routers with versioned prefix
     app.include_router(base_router, prefix="/api")
     app.include_router(supabase_router, prefix="/api/supabase")
-    app.include_router(stripe_router, prefix="/api/v1/stripe")
+    # Stripe routers
+    app.include_router(stripe_onboarding_router, prefix="/api/v1/stripe", tags=["stripe"])
+    app.include_router(stripe_payments_router, prefix="/api/v1/stripe", tags=["stripe"])
+    app.include_router(stripe_dashboard_router, prefix="/api/v1/stripe", tags=["stripe"])
+    app.include_router(stripe_payouts_router, prefix="/api/v1/stripe", tags=["stripe"])
+    app.include_router(stripe_webhooks_router, prefix="/api/v1/stripe", tags=["stripe"])
+    app.include_router(stripe_compliance_router, prefix="/api/v1/stripe", tags=["stripe"])
 
     return app
 
