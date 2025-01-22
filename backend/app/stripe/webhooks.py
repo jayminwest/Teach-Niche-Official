@@ -42,6 +42,8 @@ def _verify_stripe_event(payload: str, signature: str) -> dict:
     from fastapi import HTTPException
     
     endpoint_secret = get_settings().STRIPE_WEBHOOK_SECRET
+    if not endpoint_secret:
+        raise HTTPException(status_code=400, detail="Webhook secret not configured")
     try:
         return stripe.Webhook.construct_event(
             payload, 
