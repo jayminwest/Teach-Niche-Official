@@ -1,4 +1,4 @@
-from typing import Dict, Any
+from typing import Dict, Any, Optional
 from pydantic import BaseModel, EmailStr
 from app.supabase.client import get_supabase_client
 

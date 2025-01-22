@@ -2,6 +2,9 @@ from typing import Dict, Any, List, Optional
 from pydantic import BaseModel
 from app.supabase.client import get_supabase_client
 
+# Get the supabase client instance
+supabase = get_supabase_client()
+
 class APIResponse(BaseModel):
     status: str
     data: Optional[Dict[str, Any]] = None
