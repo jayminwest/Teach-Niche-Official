@@ -8,7 +8,7 @@ from fastapi import APIRouter, HTTPException, Body
 from fastapi.responses import JSONResponse
 from app.stripe.client import stripe
 
-router = APIRouter(prefix="/stripe/dashboard")
+router = APIRouter(prefix="/dashboard")
 
 @router.post("/session")
 async def handle_dashboard_session_request(account_id: str = Body(..., embed=True)):
