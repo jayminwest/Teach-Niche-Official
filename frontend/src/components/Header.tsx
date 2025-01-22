@@ -41,7 +41,7 @@ const Header = () => {
   const { isOpen: isMenuOpen, onToggle: onMenuToggle, onClose: onMenuClose } = useDisclosure()
   const { isOpen: isProfileOpen, onToggle: onProfileToggle } = useDisclosure()
   const { colorMode, toggleColorMode } = useColorMode()
-  const { user, logout } = useAuth()
+  const { user, signOut } = useAuth()
 
   return (
     <Box 
