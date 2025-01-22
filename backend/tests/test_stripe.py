@@ -128,7 +128,10 @@ class TestStripeIntegration:
         client_secret = response.json().get('client_secret')
         assert client_secret is not None
 
-    def test_checkout_session_creation(self, test_client):
+    @mock.patch('app.stripe.payments.stripe.checkout.Session.create')
+    def test_checkout_session_creation(self, mock_checkout, test_client):
+        # Mock the Stripe API response
+        mock_checkout.return_value = SimpleNamespace(id='test_session_123')
         """Test Stripe checkout session creation for payments.
 
         Verifies that the checkout session endpoint:

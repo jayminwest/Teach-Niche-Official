@@ -43,7 +43,13 @@ async def create_checkout_session(data: dict):
         line_items = data.get('line_items')
         
         if not line_items:
-            raise ValueError("Missing line_items in request")
+            raise HTTPException(status_code=400, detail="Missing required line_items")
+        if not connected_account_id:
+            raise HTTPException(status_code=400, detail="Missing required account")
+
+        # Calculate application fee as 10% of total
+        application_fee = sum(item['price_data']['unit_amount'] * item['quantity'] 
+                            for item in line_items) // 10
 
         checkout_session = stripe.checkout.Session.create(
             payment_method_types=['card'],

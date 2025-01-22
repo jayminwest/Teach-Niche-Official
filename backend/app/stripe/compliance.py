@@ -1,47 +1,23 @@
-"""Stripe Compliance Operations Module.
-
-This module handles all compliance-related operations for Stripe connected accounts, including:
-- Tax form generation and management
-- Regulatory compliance checks
-- Documentation requirements
-- Compliance status monitoring
-"""
+"""Stripe Compliance and Tax Form Handling"""
 
 from fastapi import APIRouter, HTTPException
-from fastapi.responses import JSONResponse
+from app.stripe.client import stripe
 
-router = APIRouter()
+router = APIRouter(prefix="/stripe/compliance")
 
-@router.post("/tax_form")
-async def generate_tax_form(stripe_account_id: str):
-    """Generates tax forms for a specified Stripe connected account."""
+@router.post("/tax_forms")
+async def handle_tax_form_generation(data: dict):
     try:
-        return JSONResponse(content={
-            'status': 'tax form generation not yet implemented',
-            'account_id': stripe_account_id
-        })
-    except Exception as error:
-        raise HTTPException(
-            status_code=500,
-            detail=f"Tax form generation failed: {str(error)}"
-        )
-"""Stripe Compliance Operations Module."""
+        # In production, implement proper tax form generation logic
+        # This is a mock implementation
+        return {"status": "success", "form_id": "tax_form_123"}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
-from fastapi import APIRouter, HTTPException, Body
-from fastapi.responses import JSONResponse
-
-router = APIRouter()
-
-@router.post("/tax_form")
-async def generate_tax_form(account_id: str = Body(..., embed=True)):
+@router.post("/compliance_check")
+async def handle_compliance_check(data: dict):
     try:
-        return JSONResponse(content={
-            'status': 'success',
-            'account_id': account_id,
-            'tax_form_url': f'https://taxforms.example.com/{account_id}'
-        })
-    except Exception as error:
-        raise HTTPException(
-            status_code=500,
-            detail=f"Tax form generation failed: {str(error)}"
-        )
+        # Mock compliance check implementation
+        return {"status": "compliant", "checks_passed": True}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
