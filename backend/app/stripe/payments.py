@@ -54,7 +54,9 @@ async def create_checkout_session(data: dict):
         checkout_session = stripe.checkout.Session.create(
             payment_method_types=['card'],
             line_items=line_items,
-            mode="payment",
+            mode=data.get('mode', 'payment'),
+            success_url=data.get('success_url', 'https://example.com/success'),
+            cancel_url=data.get('cancel_url', 'https://example.com/cancel'),
             payment_intent_data={
                 "application_fee_amount": application_fee,
                 "transfer_data": {"destination": connected_account_id},

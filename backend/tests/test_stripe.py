@@ -186,7 +186,7 @@ class TestStripeIntegration:
         
         # Test checkout session creation
         response = test_client.post('/api/v1/stripe/checkout_session', json={
-            'account': self.TEST_ACCOUNT_ID,
+            'account': 'test_account_123',  # Use mock account ID
             'line_items': [
                 {
                     "price_data": {
@@ -197,7 +197,9 @@ class TestStripeIntegration:
                     "quantity": self.TEST_QUANTITY,
                 },
             ],
-            'mode': 'payment'
+            'mode': 'payment',
+            'success_url': 'https://example.com/success',
+            'cancel_url': 'https://example.com/cancel'
         })
         assert response.status_code == 200
 
