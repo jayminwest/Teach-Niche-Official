@@ -111,7 +111,7 @@ export default function App({ Component, pageProps, router }: AppProps) {
               Something went wrong
             </Heading>
             <Text color={'gray.500'}>
-              Please try refreshing the page or navigating back to the homepage.
+              Please try refreshing the page or navigating back to the homepage.&apos;
             </Text>
           </Box>
         ) : (

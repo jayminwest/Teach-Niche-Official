@@ -24,8 +24,8 @@ export const AuthForm = ({ type }: AuthFormProps) => {
         const { error } = await signUp(email, password)
         if (error) throw error
       }
-    } catch (err: any) {
-      setError(err.message || 'An error occurred. Please try again.')
+    } catch (error: unknown) {
+      setError(error instanceof Error ? error.message : 'An error occurred. Please try again.')
     }
   }
 

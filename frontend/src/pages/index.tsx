@@ -2,7 +2,7 @@ import { Heading, Text, VStack, Box, useColorModeValue } from '@chakra-ui/react'
 import { useRouter } from 'next/router'
 import React from 'react'
 
-export default function Home({ showHero = true }: HomeProps) {
+export default function Home() {
   const textColor = useColorModeValue('gray.600', 'gray.400')
   const router = useRouter()
 
@@ -36,7 +36,3 @@ export default function Home({ showHero = true }: HomeProps) {
   )
 }
 
-// Add showHero prop for this page
-Home.getInitialProps = () => {
-  return { showHero: true }
-} 
