@@ -87,9 +87,9 @@ def create_fastapi_app() -> FastAPI:
         allow_headers=["*"],
     )
 
-    # Register all API routers
+    # Register all API routers with consistent prefix
     app.include_router(base_router, prefix="/api")
-    app.include_router(supabase_router, prefix="")  # Handle legacy routes without /api prefix
+    app.include_router(supabase_router, prefix="/api")
     app.include_router(stripe_router, prefix="/api/stripe")
 
     return app

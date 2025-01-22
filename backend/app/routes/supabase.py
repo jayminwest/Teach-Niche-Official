@@ -29,7 +29,7 @@ from app.supabase.migrations import apply_migration
 
 # Initialize FastAPI router for Supabase-related endpoints
 router = APIRouter(
-    prefix="/api",
+    prefix="",
     tags=["supabase"],
     responses={404: {"description": "Not found"}},
 )
