@@ -36,21 +36,21 @@
 | reviews                  | created_at                 | timestamp with time zone | YES         |
 | lesson_categories        | id                         | integer                  | NO          |
 | lesson_categories        | name                       | text                     | NO          |
-| lesson_categories        | lesson_id                  | text                     | YES         |
+| lesson_categories        | lesson_id                  | uuid                     | YES         |
 | lesson_categories        | category_id                | text                     | YES         |
-| tutorials                | id                         | uuid                     | NO          |
-| tutorials                | title                      | text                     | NO          |
-| tutorials                | description                | text                     | YES         |
-| tutorials                | price                      | numeric                  | YES         |
-| tutorials                | vimeo_video_id             | text                     | YES         |
-| tutorials                | creator_id                 | uuid                     | NO          |
-| tutorials                | created_at                 | timestamp with time zone | YES         |
-| tutorials                | updated_at                 | timestamp with time zone | YES         |
-| tutorials                | stripe_product_id          | text                     | YES         |
-| tutorials                | stripe_price_id            | text                     | YES         |
-| tutorials                | content                    | text                     | YES         |
-| tutorials                | content_url                | text                     | YES         |
-| tutorials                | thumbnail_url              | text                     | YES         |
-| tutorials                | vimeo_url                  | text                     | YES         |
-| tutorials                | is_featured                | boolean                  | YES         |
-| tutorials                | status                     | text                     | YES         
+| lessons                  | id                         | uuid                     | NO          |
+| lessons                  | title                      | text                     | NO          |
+| lessons                  | description                | text                     | YES         |
+| lessons                  | price                      | numeric                  | YES         |
+| lessons                  | vimeo_video_id             | text                     | YES         |
+| lessons                  | creator_id                 | uuid                     | NO          |
+| lessons                  | created_at                 | timestamp with time zone | YES         |
+| lessons                  | updated_at                 | timestamp with time zone | YES         |
+| lessons                  | stripe_product_id          | text                     | YES         |
+| lessons                  | stripe_price_id            | text                     | YES         |
+| lessons                  | content                    | text                     | YES         |
+| lessons                  | content_url                | text                     | YES         |
+| lessons                  | thumbnail_url              | text                     | YES         |
+| lessons                  | vimeo_url                  | text                     | YES         |
+| lessons                  | is_featured                | boolean                  | YES         |
+| lessons                  | status                     | text                     | YES         
