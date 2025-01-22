@@ -4,6 +4,8 @@
     "react-icons": "^5.4.0"
   },
   "scripts": {
-    "test": "cd frontend && npm test"
+    "test": "cd frontend && npm test",
+    "build:frontend": "cd frontend && npm run build",
+    "start:frontend": "cd frontend && npm start"
   }
 }
