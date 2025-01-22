@@ -98,9 +98,6 @@ class TestStripeIntegration:
             json={'account_id': account_id}
         )
         assert session_response.status_code == 200
-        print("\n==========================================")
-        print("✅ TEST PASSED: Stripe Onboarding")
-        print("==========================================")
 
     def test_dashboard_session_creation(self, test_client):
         """Test Stripe dashboard session creation for connected accounts.
@@ -119,9 +116,6 @@ class TestStripeIntegration:
         assert response.status_code == 200
         client_secret = response.json().get('client_secret')
         assert client_secret is not None
-        print("\n==========================================")
-        print("✅ TEST PASSED: Stripe Dashboard")
-        print("==========================================")
 
     def test_checkout_session_creation(self, test_client):
         """Test Stripe checkout session creation for payments.
