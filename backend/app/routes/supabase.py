@@ -30,17 +30,20 @@ from app.supabase.migrations import apply_migration
 
 # Initialize FastAPI router for Supabase-related endpoints
 router = APIRouter(
-    prefix="",
+    prefix="/api/supabase/v1",
     tags=["supabase"],
     responses={404: {"description": "Not found"}},
 )
 
 @router.post("/model")
-async def create_model() -> Dict[str, str]:
+async def create_model(model_data: dict = Body(...)) -> Dict[str, str]:
     """Create a new database model with Supabase integration.
     
     This endpoint handles model creation in the Supabase database.
     
+    Request Body:
+        model_data (dict): Model data to be inserted
+        
     Returns:
         Dict[str, str]: A dictionary containing the operation status and created model ID.
         
@@ -49,12 +52,18 @@ async def create_model() -> Dict[str, str]:
     """
     try:
         client = get_supabase_client()
-        # Example model creation - adjust fields as needed
-        result = client.table("models").insert({
-            "name": "New Model",
-            "description": "Automatically created model"
-        }).execute()
-        return {"status": "model created successfully", "id": result.data[0]['id']}
+        result = client.table("models").insert(model_data).execute()
+        
+        if not result.data:
+            raise HTTPException(status_code=400, detail="Invalid model data")
+            
+        return {
+            "status": "model created successfully",
+            "id": str(result.data[0]['id']),
+            "model": result.data[0]
+        }
+    except HTTPException as he:
+        raise he
     except Exception as e:
         raise HTTPException(
             status_code=500,
