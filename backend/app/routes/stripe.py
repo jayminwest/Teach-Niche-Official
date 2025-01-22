@@ -37,11 +37,11 @@ Example Usage:
 
 from fastapi import APIRouter, HTTPException, Body, Request
 from fastapi.responses import JSONResponse
-from app.stripe.onboarding import create_stripe_connected_account as create_account, create_stripe_account_session as create_account_session
-from app.stripe.dashboard import handle_dashboard_session_request as dashboard_session_handler
-from app.stripe.payments import create_checkout_session
-from app.stripe.payouts import handle_payout_configuration_request as setup_payouts
-from app.stripe.webhooks import handle_stripe_webhook
+import app.stripe.onboarding as onboarding
+import app.stripe.payments as payments
+import app.stripe.payouts as payouts
+import app.stripe.dashboard as dashboard
+import app.stripe.compliance as compliance
 
 router = APIRouter(
     prefix="/v1/stripe",
