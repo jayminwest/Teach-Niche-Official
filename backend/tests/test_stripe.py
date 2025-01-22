@@ -51,12 +51,24 @@ class TestStripeIntegration:
         """
         # Create a test account first
         account_response = test_client.post('/api/v1/stripe/account')
-        account_id = account_response.json()['account']
+        assert account_response.status_code == 200
+        
+        # Debug print the account creation response
+        print("Account creation response:", account_response.json())
+        
+        # Get account ID with error handling
+        account_data = account_response.json()
+        assert 'account' in account_data, f"Missing 'account' key in response: {account_data}"
+        account_id = account_data['account']
+        
+        # Create session
         response = test_client.post(
             '/api/v1/stripe/account/session',
             json={'account': account_id}
         )
         assert response.status_code == 200
+        
+        # Verify session response
         response_data = response.json()
         assert 'client_secret' in response_data
         client_secret = response_data['client_secret']
