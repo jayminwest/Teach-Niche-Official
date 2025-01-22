@@ -197,6 +197,7 @@ class TestStripeIntegration:
                     "quantity": self.TEST_QUANTITY,
                 },
             ],
+            'mode': 'payment'
         })
         assert response.status_code == 200
 

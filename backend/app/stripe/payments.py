@@ -56,9 +56,9 @@ async def create_checkout_session(data: dict):
             line_items=line_items,
             mode="payment",
             payment_intent_data={
-                "application_fee_amount": 123,
+                "application_fee_amount": application_fee,
                 "transfer_data": {"destination": connected_account_id},
-            } if connected_account_id else {"application_fee_amount": 123},
+            } if connected_account_id else {"application_fee_amount": application_fee},
             ui_mode="embedded",
             return_url="https://example.com/checkout/return?session_id={CHECKOUT_SESSION_ID}",
         )
