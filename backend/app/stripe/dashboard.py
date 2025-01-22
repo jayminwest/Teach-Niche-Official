@@ -4,7 +4,7 @@ Stripe Dashboard Session Management Module
 This module handles the creation and management of Stripe Dashboard sessions for connected accounts.
 """
 
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Body
 from fastapi.responses import JSONResponse
 from app.stripe.client import stripe
 
