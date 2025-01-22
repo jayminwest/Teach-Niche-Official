@@ -290,7 +290,7 @@ class TestStripeIntegration:
         response = test_client.post('/api/v1/stripe/webhook', data=payload, headers=headers)
         assert response.status_code == 400
 
-    @mock.patch('app.stripe.compliance.stripe.Tax.Transaction.create_form')
+    @mock.patch('app.stripe.compliance.stripe.tax.Transaction.create_form')
     def test_tax_form_generation(self, mock_tax_form, test_client):
         """Test tax form generation for Stripe connected accounts.
     
@@ -341,6 +341,6 @@ class TestStripeIntegration:
         AssertionError: If any part of the compliance flow fails
     """
         # Test tax form generation
-        response = test_client.post('/api/v1/stripe/tax_forms', 
+        response = test_client.post('/api/v1/stripe/compliance/tax_forms', 
                                  json={'account_id': self.TEST_ACCOUNT_ID})
         assert response.status_code == 200

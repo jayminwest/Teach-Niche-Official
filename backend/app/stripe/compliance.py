@@ -13,7 +13,7 @@ async def handle_tax_form_generation(
 ):
     """Generate tax forms for a Stripe connected account."""
     try:
-        form = stripe.Tax.Transaction.create_form(
+        form = stripe.tax.Transaction.create_form(
             type=form_type,
             year=year,
             account=account_id,
