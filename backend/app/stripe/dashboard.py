@@ -15,11 +15,7 @@ router = APIRouter(prefix="/dashboard")
 async def handle_dashboard_session_request(account_id: str = Body(..., embed=True)):
     """Handle incoming requests for Stripe Dashboard sessions."""
     try:
-        # First validate the account ID format
-        if not account_id.startswith('acct_'):
-            raise ValueError("Invalid Stripe account ID format")
-            
-        # Try to create session with existing account
+        # Try to create session with existing account (will validate ID format)
         session = stripe.AccountSession.create(
             account=account_id,
             components={
