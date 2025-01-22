@@ -1,11 +1,6 @@
 import { Heading, Text, VStack, Box, useColorModeValue } from '@chakra-ui/react'
 import { useRouter } from 'next/router'
 import React from 'react'
-import Layout from '../components/Layout'
-
-interface HomeProps {
-  showHero?: boolean
-}
 
 export default function Home({ showHero = true }: HomeProps) {
   const textColor = useColorModeValue('gray.600', 'gray.400')

@@ -7,7 +7,7 @@ type LayoutProps = {
   children: ReactNode
   showHero?: boolean
   showHeader?: boolean
-  headerProps?: Record<string, any>
+  headerProps?: Record<string, unknown>
 }
 
 const Layout = ({ children, showHero = false, showHeader = true, headerProps = {} }: LayoutProps) => {

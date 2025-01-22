@@ -11,7 +11,7 @@ export default function LoginPage() {
         </Heading>
         <AuthForm type="login" />
         <Text mt={4} textAlign="center">
-          Don't have an account?{' '}
+          Don&apos;t have an account?{' '}
           <Link as={NextLink} href="/auth/signup" color="blue.500">
             Sign up
           </Link>

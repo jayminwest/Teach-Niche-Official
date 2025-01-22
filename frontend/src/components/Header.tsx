@@ -36,12 +36,6 @@ const NAV_ITEMS: NavItem[] = [
   { href: '/my-purchased-lessons', label: 'My Purchased Lessons' },
 ] as const
 
-const PROFILE_MENU_ITEMS: NavItem[] = [
-  { href: '/profile', label: 'Profile' },
-  { href: '/auth/login', label: 'Login' },
-  { href: '/auth/signup', label: 'Sign Up' },
-  { href: '/logout', label: 'Logout' },
-] as const
 
 const Header = () => {
   const { isOpen: isMenuOpen, onToggle: onMenuToggle, onClose: onMenuClose } = useDisclosure()

@@ -1,13 +1,14 @@
 import { createContext, useContext, useEffect, useState } from 'react'
+import { User, Session } from '@supabase/supabase-js'
 import { supabase } from '../lib/supabase'
 import { useRouter } from 'next/router'
 
 type AuthContextType = {
-  user: any
-  session: any
+  user: User | null
+  session: Session | null
   isLoading: boolean
-  signIn: (email: string, password: string) => Promise<any>
-  signUp: (email: string, password: string) => Promise<any>
+  signIn: (email: string, password: string) => Promise<AuthResponse>
+  signUp: (email: string, password: string) => Promise<AuthResponse>
   signOut: () => Promise<void>
   resetPassword: (email: string) => Promise<void>
 }
@@ -22,8 +23,8 @@ const AuthContext = createContext<AuthContextType>({
 })
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
-  const [user, setUser] = useState<any>(null)
-  const [session, setSession] = useState<any>(null)
+  const [user, setUser] = useState<User | null>(null)
+  const [session, setSession] = useState<Session | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const router = useRouter()
 
@@ -49,7 +50,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     })
 
     return () => subscription.unsubscribe()
-  }, [])
+  }, [router])
 
   const value = {
     user,

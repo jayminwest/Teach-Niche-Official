@@ -1,4 +1,5 @@
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
+import Image from 'next/image';
 import { useRouter } from 'next/router';
 import { useAuth } from '../context/AuthContext';
 import { Section } from '../components/Section';
@@ -29,9 +30,11 @@ const ProfilePage = () => {
       {/* Personal Info Section */}
       <Card>
         <div className="flex items-center space-x-4">
-          <img
+          <Image
             src={user.user_metadata?.avatar_url || 'https://via.placeholder.com/150'}
             alt="Profile"
+            width={80}
+            height={80}
             className="w-20 h-20 rounded-full"
           />
           <div>

@@ -1,12 +1,12 @@
 import { NextPage } from 'next'
-import { Heading, Text, VStack, Box, useColorModeValue } from '@chakra-ui/react'
+import { Text, VStack, useColorModeValue } from '@chakra-ui/react'
 import Layout from '../components/Layout'
 
 interface AboutProps {
   showHero?: boolean
 }
 
-const About: NextPage<AboutProps> = ({ showHero = false }) => {
+const About: NextPage = () => {
   const textColor = useColorModeValue('gray.600', 'gray.400')
 
   return (
