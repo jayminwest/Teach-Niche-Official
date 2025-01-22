@@ -10,7 +10,7 @@ class TestBaseEndpoints:
 
     def test_root_endpoint_health_check(self, test_client):
         """Verify the root endpoint returns a successful response."""
-        response = test_client.get("/")
+        response = test_client.get("/api/")
         assert response.status_code == status.HTTP_200_OK
         assert "message" in response.json()
 
