@@ -22,10 +22,11 @@ type AuthContextType = {
 const AuthContext = createContext<AuthContextType>({
   user: null,
   session: null,
-  isLoading: true,
-  signIn: async () => {},
-  signUp: async () => {},
+  isLoading: false,
+  signIn: async () => ({ user: null, session: null, error: null }),
+  signUp: async () => ({ user: null, session: null, error: null }),
   signOut: async () => {},
+  resetPassword: async () => {},
 })
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
