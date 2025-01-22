@@ -107,7 +107,7 @@ const Header = () => {
                   {user ? (
                     <>
                       <MenuItem as={Link} href="/profile">Profile</MenuItem>
-                      <MenuItem onClick={logout}>Logout</MenuItem>
+                      <MenuItem onClick={signOut}>Logout</MenuItem>
                     </>
                   ) : (
                     <>
@@ -158,7 +158,7 @@ const Header = () => {
                       w="full" 
                       variant="ghost" 
                       onClick={() => {
-                        logout()
+                        signOut()
                         onMenuClose()
                       }}
                     >
