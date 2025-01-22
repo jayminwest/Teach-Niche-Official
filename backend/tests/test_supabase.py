@@ -24,10 +24,20 @@ class TestSupabaseIntegration:
         Raises:
             AssertionError: If any test condition fails
         """
-        response = test_client.post('/api/supabase/v1/model')
+        # Test with valid model data
+        test_data = {"name": "Test Model", "type": "example"}
+        response = test_client.post('/api/supabase/v1/model', json=test_data)
         assert response.status_code == 200
-        status = response.get_json().get('status')
-        assert status == 'model created successfully'
+        response_data = response.get_json()
+        
+        # Check response structure
+        assert "status" in response_data
+        assert "data" in response_data
+        assert "id" in response_data["data"]
+        
+        # Check response values
+        assert response_data["status"] == "success"
+        assert response_data["data"]["name"] == test_data["name"]
         print("\n==========================================")
         print("✅ TEST PASSED: Supabase Models")
         print("==========================================")

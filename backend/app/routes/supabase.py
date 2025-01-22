@@ -36,7 +36,7 @@ router = APIRouter(
 )
 
 @router.post("/model")
-async def create_model(model_data: dict = Body(...)) -> Dict[str, str]:
+async def create_model(model_data: dict = Body(...)) -> Dict[str, Any]:
     """Create a new database model with Supabase integration.
     
     This endpoint handles model creation in the Supabase database.
@@ -45,7 +45,7 @@ async def create_model(model_data: dict = Body(...)) -> Dict[str, str]:
         model_data (dict): Model data to be inserted
         
     Returns:
-        Dict[str, str]: A dictionary containing the operation status and created model ID.
+        Dict[str, Any]: A dictionary containing the operation status and created model data.
         
     Raises:
         HTTPException: If model creation fails
@@ -55,12 +55,14 @@ async def create_model(model_data: dict = Body(...)) -> Dict[str, str]:
         result = client.table("models").insert(model_data).execute()
         
         if not result.data:
-            raise HTTPException(status_code=400, detail="Invalid model data")
+            raise HTTPException(
+                status_code=400, 
+                detail="Invalid model data - insert operation returned no results"
+            )
             
         return {
-            "status": "model created successfully",
-            "id": str(result.data[0]['id']),
-            "model": result.data[0]
+            "status": "success",
+            "data": result.data[0]
         }
     except HTTPException as he:
         raise he
