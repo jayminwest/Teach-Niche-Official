@@ -3,6 +3,12 @@ import { User, Session } from '@supabase/supabase-js'
 import { supabase } from '../lib/supabase'
 import { useRouter } from 'next/router'
 
+interface AuthResponse {
+  user: User | null
+  session: Session | null
+  error?: Error | null
+}
+
 type AuthContextType = {
   user: User | null
   session: Session | null
