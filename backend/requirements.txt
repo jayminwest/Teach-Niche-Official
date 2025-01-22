@@ -4,6 +4,8 @@ supabase
 python-dotenv==1.0.0
 httpx
 stripe
-flask==3.0.0
+pydantic==2.6.1
 pytest==8.0.0
 pytest-cov==4.1.0
+python-multipart==0.0.6
+starlette==0.36.3
