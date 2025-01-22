@@ -61,7 +61,7 @@ class ErrorBoundary extends React.Component<{ children: React.ReactNode }, { has
             Something went wrong
           </Heading>
           <Text color={'gray.500'} mb={4}>
-            We're sorry for the inconvenience. Please try refreshing the page.
+            Were sorry for the inconvenience. Please try refreshing the page.
           </Text>
           <Button
             colorScheme="blue"
