@@ -6,6 +6,7 @@
   "scripts": {
     "test": "cd frontend && npm test",
     "build:frontend": "cd frontend && npm run build",
-    "start:frontend": "cd frontend && npm start"
+    "start:frontend": "cd frontend && npm start",
+    "start": "next start"
   }
 }
