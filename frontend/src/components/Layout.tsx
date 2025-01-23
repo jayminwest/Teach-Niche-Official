@@ -1,7 +1,8 @@
 import { ReactNode } from 'react'
 import { Box, Container } from '@chakra-ui/react'
 import Header from './Header'
-import Hero from './Hero'
+import dynamic from 'next/dynamic'
+const Hero = dynamic(() => import('./Hero'), { ssr: false })
 
 type LayoutProps = {
   children: ReactNode
