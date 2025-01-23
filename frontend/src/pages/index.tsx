@@ -1,6 +1,10 @@
-import { Heading, Text, VStack, Box, useColorModeValue } from '@chakra-ui/react'
+import { Heading, Text, VStack, Box, useColorModeValue, SimpleGrid, Button } from '@chakra-ui/react'
 import { useRouter } from 'next/router'
 import React from 'react'
+import Link from 'next/link'
+import { Hero } from '../components/Hero'
+import { Card } from '../components/Card'
+import { RiBookOpenLine, RiArrowRightLine } from 'react-icons/ri'
 
 export default function Home() {
   const textColor = useColorModeValue('gray.600', 'gray.400')
@@ -21,17 +25,59 @@ export default function Home() {
 
   return (
       <VStack spacing={{ base: 6, md: 8 }} align="stretch">
-      <Box>
-        <Heading 
-          size={{ base: "xl", md: "2xl" }} 
-          mb={{ base: 2, md: 4 }}
-        >
-          Welcome
-        </Heading>
-        <Text fontSize={{ base: "md", md: "lg" }} color={textColor}>
-          Start your learning journey today
-        </Text>
-      </Box>
+        <Hero 
+          title="Master New Skills"
+          subtitle="Learn from expert-created courses and advance your career"
+          icon={RiBookOpenLine}
+        />
+        
+        <Box py={8}>
+          <Heading size="xl" mb={6}>Featured Lessons</Heading>
+          <SimpleGrid columns={{ base: 1, md: 2, lg: 3 }} spacing={6}>
+            {[
+              {
+                id: 1,
+                title: 'Web Development Basics',
+                description: 'Learn HTML, CSS and JavaScript fundamentals',
+                price: '49.99'
+              },
+              {
+                id: 2, 
+                title: 'Python for Beginners',
+                description: 'Start your programming journey with Python',
+                price: '39.99'
+              },
+              {
+                id: 3,
+                title: 'Data Visualization',
+                description: 'Master data visualization with D3.js',
+                price: '59.99'
+              }
+            ].map((lesson) => (
+              <Card key={lesson.id} hoverable>
+                <Heading size="md" mb={2}>{lesson.title}</Heading>
+                <Text mb={4} color={textColor}>{lesson.description}</Text>
+                <Text fontWeight="bold">${lesson.price}</Text>
+              </Card>
+            ))}
+          </SimpleGrid>
+        </Box>
+
+        <Box textAlign="center" py={12} bg={useColorModeValue('gray.50', 'gray.800')} borderRadius="xl">
+          <Heading size="lg" mb={4}>Ready to Start Learning?</Heading>
+          <Text fontSize="lg" color={textColor} mb={6}>
+            Join thousands of students already advancing their careers
+          </Text>
+          <Link href="/auth/signup" passHref>
+            <Button 
+              colorScheme="blue" 
+              size="lg" 
+              rightIcon={<RiArrowRightLine />}
+            >
+              Get Started Now
+            </Button>
+          </Link>
+        </Box>
       </VStack>
   )
 }
