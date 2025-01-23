@@ -13,7 +13,7 @@ type LayoutProps = {
 
 const Layout = ({ children, showHero = false, showHeader = true, headerProps = {} }: LayoutProps) => {
   return (
-    <Box minH="100vh">
+    <Box minH="100vh" display="flex" flexDirection="column">
       {showHeader !== false && <Header {...headerProps} />}
       {showHero && <Hero />}
       <Container 
