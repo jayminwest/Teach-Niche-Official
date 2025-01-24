@@ -18,6 +18,9 @@ COPY . .
 # Build the project
 RUN npm run build
 
+# Copy static files from .next/static to public/static
+RUN cp -r .next/static .next/standalone/.next/static
+
 EXPOSE 3000
 
 CMD ["node", ".next/standalone/server.js"]

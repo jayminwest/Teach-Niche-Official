@@ -1,3 +1,4 @@
+const path = require('path')
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   // Production configuration
@@ -15,6 +16,17 @@ const nextConfig = {
   },
   output: 'standalone',
   reactStrictMode: true,
+  // Add static asset configuration
+  experimental: {
+    outputFileTracingRoot: path.join(__dirname, '../../'),
+    outputFileTracingExcludes: {
+      '*': [
+        'node_modules/@swc/core-linux-x64-gnu',
+        'node_modules/@swc/core-linux-x64-musl',
+        'node_modules/esbuild-linux-64/bin/esbuild',
+      ],
+    },
+  },
   webpack: (config) => {
     config.cache = false
     config.experiments = {
