@@ -29,8 +29,9 @@ class Settings(BaseModel):
     Config:
         from_attributes: Enables ORM mode for Pydantic model
     """
-    NEXT_PUBLIC_SUPABASE_URL: str = Field(default="http://localhost:8000")
-    NEXT_PUBLIC_SUPABASE_ANON_KEY: str = Field(default="test-key")
+    SUPABASE_URL: str = Field(default="http://localhost:8000")
+    SUPABASE_SERVICE_KEY: str = Field(default="test-service-key")
+    SUPABASE_ANON_KEY: str = Field(default="test-key")  # For reference only
     STRIPE_SECRET_KEY: str = Field(default="test-key")
     STRIPE_WEBHOOK_SECRET: str = Field(default="test-webhook-secret")
     CORS_ORIGINS: List[str] = ["http://localhost:3000"]
@@ -63,7 +64,8 @@ def get_settings() -> Settings:
     
     # Use environment variables if available, otherwise use defaults
     return Settings(
-        NEXT_PUBLIC_SUPABASE_URL=os.getenv("NEXT_PUBLIC_SUPABASE_URL", "http://localhost:8000"),
-        NEXT_PUBLIC_SUPABASE_ANON_KEY=os.getenv("NEXT_PUBLIC_SUPABASE_ANON_KEY", "test-key"),
+        SUPABASE_URL=os.getenv("SUPABASE_URL", os.getenv("NEXT_PUBLIC_SUPABASE_URL", "http://localhost:8000")),
+        SUPABASE_SERVICE_KEY=os.getenv("SUPABASE_SERVICE_KEY", "test-service-key"),
+        SUPABASE_ANON_KEY=os.getenv("NEXT_PUBLIC_SUPABASE_ANON_KEY", "test-key"),
         STRIPE_SECRET_KEY=os.getenv("STRIPE_SECRET_KEY", "test-key")
     )
