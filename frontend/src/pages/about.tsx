@@ -40,9 +40,11 @@ const About: NextPage = () => {
           <Heading as="h1" size="2xl" color={headingColor} textAlign="center">
             Our Mission
           </Heading>
-          <Text fontSize="xl" color={textColor} textAlign="center" maxW="2xl" mx="auto">
-            We're revolutionizing online education by creating an accessible platform that empowers both learners and creators. Our mission is to bridge the gap between knowledge and opportunity.
-          </Text>
+          <Box display="flex" justifyContent="center" w="100%">
+            <Text fontSize="xl" color={textColor} textAlign="center" maxW="2xl" width="100%">
+              We're revolutionizing online education by creating an accessible platform that empowers both learners and creators. Our mission is to bridge the gap between knowledge and opportunity.
+            </Text>
+          </Box>
         </VStack>
 
         {/* Values Section */}
