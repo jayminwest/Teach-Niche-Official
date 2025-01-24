@@ -83,8 +83,8 @@ def create_fastapi_app() -> FastAPI:
         True
     """
     app = FastAPI(
-        title="Full-Stack Application",
-        description="Backend API for full-stack application with Next.js frontend",
+        title="Teach Nice Backend",
+        description="Backend API for the Teach Niche website",
         version="1.0.0"
     )
 

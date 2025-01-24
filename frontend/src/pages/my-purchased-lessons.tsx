@@ -36,7 +36,7 @@ const MyPurchasedLessonsPage = () => {
   }, []);
 
   return (
-    <Layout showHeader showHero={false}>
+    <Layout showHeader={false} showHero={false}>
       <VStack spacing={{ base: 6, md: 8 }} align="stretch" pt={4}>
         {loading ? (
           <Text>Loading...</Text>
