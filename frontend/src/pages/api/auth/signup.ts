@@ -12,6 +12,14 @@ export default async function handler(
   const { email, password } = req.body
 
   try {
+    // Validate input
+    if (!email || !password) {
+      return res.status(400).json({ 
+        error: 'Validation failed',
+        details: 'Email and password are required'
+      })
+    }
+
     const { data, error } = await supabase.auth.signUp({
       email,
       password,
@@ -21,15 +29,25 @@ export default async function handler(
     })
 
     if (error) {
+      console.error('Supabase signup error:', error)
       return res.status(400).json({ 
         error: 'Signup failed',
-        details: error.message 
+        details: error.message,
+        code: error.status || 400
+      })
+    }
+
+    if (!data.user) {
+      return res.status(500).json({
+        error: 'Signup failed',
+        details: 'No user data returned'
       })
     }
 
     return res.status(201).json({
       user: data.user,
       session: data.session,
+      message: 'Signup successful! Please check your email to confirm your account.'
     })
   } catch (error) {
     console.error('Signup error:', error)

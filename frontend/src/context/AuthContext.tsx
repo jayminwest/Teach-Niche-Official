@@ -85,20 +85,39 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       return data;
     },
     signUp: async (email: string, password: string) => {
-      const response = await fetch('/api/auth/signup', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ email, password }),
-      });
-      
-      if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.detail || 'Signup failed');
+      try {
+        const response = await fetch('/api/auth/signup', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ email, password }),
+        });
+
+        if (!response.ok) {
+          let errorData;
+          try {
+            errorData = await response.json();
+          } catch (jsonError) {
+            throw new Error('Failed to parse error response');
+          }
+          throw new Error(errorData.detail || errorData.error || 'Signup failed');
+        }
+
+        const data = await response.json();
+        
+        // Update local session state
+        const { data: { session } } = await supabase.auth.getSession();
+        setSession(session);
+        setUser(session?.user ?? null);
+        
+        return data;
+      } catch (error) {
+        if (error instanceof TypeError && error.message.includes('Failed to fetch')) {
+          throw new Error('Unable to connect to the server. Please check your internet connection.');
+        }
+        throw error;
       }
-      
-      return await response.json();
     },
     signOut: async () => {
       const response = await fetch('/api/auth/logout', {
