@@ -5,7 +5,7 @@ import Layout from '../components/Layout'
 
 const LegalPage = () => {
   return (
-    <Layout showHeader={true} showFooter={true}>
+    <Layout showHeader={false} showFooter={false}>
       <Box maxW="7xl" mx="auto" px={4} py={12}>
         <Heading as="h1" mb={8} textAlign="center">
           Legal Information
