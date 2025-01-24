@@ -5,6 +5,8 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
+  // Set content type header
+  res.setHeader('Content-Type', 'application/json')
   if (req.method !== 'POST') {
     return res.status(405).json({ message: 'Method not allowed' })
   }

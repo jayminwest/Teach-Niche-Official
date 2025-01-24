@@ -17,6 +17,29 @@ export const AuthForm = ({ type }: AuthFormProps) => {
     setError(null)
     
     try {
+      const endpoint = type === 'login' ? '/api/auth/login' : '/api/auth/signup'
+      const response = await fetch(endpoint, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email, password }),
+      })
+
+      // Check if response is JSON
+      const contentType = response.headers.get('content-type')
+      if (!contentType || !contentType.includes('application/json')) {
+        const text = await response.text()
+        throw new Error(`Unexpected response: ${text}`)
+      }
+
+      const data = await response.json()
+
+      if (!response.ok) {
+        throw new Error(data.details || data.message || 'Authentication failed')
+      }
+
+      // Handle successful authentication
       if (type === 'login') {
         const { error } = await signIn(email, password)
         if (error) throw error
@@ -25,7 +48,9 @@ export const AuthForm = ({ type }: AuthFormProps) => {
         if (error) throw error
       }
     } catch (error: unknown) {
-      setError(error instanceof Error ? error.message : 'An error occurred. Please try again.')
+      const message = error instanceof Error ? error.message : 'An error occurred. Please try again.'
+      setError(message)
+      console.error('Authentication error:', error)
     }
   }
 

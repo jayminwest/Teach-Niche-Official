@@ -5,6 +5,8 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
+  // Set content type header
+  res.setHeader('Content-Type', 'application/json')
   console.log('Signup request received:', req.body)
   
   if (req.method !== 'POST') {
