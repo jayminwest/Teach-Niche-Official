@@ -7,10 +7,10 @@ const About: NextPage = () => {
   const textColor = useColorModeValue('gray.600', 'gray.400')
 
   return (
-    <Layout showHeader showHero={false}>
+    <Layout showHeader={false} showHero={false}>
       <VStack spacing={{ base: 6, md: 8 }} align="stretch" pt={4}>
         <Text fontSize={{ base: "md", md: "lg" }} color={textColor}>
-          Learn more about our mission and team.
+          Learn more about our mission and team!
         </Text>
       </VStack>
     </Layout>
