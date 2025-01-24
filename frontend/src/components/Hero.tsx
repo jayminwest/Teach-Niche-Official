@@ -1,6 +1,6 @@
 import { Box, Container, Heading, Text, Button, VStack } from '@chakra-ui/react'
 
-const Hero = () => {  // Already has proper default export
+export const Hero = () => {
   return (
     <Box 
       bg="gray.900" 

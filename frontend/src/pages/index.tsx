@@ -2,9 +2,25 @@ import { Heading, Text, VStack, Box, useColorModeValue, SimpleGrid, Button } fro
 import { useRouter } from 'next/router'
 import React from 'react'
 import Link from 'next/link'
-import { Hero } from '../components/Hero'
+import Hero from '../components/Hero'
 import { Card } from '../components/Card'
 import { RiBookOpenLine, RiArrowRightLine } from 'react-icons/ri'
+
+function ErrorBoundary({ children }: { children: React.ReactNode }) {
+  const [hasError, setHasError] = React.useState(false)
+
+  React.useEffect(() => {
+    const errorHandler = () => setHasError(true)
+    window.addEventListener('error', errorHandler)
+    return () => window.removeEventListener('error', errorHandler)
+  }, [])
+
+  if (hasError) {
+    return <Box p={4} textAlign="center">Something went wrong. Please try again later.</Box>
+  }
+
+  return <>{children}</>
+}
 
 export default function Home() {
   const textColor = useColorModeValue('gray.600', 'gray.400')
@@ -24,6 +40,7 @@ export default function Home() {
   }, [router])
 
   return (
+    <ErrorBoundary>
       <VStack spacing={{ base: 6, md: 8 }} align="stretch">
         <Hero />
         
@@ -75,6 +92,7 @@ export default function Home() {
           </Link>
         </Box>
       </VStack>
+    </ErrorBoundary>
   )
 }
 
