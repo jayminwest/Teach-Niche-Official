@@ -5,6 +5,7 @@ const Lessons: NextPage = () => {
   const textColor = useColorModeValue('gray.600', 'gray.400')
 
   return (
+    <Layout>
       <VStack spacing={{ base: 6, md: 8 }} align="stretch">
         <Box>
           <Heading 
@@ -18,6 +19,7 @@ const Lessons: NextPage = () => {
           </Text>
         </Box>
       </VStack>
+    </Layout>
   )
 }
 

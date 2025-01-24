@@ -40,8 +40,9 @@ export default function Home() {
   }, [router])
 
   return (
-    <ErrorBoundary>
-      <VStack spacing={{ base: 6, md: 8 }} align="stretch">
+    <Layout>
+      <ErrorBoundary>
+        <VStack spacing={{ base: 6, md: 8 }} align="stretch">
         <Hero />
         
         <Box py={8}>
@@ -92,7 +93,8 @@ export default function Home() {
           </Link>
         </Box>
       </VStack>
-    </ErrorBoundary>
+      </ErrorBoundary>
+    </Layout>
   )
 }
 
