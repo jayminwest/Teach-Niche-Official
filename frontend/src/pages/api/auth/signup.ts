@@ -5,6 +5,8 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
+  console.log('Signup request received:', req.body)
+  
   if (req.method !== 'POST') {
     return res.status(405).json({ message: 'Method not allowed' })
   }
@@ -37,12 +39,19 @@ export default async function handler(
         },
       })
 
+      console.log('Supabase signup response:', { data, error })
+
       if (error) {
-        console.error('Supabase signup error:', error)
+        console.error('Supabase signup error:', {
+          status: error.status,
+          message: error.message,
+          stack: error.stack
+        })
         return res.status(400).json({ 
           error: 'Signup failed',
           details: error.message,
-          code: error.status || 400
+          code: error.status || 400,
+          stack: error.stack
         })
       }
 
@@ -66,10 +75,14 @@ export default async function handler(
       })
     }
   } catch (error) {
-    console.error('Signup error:', error)
+    console.error('Signup error:', {
+      message: error instanceof Error ? error.message : 'Unknown error',
+      stack: error instanceof Error ? error.stack : undefined
+    })
     return res.status(500).json({ 
       error: 'Internal server error',
-      details: error instanceof Error ? error.message : 'Unknown error'
+      details: error instanceof Error ? error.message : 'Unknown error',
+      stack: error instanceof Error ? error.stack : undefined
     })
   }
 }

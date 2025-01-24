@@ -9,6 +9,8 @@ export default async function handler(
     return res.status(405).json({ message: 'Method not allowed' })
   }
 
+  console.log('Login request received:', req.body)
+
   const { email, password } = req.body
 
   try {
@@ -17,10 +19,18 @@ export default async function handler(
       password,
     })
 
+    console.log('Supabase response:', { data, error })
+
     if (error) {
+      console.error('Login error details:', {
+        status: error.status,
+        message: error.message,
+        stack: error.stack
+      })
       return res.status(401).json({ 
         error: 'Authentication failed',
-        details: error.message 
+        details: error.message,
+        status: error.status
       })
     }
 
@@ -32,7 +42,8 @@ export default async function handler(
     console.error('Login error:', error)
     return res.status(500).json({ 
       error: 'Internal server error',
-      details: error instanceof Error ? error.message : 'Unknown error'
+      details: error instanceof Error ? error.message : 'Unknown error',
+      stack: error instanceof Error ? error.stack : undefined
     })
   }
 }
