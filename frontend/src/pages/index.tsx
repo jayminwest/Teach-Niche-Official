@@ -41,7 +41,7 @@ export default function Home() {
   }, [router])
 
   return (
-    <Layout>
+    <Layout showHeader={false} showFooter={false}>
       <ErrorBoundary>
         <VStack spacing={{ base: 6, md: 8 }} align="stretch">
         <Hero />
