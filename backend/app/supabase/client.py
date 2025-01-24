@@ -9,8 +9,7 @@ def get_supabase_client() -> Client:
     from supabase import ClientOptions
     return create_client(settings.SUPABASE_URL, settings.SUPABASE_SERVICE_KEY, ClientOptions(
         auto_refresh_token=False,
-        persist_session=False,
-        detect_session_in_url=False
+        persist_session=False
     ))
 
 # Initialize the client when module is imported
