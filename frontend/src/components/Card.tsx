@@ -1,4 +1,5 @@
-import { Box, type BoxProps } from '@chakra-ui/react'
+import { Box, type BoxProps, useColorModeValue } from '@chakra-ui/react'
+import React from 'react'
 
 interface CardProps extends BoxProps {
   children: React.ReactNode
@@ -6,17 +7,26 @@ interface CardProps extends BoxProps {
 }
 
 export const Card = ({ children, hoverable = false, ...props }: CardProps) => {
+  const bgColor = useColorModeValue('white', 'gray.700')
+  const hoverBg = useColorModeValue('gray.50', 'gray.600')
+  
   return (
     <Box
-      bg="white"
+      bg={bgColor}
       p={6}
       rounded="lg"
       shadow="sm"
+      borderWidth="1px"
+      borderColor={useColorModeValue('gray.200', 'gray.600')}
       transition="all 0.2s"
-      _hover={hoverable ? { shadow: 'md', transform: 'translateY(-2px)' } : undefined}
+      _hover={hoverable ? { 
+        shadow: 'md', 
+        transform: 'translateY(-2px)',
+        bg: hoverBg
+      } : undefined}
       {...props}
     >
       {children}
     </Box>
   )
-} 
+}
