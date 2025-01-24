@@ -15,10 +15,10 @@ const Footer = () => {
             <Link as={NextLink} href="/about" _hover={{ color: 'blue.300' }}>
               About
             </Link>
-            <Link as={NextLink} href="/terms" _hover={{ color: 'blue.300' }}>
+            <Link as={NextLink} href="/legal#terms" _hover={{ color: 'blue.300' }}>
               Terms
             </Link>
-            <Link as={NextLink} href="/privacy" _hover={{ color: 'blue.300' }}>
+            <Link as={NextLink} href="/legal#privacy" _hover={{ color: 'blue.300' }}>
               Privacy
             </Link>
           </Flex>
