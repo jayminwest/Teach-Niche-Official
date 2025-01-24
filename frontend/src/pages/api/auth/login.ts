@@ -1,5 +1,5 @@
 import { NextApiRequest, NextApiResponse } from 'next'
-import { supabase } from '../../../lib/supabase'
+import { supabase as supabaseClient } from '../../../lib/supabase'
 
 export const config = {
   api: {
@@ -47,7 +47,7 @@ export default async function handler(
 
   try {
     // First check if Supabase is reachable
-    const healthCheck = await fetch(`${process.env.NEXT_PUBLIC_SUPABASE_URL}/rest/v1/`, {
+    const healthCheck = await fetch(`${supabaseClient.supabaseUrl}/rest/v1/`, {
       method: 'HEAD'
     });
 
@@ -59,7 +59,7 @@ export default async function handler(
       });
     }
 
-    const { data, error } = await supabase.auth.signInWithPassword({
+    const { data, error } = await supabaseClient.auth.signInWithPassword({
       email,
       password,
     });
