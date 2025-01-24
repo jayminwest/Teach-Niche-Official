@@ -19,7 +19,6 @@ const nextConfig = {
   typescript: {
     ignoreBuildErrors: true,
   },
-  output: 'standalone',
   reactStrictMode: true,
   // Add static asset configuration
   experimental: {
