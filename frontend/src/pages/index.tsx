@@ -1,4 +1,5 @@
 import { Heading, Text, VStack, Box, useColorModeValue, SimpleGrid, Button } from '@chakra-ui/react'
+import Layout from '../components/Layout'
 import { useRouter } from 'next/router'
 import React from 'react'
 import Link from 'next/link'
