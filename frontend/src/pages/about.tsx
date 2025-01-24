@@ -33,7 +33,7 @@ const About: NextPage = () => {
   ]
 
   return (
-    <Layout showHeader={true} showHero={false} showFooter={false}>
+    <Layout showHeader={false} showHero={false} showFooter={false}>
       <Container maxW="container.lg" py={12}>
         {/* Mission Section */}
         <VStack spacing={8} align="stretch" mb={16}>
