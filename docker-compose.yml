@@ -17,7 +17,8 @@ services:
     ports:
       - "3000:3000"
     volumes:
-      - ./frontend:/app
+      - ./frontend/public:/app/public
+      - ./frontend/styles:/app/styles
       - /app/node_modules
     env_file:
       - .env.dev
