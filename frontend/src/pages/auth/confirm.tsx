@@ -87,11 +87,11 @@ export default function ConfirmPage() {
             </Text>
             <Button
               as={NextLink}
-              href="/"
+              href="/profile"
               colorScheme="blue"
               width="full"
             >
-              Go to Home
+              Go to Profile
             </Button>
           </>
         ) : (
