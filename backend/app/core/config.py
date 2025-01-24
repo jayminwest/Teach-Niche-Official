@@ -29,9 +29,19 @@ class Settings(BaseModel):
     Config:
         from_attributes: Enables ORM mode for Pydantic model
     """
-    SUPABASE_URL: str = Field(default="http://localhost:8000")
-    SUPABASE_SERVICE_KEY: str = Field(default="test-service-key")
-    SUPABASE_ANON_KEY: str = Field(default="test-key")  # For reference only
+    SUPABASE_URL: str = Field(
+        default="http://localhost:8000",
+        description="Supabase project URL (must start with http:// or https://)"
+    )
+    SUPABASE_SERVICE_KEY: str = Field(
+        default="test-service-key",
+        description="Supabase service role key (starts with 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9')",
+        min_length=20
+    )
+    SUPABASE_ANON_KEY: str = Field(
+        default="test-key",
+        description="Supabase anonymous key (for client-side use only)"
+    )
     STRIPE_SECRET_KEY: str = Field(default="test-key")
     STRIPE_WEBHOOK_SECRET: str = Field(default="test-webhook-secret")
     CORS_ORIGINS: List[str] = ["http://localhost:3000"]
