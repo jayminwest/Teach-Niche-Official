@@ -29,15 +29,26 @@ export default async function handler(
       })
     }
 
-    // Check if backend is reachable
-    try {
-      const { data, error } = await supabase.auth.signUp({
-        email,
-        password,
-        options: {
-          emailRedirectTo: `${process.env.NEXT_PUBLIC_SITE_URL}/auth/confirm`,
-        },
-      })
+    // First check if Supabase is reachable
+    const healthCheck = await fetch(`${process.env.NEXT_PUBLIC_SUPABASE_URL}/rest/v1/`, {
+      method: 'HEAD'
+    });
+
+    if (!healthCheck.ok) {
+      console.error('Supabase health check failed:', healthCheck.status);
+      return res.status(503).json({
+        error: 'Service unavailable',
+        details: 'Authentication service is currently unavailable. Please try again later.'
+      });
+    }
+
+    const { data, error } = await supabase.auth.signUp({
+      email,
+      password,
+      options: {
+        emailRedirectTo: `${process.env.NEXT_PUBLIC_SITE_URL}/auth/confirm`,
+      },
+    });
 
       console.log('Supabase signup response:', { data, error })
 
