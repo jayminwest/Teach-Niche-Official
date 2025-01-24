@@ -1,6 +1,11 @@
 const path = require('path')
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  // Server configuration
+  server: {
+    host: process.env.HOST || '0.0.0.0',
+    port: process.env.PORT || 3000,
+  },
   // Production configuration
   compress: true,
   productionBrowserSourceMaps: false,
