@@ -25,11 +25,7 @@ export default function Home() {
 
   return (
       <VStack spacing={{ base: 6, md: 8 }} align="stretch">
-        <Hero 
-          title="Master New Skills"
-          subtitle="Learn from expert-created courses and advance your career"
-          icon={RiBookOpenLine}
-        />
+        <Hero />
         
         <Box py={8}>
           <Heading size="xl" mb={6}>Featured Lessons</Heading>
