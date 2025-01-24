@@ -11,7 +11,7 @@ const Lessons: NextPage = () => {
             size={{ base: "xl", md: "2xl" }} 
             mb={{ base: 2, md: 4 }}
           >
-            Lessons
+            Lessons!
           </Heading>
           <Text fontSize={{ base: "md", md: "lg" }} color={textColor}>
             Explore our collection of lessons and tutorials.
