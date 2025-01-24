@@ -72,7 +72,12 @@ export default function Home() {
               <Card key={lesson.id} hoverable>
                 <Heading size="md" mb={2}>{lesson.title}</Heading>
                 <Text mb={4} color={textColor}>{lesson.description}</Text>
-                <Text fontWeight="bold">${lesson.price}</Text>
+                <Text 
+                  fontWeight="bold" 
+                  color={useColorModeValue('blue.600', 'blue.300')}
+                >
+                  ${lesson.price}
+                </Text>
               </Card>
             ))}
           </SimpleGrid>
