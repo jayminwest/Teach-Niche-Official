@@ -86,6 +86,15 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     },
     signUp: async (email: string, password: string) => {
       try {
+        // First validate the email and password locally
+        if (!email || !email.includes('@')) {
+          throw new Error('Please enter a valid email address');
+        }
+        if (!password || password.length < 8) {
+          throw new Error('Password must be at least 8 characters');
+        }
+
+        // Try to connect to the API
         const response = await fetch('/api/auth/signup', {
           method: 'POST',
           headers: {
@@ -94,6 +103,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           body: JSON.stringify({ email, password }),
         });
 
+        // Handle connection errors
         if (!response.ok) {
           let errorData;
           try {
@@ -114,7 +124,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         return data;
       } catch (error) {
         if (error instanceof TypeError && error.message.includes('Failed to fetch')) {
-          throw new Error('Unable to connect to the server. Please check your internet connection.');
+          throw new Error('Unable to connect to the server. Please check your internet connection and make sure the backend is running.');
         }
         throw error;
       }
