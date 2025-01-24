@@ -1,5 +1,6 @@
 import { NextPage } from 'next'
 import { Heading, Text, VStack, Box, useColorModeValue } from '@chakra-ui/react'
+import Layout from '../components/Layout'
 
 const Lessons: NextPage = () => {
   const textColor = useColorModeValue('gray.600', 'gray.400')
