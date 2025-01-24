@@ -1,4 +1,4 @@
-import { Box, Button, Container, FormControl, FormLabel, Heading, Input, Link, Text, VStack } from '@chakra-ui/react'
+import { Box, Button, Container, FormControl, FormLabel, Heading, Input, Link, Text, VStack, useColorModeValue } from '@chakra-ui/react'
 import { useRouter } from 'next/router'
 import { useState } from 'react'
 import NextLink from 'next/link'
@@ -33,8 +33,8 @@ export default function ResetPasswordPage() {
 
   return (
     <Container maxW="md" py={12}>
-      <Box bg="white" p={8} rounded="lg" shadow="md">
-        <Heading as="h1" size="xl" mb={6} textAlign="center">
+      <Box bg={useColorModeValue('white', 'gray.700')} p={8} rounded="lg" shadow="md">
+        <Heading as="h1" size="xl" mb={6} textAlign="center" color={useColorModeValue('gray.800', 'white')}>
           Reset Password
         </Heading>
         <VStack as="form" spacing={4} onSubmit={handleSubmit}>
@@ -45,6 +45,7 @@ export default function ResetPasswordPage() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="Enter your email"
+              _placeholder={{ color: useColorModeValue('gray.500', 'gray.400') }}
             />
           </FormControl>
           <Button 
@@ -57,12 +58,12 @@ export default function ResetPasswordPage() {
             Send Reset Link
           </Button>
           {error && (
-            <Text color="red.500" textAlign="center">
+            <Text color={useColorModeValue('red.500', 'red.300')} textAlign="center">
               {error}
             </Text>
           )}
           {success && (
-            <Text color="green.500" textAlign="center">
+            <Text color={useColorModeValue('green.500', 'green.300')} textAlign="center">
               Password reset email sent! Redirecting to login...
             </Text>
           )}

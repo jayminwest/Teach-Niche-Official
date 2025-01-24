@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Box, Button, FormControl, FormErrorMessage, FormLabel, Input, Stack, Text, Link } from '@chakra-ui/react'
+import { Box, Button, FormControl, FormErrorMessage, FormLabel, Input, Stack, Text, Link, useColorModeValue } from '@chakra-ui/react'
 import { useAuth } from '../../context/AuthContext'
 
 interface AuthFormProps {
@@ -33,9 +33,10 @@ export const AuthForm = ({ type }: AuthFormProps) => {
     <Box as="form" onSubmit={handleSubmit}>
       <Stack spacing={4}>
         <FormControl isInvalid={!!error}>
-          <FormLabel>Email</FormLabel>
+          <FormLabel color={useColorModeValue('gray.700', 'gray.200')}>Email</FormLabel>
           <Input
             type="email"
+            focusBorderColor={useColorModeValue('blue.500', 'blue.300')}
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
@@ -43,9 +44,10 @@ export const AuthForm = ({ type }: AuthFormProps) => {
         </FormControl>
 
         <FormControl isInvalid={!!error}>
-          <FormLabel>Password</FormLabel>
+          <FormLabel color={useColorModeValue('gray.700', 'gray.200')}>Password</FormLabel>
           <Input
             type="password"
+            focusBorderColor={useColorModeValue('blue.500', 'blue.300')}
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
