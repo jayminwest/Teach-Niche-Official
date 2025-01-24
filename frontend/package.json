@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "NEXT_PUBLIC_ENV_FILE=../../.env.dev next dev --port 3000 --hostname 0.0.0.0 --turbo",
+    "dev": "next dev --port 3000 --hostname 0.0.0.0 --turbo",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
