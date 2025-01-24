@@ -1,26 +1,22 @@
-FROM docker.io/library/python:3.11-slim
+FROM python:3.11-slim
 
 WORKDIR /app
+ENV PYTHONPATH=/app
 
-# Copy requirements first to leverage Docker cache
-COPY ./requirements.txt requirements.txt
+# Install system deps only when needed
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends gcc python3-dev && \
+    rm -rf /var/lib/apt/lists/*
 
-# Install dependencies
-RUN pip install --no-cache-dir -r requirements.txt && \
-    pip install pytest pytest-cov
+# Install Python deps
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy the rest of the application
+# Application setup
 COPY . .
 
-# Add user and set permissions
-RUN useradd -m appuser && \
-    chown -R appuser:appuser /app
-
+# Non-root user
+RUN useradd -m appuser && chown -R appuser:appuser /app
 USER appuser
 
-EXPOSE 8000
-
-# Add backend to Python path
-ENV PYTHONPATH=/app/backend
-
-CMD ["uvicorn", "main:app", "--reload"]
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0"]

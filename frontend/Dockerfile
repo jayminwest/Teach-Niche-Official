@@ -1,26 +1,21 @@
-FROM docker.io/library/node:18-alpine AS base
-
+# Base stage for development
+FROM node:18-alpine AS base
 WORKDIR /app
-
-# Install dependencies first for better caching
-COPY package*.json ./
-ARG NEXT_PUBLIC_SUPABASE_URL
-ARG NEXT_PUBLIC_SUPABASE_ANON_KEY
 ENV NEXT_TELEMETRY_DISABLED=1
-RUN npm install --legacy-peer-deps
-
-# Create required Next.js directories
-RUN mkdir -p pages app
-
-# Copy the rest of the files
+COPY package*.json ./
+RUN npm install
 COPY . .
 
-# Build the project
-RUN npm run build
+# Development stage
+FROM base AS dev
+CMD ["npm", "run", "dev", "--", "-H", "0.0.0.0"]
 
-# Copy static files from .next/static to public/static
-RUN cp -r .next/static .next/standalone/.next/static
-
-EXPOSE 3000
-
+# Production stage
+FROM node:18-alpine AS prod
+WORKDIR /app
+COPY --from=base /app .
+RUN npm ci --production && \
+    npm run build && \
+    rm -rf node_modules && \
+    npm install --production
 CMD ["node", ".next/standalone/server.js"]
