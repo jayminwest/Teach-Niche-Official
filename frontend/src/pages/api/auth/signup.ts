@@ -1,12 +1,30 @@
 import { NextApiRequest, NextApiResponse } from 'next'
 import { supabase } from '../../../lib/supabase'
 
+import { NextApiRequest, NextApiResponse } from 'next'
+import { supabase } from '../../../lib/supabase'
+
+export const config = {
+  api: {
+    bodyParser: true,
+    externalResolver: true,
+  },
+}
+
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
   // Set content type header
   res.setHeader('Content-Type', 'application/json')
+  
+  // Only allow POST requests
+  if (req.method !== 'POST') {
+    return res.status(405).json({ 
+      error: 'Method not allowed',
+      message: 'Only POST requests are accepted'
+    })
+  }
   console.log('Signup request received:', req.body)
   
   if (req.method !== 'POST') {

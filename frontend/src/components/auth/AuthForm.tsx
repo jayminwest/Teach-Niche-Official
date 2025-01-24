@@ -17,7 +17,12 @@ export const AuthForm = ({ type }: AuthFormProps) => {
     setError(null)
     
     try {
-      const endpoint = type === 'login' ? '/api/auth/login' : '/api/auth/signup'
+      // Use absolute URL for API endpoints in production
+      const baseUrl = process.env.NODE_ENV === 'production' 
+        ? process.env.NEXT_PUBLIC_SITE_URL
+        : ''
+      const endpoint = `${baseUrl}/api/auth/${type}`
+      
       const response = await fetch(endpoint, {
         method: 'POST',
         headers: {
