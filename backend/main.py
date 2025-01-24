@@ -114,6 +114,10 @@ def create_fastapi_app() -> FastAPI:
 # Initialize the FastAPI application
 app = create_fastapi_app()
 
+@app.get("/")
+async def root():
+    return {"message": "Welcome to the API"}
+
 def start_uvicorn_server() -> None:
     """Starts the Uvicorn development server with default configuration.
 
