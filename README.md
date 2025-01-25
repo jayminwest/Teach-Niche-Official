@@ -2,6 +2,8 @@
 
 A full-stack application with Next.js frontend and Python backend.
 
+git checkout garrett_branch
+
 ## Prerequisites
 
 - Docker
