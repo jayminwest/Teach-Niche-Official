@@ -2,7 +2,6 @@
 
 ## 1. Create New Page
 - Create `pages/landing.tsx` with basic structure
-  - Set up page metadata and SEO tags
   - Create main page container with max-width constraints
   - Add consistent padding/margins for sections
 - Add responsive layout with Chakra UI components
