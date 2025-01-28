@@ -51,7 +51,7 @@ const ProfilePage = () => {
 
   return (
     <Section title="Profile" subtitle="Manage your account settings">
-      <Card hoverable className="max-w-2xl mx-auto">
+      <Card className="max-w-2xl mx-auto">
         <VStack spacing={6} align="stretch">
           {/* Profile Header */}
           <HStack justify="space-between" align="center">
