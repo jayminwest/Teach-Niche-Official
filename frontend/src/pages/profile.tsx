@@ -72,9 +72,7 @@ const ProfilePage = () => {
   const handleLogout = async () => {
     try {
       setIsLoading(true);
-      const { error } = await signOut();
-      if (error) throw error;
-      
+      await signOut();
       router.push('/auth/login');
     } catch (error) {
       toast({
