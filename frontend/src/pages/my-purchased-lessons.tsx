@@ -1,7 +1,8 @@
-import { Box, Heading, Text, VStack } from '@chakra-ui/react';
+import { Text, VStack } from '@chakra-ui/react';
 import Layout from '../components/Layout';
 import { useEffect, useState } from 'react';
 import { supabase } from '../lib/supabase';
+import { LessonCard } from '../components/LessonCard';
 
 interface Lesson {
   id: string;
@@ -35,23 +36,28 @@ const MyPurchasedLessonsPage = () => {
     fetchPurchasedLessons();
   }, []);
 
+  const handlePlayClick = (lessonId: string) => {
+    // TODO: Implement video playback navigation
+    console.log('Play lesson:', lessonId);
+  };
+
   return (
     <Layout showHeader={false} showHero={false}>
       <VStack spacing={{ base: 6, md: 8 }} align="stretch" pt={4}>
         {loading ? (
           <Text>Loading...</Text>
         ) : lessons.length > 0 ? (
-          <VStack spacing={4} align="start">
+          <VStack spacing={4} align="stretch">
             {lessons.map((lesson) => (
-              <Box key={lesson.id} p={4} borderWidth="1px" borderRadius="lg" w="100%">
-                <Heading as="h2" size="md" mb={2}>
-                  {lesson.title}
-                </Heading>
-                <Text>{lesson.description}</Text>
-                <Text fontSize="sm" color="gray.500">
-                  Purchased on: {new Date(lesson.purchased_at).toLocaleDateString()}
-                </Text>
-              </Box>
+              <LessonCard
+                key={lesson.id}
+                id={lesson.id}
+                title={lesson.title}
+                description={lesson.description}
+                isPurchased={true}
+                purchasedAt={lesson.purchased_at}
+                onPlayClick={() => handlePlayClick(lesson.id)}
+              />
             ))}
           </VStack>
         ) : (
