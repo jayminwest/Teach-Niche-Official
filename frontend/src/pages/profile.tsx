@@ -89,54 +89,8 @@ const ProfilePage = () => {
     }
   };
 
-  // Delete Account Handler
-  const handleDeleteAccount = async () => {
-    if (!window.confirm("Are you sure you want to delete your account? This action cannot be undone.")) {
-      return;
-    }
-
-    try {
-      setIsLoading(true);
-      // Delete user via backend API
-      const response = await fetch('/api/auth/delete-account', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        credentials: 'include'
-      });
-
-      const data = await response.json();
-      
-      if (!response.ok) {
-        throw new Error(data?.error || 'Failed to delete account');
-      }
-
-      // Sign out locally after successful deletion
-      const { error: signOutError } = await supabase.auth.signOut();
-      if (signOutError) {
-        console.error('Error signing out:', signOutError);
-      }
-      
-      await signOut(); // Context cleanup
-      router.push('/auth/login');
-      toast({
-        title: "Account deleted successfully",
-        status: "success",
-        duration: 3000,
-        isClosable: true,
-      });
-    } catch (error) {
-      toast({
-        title: "Error deleting account",
-        description: error.message,
-        status: "error",
-        duration: 3000,
-        isClosable: true,
-      });
-    } finally {
-      setIsLoading(false);
-    }
+  const handleDeleteAccount = () => {
+    router.push('/auth/delete-account');
   };
 
   useEffect(() => {
