@@ -97,11 +97,20 @@ const ProfilePage = () => {
 
     try {
       setIsLoading(true);
-      // First delete the user
-      const { error: deleteError } = await supabase.auth.admin.deleteUser(user.id);
-      if (deleteError) throw deleteError;
-      
-      // Then sign out locally
+      // Delete user via backend API
+      const response = await fetch('/api/auth/delete-account', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        credentials: 'include'
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to delete account');
+      }
+
+      // Sign out locally after successful deletion
       const { error: signOutError } = await supabase.auth.signOut();
       if (signOutError) throw signOutError;
       
