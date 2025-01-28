@@ -50,7 +50,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       setUser(session?.user ?? null)
       
       if (event === 'SIGNED_IN') {
-        router.push('/dashboard')
+        router.push('/profile')
       } else if (event === 'SIGNED_OUT') {
         router.push('/auth/login')
       }
