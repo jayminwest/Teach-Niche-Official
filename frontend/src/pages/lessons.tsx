@@ -21,7 +21,7 @@ const Lessons: NextPage = () => {
       bg={useColorModeValue('gray.50', 'gray.900')}
       p="4"
     >
-          <VStack spacing={{ base: 6, md: 8 }} align="stretch">
+      <VStack spacing={{ base: 6, md: 8 }} align="stretch">
         <Box>
           <Heading 
             size={{ base: "xl", md: "2xl" }} 
@@ -42,8 +42,7 @@ const Lessons: NextPage = () => {
           isNew={true}
           onPurchaseClick={handlePurchaseClick}
         />
-          </VStack>
-        </Box>
+      </VStack>
     </Box>
   )
 }
