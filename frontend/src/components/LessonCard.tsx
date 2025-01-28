@@ -9,6 +9,7 @@ import {
   useColorModeValue,
   Icon,
   Button,
+  Image,
 } from '@chakra-ui/react'
 import { FiShoppingCart, FiPlay } from 'react-icons/fi'
 import { Card } from './Card'
@@ -21,6 +22,7 @@ interface LessonCardProps {
   isPurchased?: boolean
   purchasedAt?: string
   isNew?: boolean
+  imageUrl?: string
   onPurchaseClick?: () => void
   onPlayClick?: () => void
 }
@@ -32,6 +34,7 @@ export const LessonCard = ({
   isPurchased,
   purchasedAt,
   isNew,
+  imageUrl = 'https://via.placeholder.com/400x225',
   onPurchaseClick,
   onPlayClick,
 }: LessonCardProps) => {
@@ -55,6 +58,15 @@ export const LessonCard = ({
           </Badge>
         )}
 
+        <Image
+          src={imageUrl}
+          alt={title}
+          height="225px"
+          width="100%"
+          objectFit="cover"
+          borderRadius="md"
+          mb={4}
+        />
         <Flex direction="column" gap={3}>
           <Heading as="h3" size="md" noOfLines={2}>
             {title}
