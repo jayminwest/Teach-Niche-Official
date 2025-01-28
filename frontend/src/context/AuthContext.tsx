@@ -50,7 +50,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       setUser(session?.user ?? null)
       
       if (event === 'SIGNED_IN') {
-        router.push('/dashboard')
+        router.push('/profile')
       } else if (event === 'SIGNED_OUT') {
         router.push('/auth/login')
       }
@@ -64,25 +64,20 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     session,
     isLoading,
     signIn: async (email: string, password: string) => {
-      const response = await fetch('/api/auth/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ email, password }),
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
       });
-      
-      if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.detail || 'Login failed');
+
+      if (error) {
+        throw error;
       }
-      
-      const data = await response.json();
+
       // Update local session state
-      const { data: { session } } = await supabase.auth.getSession();
-      setSession(session);
-      setUser(session?.user ?? null);
-      return data;
+      setSession(data.session);
+      setUser(data.user);
+      
+      return { user: data.user, session: data.session };
     },
     signUp: async (email: string, password: string) => {
       try {

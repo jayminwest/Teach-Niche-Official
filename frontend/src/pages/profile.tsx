@@ -1,5 +1,4 @@
 import { useEffect } from 'react';
-import Image from 'next/image';
 import { useRouter } from 'next/router';
 import { useAuth } from '../context/AuthContext';
 import { Section } from '../components/Section';
@@ -29,22 +28,11 @@ const ProfilePage = () => {
     <Section title="Profile" subtitle="Manage your account settings">
       {/* Personal Info Section */}
       <Card>
-        <div className="flex items-center space-x-4">
-          <Image
-            src={user.user_metadata?.avatar_url || 'https://via.placeholder.com/150'}
-            alt="Profile"
-            width={80}
-            height={80}
-            className="w-20 h-20 rounded-full"
-          />
-          <div>
-            <h2 className="text-xl font-semibold">
-              {user.user_metadata?.full_name || 'User'}
-            </h2>
-            <p className="text-gray-600">{user.email}</p>
-          </div>
-        </div>
-        <div className="mt-4">
+        <div>
+          <h2 className="text-xl font-semibold mb-2">
+            {user.user_metadata?.full_name || 'User'}
+          </h2>
+          <p className="text-gray-600 mb-4">{user.email}</p>
           <Button variant="primary" label="Edit Profile" />
         </div>
       </Card>
