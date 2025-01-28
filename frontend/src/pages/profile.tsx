@@ -106,13 +106,17 @@ const ProfilePage = () => {
         credentials: 'include'
       });
 
+      const data = await response.json();
+      
       if (!response.ok) {
-        throw new Error('Failed to delete account');
+        throw new Error(data.error || 'Failed to delete account');
       }
 
       // Sign out locally after successful deletion
       const { error: signOutError } = await supabase.auth.signOut();
-      if (signOutError) throw signOutError;
+      if (signOutError) {
+        console.error('Error signing out:', signOutError);
+      }
       
       await signOut(); // Context cleanup
       router.push('/auth/login');
