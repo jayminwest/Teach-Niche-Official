@@ -125,12 +125,12 @@ const ProfilePage = () => {
       <Section title="Profile" subtitle="Manage your account settings">
       <Card className="max-w-4xl mx-auto">
         <VStack spacing={6} align="stretch">
-          <Tabs isLazy>
-            <TabList>
-              <Tab>Profile</Tab>
-              <Tab>Created Lessons</Tab>
-              <Tab>Purchased Lessons</Tab>
-              <Tab>Settings</Tab>
+          <Tabs isLazy variant="enclosed" overflowX="auto" width="100%">
+            <TabList display="flex" flexWrap="nowrap" overflowX="auto" pb={2}>
+              <Tab minW="auto" px={3} py={2} whiteSpace="nowrap">Profile</Tab>
+              <Tab minW="auto" px={3} py={2} whiteSpace="nowrap">Created Lessons</Tab>
+              <Tab minW="auto" px={3} py={2} whiteSpace="nowrap">Purchased Lessons</Tab>
+              <Tab minW="auto" px={3} py={2} whiteSpace="nowrap">Settings</Tab>
             </TabList>
 
             <TabPanels>
