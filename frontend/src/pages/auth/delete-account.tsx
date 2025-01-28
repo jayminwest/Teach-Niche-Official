@@ -51,17 +51,9 @@ const DeleteAccountPage = () => {
         credentials: 'include'
       });
 
-      let data;
-      const text = await response.text();
-      try {
-        data = JSON.parse(text);
-      } catch (e) {
-        console.error('Failed to parse response:', text);
-        throw new Error('Invalid response from server');
-      }
-
       if (!response.ok) {
-        throw new Error(data?.error || 'Failed to delete account');
+        const error = await response.json()
+        throw new Error(error?.message || 'Failed to delete account')
       }
 
       const { error: signOutError } = await supabase.auth.signOut();
