@@ -97,7 +97,9 @@ const ProfilePage = () => {
 
     try {
       setIsLoading(true);
-      const { error } = await supabase.auth.admin.deleteUser();
+      const { error } = await supabase.auth.updateUser({
+        data: { deleted: true }
+      });
       if (error) throw error;
 
       await signOut();
