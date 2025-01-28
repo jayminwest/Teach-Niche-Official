@@ -25,13 +25,14 @@ export default function CallToActionWithAnnotation() {
           <Heading
             fontWeight={600}
             fontSize={{ base: '2xl', sm: '4xl', md: '6xl' }}
-            lineHeight={'110%'}>
+            lineHeight={'110%'}
+            color={useColorModeValue('gray.900', 'white')}>
             Make money from <br />
-            <Text as={'span'} color={'green.400'}>
+            <Text as={'span'} color={useColorModeValue('blue.500', 'blue.300')}>
               your audience
             </Text>
           </Heading>
-          <Text color={'gray.500'}>
+          <Text color={useColorModeValue('gray.600', 'gray.300')}>
             Monetize your content by charging your most loyal readers and reward them
             loyalty points. Give back to your loyal readers by granting them access to
             your pre-releases and sneak-peaks.
@@ -43,16 +44,17 @@ export default function CallToActionWithAnnotation() {
             alignSelf={'center'}
             position={'relative'}>
             <Button
-              colorScheme={'green'}
-              bg={'green.400'}
-              rounded={'full'}
+              colorScheme={'blue'}
+              bg={useColorModeValue('blue.500', 'blue.400')}
+              rounded={'lg'}
               px={6}
+              shadow="sm"
               _hover={{
-                bg: 'green.500',
+                bg: useColorModeValue('blue.600', 'blue.500'),
               }}>
               Get Started
             </Button>
-            <Button variant={'link'} colorScheme={'blue'} size={'sm'}>
+            <Button variant={'ghost'} colorScheme={'blue'} size={'sm'}>
               Learn more
             </Button>
             <Box>
@@ -70,7 +72,8 @@ export default function CallToActionWithAnnotation() {
                 position={'absolute'}
                 right={'-125px'}
                 top={'-15px'}
-                transform={'rotate(10deg)'}>
+                transform={'rotate(10deg)'}
+                color={useColorModeValue('gray.600', 'gray.300')}>
                 Starting at $15/mo
               </Text>
             </Box>
