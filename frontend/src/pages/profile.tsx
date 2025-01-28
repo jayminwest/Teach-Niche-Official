@@ -106,17 +106,9 @@ const ProfilePage = () => {
         credentials: 'include'
       });
 
-      let data;
-      try {
-        const text = await response.text();
-        data = JSON.parse(text);
-      } catch (e) {
-        console.error('Error parsing response:', e);
-        throw new Error('Invalid server response');
-      }
+      const data = await response.json();
       
       if (!response.ok) {
-        console.error('Server error:', data);
         throw new Error(data?.error || 'Failed to delete account');
       }
 
