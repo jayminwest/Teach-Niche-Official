@@ -4,7 +4,7 @@ import { useAuth } from '../context/AuthContext';
 import { Section } from '../components/Section';
 import { Card } from '../components/Card';
 import { Button } from '../components/Button';
-import { Spinner, useToast } from '@chakra-ui/react';
+import { Spinner, useToast, VStack, HStack, Text, Divider } from '@chakra-ui/react';
 
 const ProfilePage = () => {
   const { user, isLoading, signOut } = useAuth();
@@ -40,7 +40,6 @@ const ProfilePage = () => {
 
   const handleDeleteAccount = () => {
     if (window.confirm("Are you sure you want to delete your account? This action cannot be undone.")) {
-      // Add delete account logic here
       toast({
         title: "Account deleted",
         status: "error",
@@ -52,70 +51,56 @@ const ProfilePage = () => {
 
   return (
     <Section title="Profile" subtitle="Manage your account settings">
-      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-        {/* Personal Info Section */}
-        <Card hoverable className="md:col-span-2 lg:col-span-3">
-          <div className="flex flex-col md:flex-row md:items-center md:justify-between">
-            <div>
-              <h2 className="text-2xl font-semibold mb-2">
+      <Card hoverable className="max-w-2xl mx-auto">
+        <VStack spacing={6} align="stretch">
+          {/* Profile Header */}
+          <HStack justify="space-between" align="center">
+            <VStack align="start" spacing={1}>
+              <Text className="text-2xl font-semibold">
                 {user.user_metadata?.full_name || 'User'}
-              </h2>
-              <p className="text-gray-600 mb-4">{user.email}</p>
-            </div>
-            <Button variant="primary" label="Edit Profile" className="mt-4 md:mt-0" />
-          </div>
-        </Card>
+              </Text>
+              <Text className="text-gray-600">{user.email}</Text>
+            </VStack>
+            <Button variant="primary" label="Edit Profile" />
+          </HStack>
 
-        {/* Settings Section */}
-        <Card hoverable className="md:col-span-1 lg:col-span-2">
-          <h3 className="text-xl font-semibold mb-6">Settings</h3>
-          <div className="space-y-6">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                Notification Preferences
-              </label>
-              <select 
-                className="w-full px-4 py-2 rounded-md border border-gray-300 dark:border-gray-600 
-                         bg-white dark:bg-gray-700 focus:ring-2 focus:ring-blue-500 
-                         transition-colors duration-200"
-              >
-                <option>Email</option>
-                <option>Push Notifications</option>
-                <option>None</option>
-              </select>
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                Language
-              </label>
-              <select 
-                className="w-full px-4 py-2 rounded-md border border-gray-300 dark:border-gray-600 
-                         bg-white dark:bg-gray-700 focus:ring-2 focus:ring-blue-500 
-                         transition-colors duration-200"
-              >
-                <option>English</option>
-                <option>Spanish</option>
-                <option>French</option>
-              </select>
-            </div>
+          <Divider />
+
+          {/* Settings */}
+          <VStack spacing={4} align="stretch">
+            <Text className="text-xl font-semibold">Settings</Text>
+            <select 
+              className="w-full px-4 py-2 rounded-md border border-gray-300 dark:border-gray-600 
+                       bg-white dark:bg-gray-700 focus:ring-2 focus:ring-blue-500"
+            >
+              <option>Email Notifications</option>
+              <option>Push Notifications</option>
+              <option>None</option>
+            </select>
+
+            <select 
+              className="w-full px-4 py-2 rounded-md border border-gray-300 dark:border-gray-600 
+                       bg-white dark:bg-gray-700 focus:ring-2 focus:ring-blue-500"
+            >
+              <option>English</option>
+              <option>Spanish</option>
+              <option>French</option>
+            </select>
+
             <Button 
               variant="secondary" 
               label="Save Changes" 
               onClick={handleSaveChanges}
-              className="w-full md:w-auto" 
-            />
-          </div>
-        </Card>
-
-        {/* Actions Section */}
-        <Card hoverable className="md:col-span-1">
-          <h3 className="text-xl font-semibold mb-6">Account Actions</h3>
-          <div className="flex flex-col space-y-4">
-            <Button 
-              variant="secondary" 
-              label="Change Password"
               className="w-full" 
             />
+          </VStack>
+
+          <Divider />
+
+          {/* Account Actions */}
+          <VStack spacing={3} align="stretch">
+            <Text className="text-xl font-semibold">Account Actions</Text>
+            <Button variant="secondary" label="Change Password" className="w-full" />
             <Button
               variant="secondary"
               label="Log Out"
@@ -131,9 +116,9 @@ const ProfilePage = () => {
               className="w-full text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20"
               onClick={handleDeleteAccount}
             />
-          </div>
-        </Card>
-      </div>
+          </VStack>
+        </VStack>
+      </Card>
     </Section>
   );
 };
