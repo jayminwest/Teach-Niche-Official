@@ -1,15 +1,125 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import { useAuth } from '../context/AuthContext';
 import { Section } from '../components/Section';
 import { Card } from '../components/Card';
 import { Button } from '../components/Button';
-import { Spinner, useToast, VStack, HStack, Text, Divider, Tabs, TabList, TabPanels, Tab, TabPanel } from '@chakra-ui/react';
+import { 
+  Spinner, 
+  useToast, 
+  VStack, 
+  HStack, 
+  Text, 
+  Divider, 
+  Tabs, 
+  TabList, 
+  TabPanels, 
+  Tab, 
+  TabPanel,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
+  ModalCloseButton,
+  FormControl,
+  FormLabel,
+  Input
+} from '@chakra-ui/react';
+import { supabase } from '../lib/supabase';
 
 const ProfilePage = () => {
-  const { user, isLoading, signOut } = useAuth();
+  const { user, isLoading: authLoading, signOut } = useAuth();
   const router = useRouter();
   const toast = useToast();
+  const [isChangePasswordModalOpen, setIsChangePasswordModalOpen] = useState(false);
+  const [newPassword, setNewPassword] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+
+  // Change Password Handler
+  const handleChangePassword = async () => {
+    try {
+      setIsLoading(true);
+      const { error } = await supabase.auth.updateUser({
+        password: newPassword
+      });
+
+      if (error) throw error;
+
+      toast({
+        title: "Password updated successfully",
+        status: "success",
+        duration: 3000,
+        isClosable: true,
+      });
+      setIsChangePasswordModalOpen(false);
+      setNewPassword('');
+    } catch (error) {
+      toast({
+        title: "Error updating password",
+        description: error.message,
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // Logout Handler
+  const handleLogout = async () => {
+    try {
+      setIsLoading(true);
+      const { error } = await signOut();
+      if (error) throw error;
+      
+      router.push('/auth/login');
+    } catch (error) {
+      toast({
+        title: "Error signing out",
+        description: error.message,
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // Delete Account Handler
+  const handleDeleteAccount = async () => {
+    if (!window.confirm("Are you sure you want to delete your account? This action cannot be undone.")) {
+      return;
+    }
+
+    try {
+      setIsLoading(true);
+      const { error } = await supabase.auth.admin.deleteUser(user.id);
+      if (error) throw error;
+
+      await signOut();
+      router.push('/auth/login');
+      toast({
+        title: "Account deleted successfully",
+        status: "success",
+        duration: 3000,
+        isClosable: true,
+      });
+    } catch (error) {
+      toast({
+        title: "Error deleting account",
+        description: error.message,
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   useEffect(() => {
     if (!isLoading && !user) {
@@ -17,7 +127,7 @@ const ProfilePage = () => {
     }
   }, [user, isLoading, router]);
 
-  if (isLoading) {
+  if (authLoading) {
     return (
       <div className="flex h-screen items-center justify-center">
         <Spinner size="xl" color="blue.500" />
@@ -116,21 +226,26 @@ const ProfilePage = () => {
                   {/* Account Actions */}
                   <VStack spacing={3} align="stretch">
                     <span className="text-xl font-semibold">Account Actions</span>
-                    <Button variant="secondary" label="Change Password" className="w-full" />
+                    <Button 
+                      variant="secondary" 
+                      label="Change Password" 
+                      className="w-full"
+                      onClick={() => setIsChangePasswordModalOpen(true)}
+                      isLoading={isLoading}
+                    />
                     <Button
                       variant="secondary"
                       label="Log Out"
                       className="w-full"
-                      onClick={async () => {
-                        await signOut();
-                        router.push('/auth/login');
-                      }}
+                      onClick={handleLogout}
+                      isLoading={isLoading}
                     />
                     <Button
                       variant="secondary"
                       label="Delete Account"
                       className="w-full text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20"
                       onClick={handleDeleteAccount}
+                      isLoading={isLoading}
                     />
                   </VStack>
                 </VStack>
@@ -140,6 +255,43 @@ const ProfilePage = () => {
         </VStack>
       </Card>
     </Section>
+    
+    {/* Change Password Modal */}
+    <Modal 
+      isOpen={isChangePasswordModalOpen} 
+      onClose={() => setIsChangePasswordModalOpen(false)}
+    >
+      <ModalOverlay />
+      <ModalContent>
+        <ModalHeader>Change Password</ModalHeader>
+        <ModalCloseButton />
+        <ModalBody>
+          <FormControl>
+            <FormLabel>New Password</FormLabel>
+            <Input
+              type="password"
+              value={newPassword}
+              onChange={(e) => setNewPassword(e.target.value)}
+              placeholder="Enter new password"
+            />
+          </FormControl>
+        </ModalBody>
+        <ModalFooter>
+          <Button
+            variant="primary"
+            label="Update Password"
+            onClick={handleChangePassword}
+            isLoading={isLoading}
+            className="mr-3"
+          />
+          <Button
+            variant="secondary"
+            label="Cancel"
+            onClick={() => setIsChangePasswordModalOpen(false)}
+          />
+        </ModalFooter>
+      </ModalContent>
+    </Modal>
   );
 };
 
