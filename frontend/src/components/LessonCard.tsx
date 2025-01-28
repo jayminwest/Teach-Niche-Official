@@ -10,7 +10,11 @@ import {
   Icon,
   Button,
   Image,
+  Alert,
+  AlertIcon,
 } from '@chakra-ui/react'
+import { useState } from 'react'
+import { stripe } from '../lib/stripe'
 import { FiShoppingCart, FiPlay } from 'react-icons/fi'
 import { Card } from './Card'
 
@@ -40,9 +44,24 @@ export const LessonCard = ({
 }: LessonCardProps) => {
   const textColor = useColorModeValue('gray.600', 'gray.300')
   const priceColor = useColorModeValue('gray.800', 'white')
+  const [stripeStatus, setStripeStatus] = useState<string>('')
+  
+  const handlePurchaseClick = async () => {
+    try {
+      setStripeStatus('Testing Stripe connection...')
+      const stripeInstance = await stripe
+      if (stripeInstance) {
+        setStripeStatus('Stripe loaded successfully!')
+      }
+      onPurchaseClick?.()
+    } catch (error) {
+      setStripeStatus('Error connecting to Stripe')
+      console.error('Stripe error:', error)
+    }
+  }
 
   return (
-    <Card hoverable height="500px">
+    <Card hoverable height="550px">
       <Box position="relative" height="100%" display="flex" flexDirection="column">
         {isNew && (
           <Badge
@@ -100,13 +119,19 @@ export const LessonCard = ({
                   leftIcon={<Icon as={FiShoppingCart} />}
                   colorScheme="blue"
                   variant="solid"
-                  onClick={onPurchaseClick}
+                  onClick={handlePurchaseClick}
                 >
                   Purchase
                 </Button>
               </>
             )}
           </Flex>
+          {stripeStatus && (
+            <Alert status={stripeStatus.includes('Error') ? 'error' : 'success'} mt={2}>
+              <AlertIcon />
+              {stripeStatus}
+            </Alert>
+          )}
         </Flex>
       </Box>
     </Card>
