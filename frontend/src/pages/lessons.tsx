@@ -117,19 +117,26 @@ const Lessons: NextPage = () => {
             bg={useColorModeValue('white', 'gray.700')}
             maxW={{ base: "100%", md: "400px" }}
           />
-          <Flex gap={4}>
+          <Flex gap={4} flexWrap={{ base: "wrap", md: "nowrap" }} w="100%">
             <Select
               value={sortBy}
               onChange={handleSort}
               bg={useColorModeValue('white', 'gray.700')}
               maxW={{ base: "100%", md: "200px" }}
+              flex={{ base: "1 1 auto", md: "0 1 auto" }}
             >
-            <option value="newest">Newest First</option>
-            <option value="oldest">Oldest First</option>
-            <option value="price-low">Price: Low to High</option>
-            <option value="price-high">Price: High to Low</option>
+              <option value="newest">Newest First</option>
+              <option value="oldest">Oldest First</option>
+              <option value="price-low">Price: Low to High</option>
+              <option value="price-high">Price: High to Low</option>
             </Select>
-            <ButtonGroup size="md" isAttached variant="outline">
+            <ButtonGroup 
+              size="md" 
+              isAttached 
+              variant="outline"
+              flexShrink={0}
+              display={{ base: "none", sm: "flex" }}
+            >
               <IconButton
                 aria-label="Grid view"
                 icon={<BsGrid />}
@@ -147,7 +154,11 @@ const Lessons: NextPage = () => {
         </Flex>
 
         <SimpleGrid 
-          columns={viewMode === 'grid' ? { base: 1, md: 2, lg: 3 } : { base: 1 }} 
+          columns={{ 
+            base: 1, 
+            md: viewMode === 'grid' ? 2 : 1,
+            lg: viewMode === 'grid' ? 3 : 1
+          }}
           spacing={6}
         >
           {filteredLessons.map(lesson => (
