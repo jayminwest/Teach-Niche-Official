@@ -127,6 +127,10 @@ const Lessons: NextPage = () => {
     console.log('Purchase clicked')
   }
 
+  const handlePlayClick = (lessonId: string) => {
+    console.log('Play lesson:', lessonId)
+  }
+
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchQuery(e.target.value)
   }
@@ -218,12 +222,41 @@ const Lessons: NextPage = () => {
               description={lesson.description}
               price={lesson.price}
               isNew={lesson.isNew}
+              isPurchased={purchasedLessons.some(pl => pl.id === lesson.id)}
+              purchasedAt={purchasedLessons.find(pl => pl.id === lesson.id)?.purchased_at}
               onPurchaseClick={handlePurchaseClick}
+              onPlayClick={handlePlayClick}
             />
           ))}
         </SimpleGrid>
       </Box>
-    </Box>
+    </TabPanel>
+
+    <TabPanel>
+      <SimpleGrid 
+        columns={{ 
+          base: 1, 
+          md: viewMode === 'grid' ? 2 : 1,
+          lg: viewMode === 'grid' ? 3 : 1
+        }}
+        spacing={6}
+      >
+        {filteredLessons.map(lesson => (
+          <LessonCard
+            key={lesson.id}
+            id={lesson.id}
+            title={lesson.title}
+            description={lesson.description}
+            isPurchased={true}
+            purchasedAt={lesson.purchased_at}
+            onPlayClick={() => handlePlayClick(lesson.id)}
+          />
+        ))}
+      </SimpleGrid>
+    </TabPanel>
+  </TabPanels>
+</Tabs>
+</Box>
   )
 }
 
