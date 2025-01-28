@@ -70,16 +70,19 @@ const Header = () => {
             as="nav" 
             display={{ base: 'none', md: 'flex' }} 
             flex={1} 
-            justify="center" 
-            gap={6}
+            justify="center"
+            align="center"
+            mx={8}
           >
-            {NAV_ITEMS.map(({ href, label }) => (
-              <Link key={href} href={href}>
-                <Button variant="ghost">
-                  {label}
-                </Button>
-              </Link>
-            ))}
+            <HStack spacing={4}>
+              {NAV_ITEMS.map(({ href, label }) => (
+                <Link key={href} href={href}>
+                  <Button variant="ghost" px={4}>
+                    {label}
+                  </Button>
+                </Link>
+              ))}
+            </HStack>
           </Flex>
 
           <HStack spacing={2}>
