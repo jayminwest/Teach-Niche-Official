@@ -103,13 +103,13 @@ const Header = () => {
                   onClick={onProfileToggle}
                   leftIcon={<FiUser />}
                 >
-                  <HStack spacing={2}>
+                  <HStack spacing={2} minW="100px" maxW="200px" justify="space-between">
                     {user ? (
                       <>
-                        <Text fontSize="sm" maxW="150px" isTruncated>
+                        <Text fontSize="sm" maxW="160px" isTruncated>
                           {user.email}
                         </Text>
-                        <Box w={2} h={2} bg="green.400" rounded="full" />
+                        <Box w={2} h={2} bg="green.400" rounded="full" flexShrink={0} />
                       </>
                     ) : (
                       'Sign In'
