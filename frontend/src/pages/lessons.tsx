@@ -5,14 +5,18 @@ import {
   Input,
   Select,
   SimpleGrid,
+  ButtonGroup,
+  IconButton,
   useColorModeValue,
 } from '@chakra-ui/react'
 import { LessonCard } from '../components/LessonCard'
 import { useState } from 'react'
+import { BsGrid, BsListUl } from 'react-icons/bs'
 
 const Lessons: NextPage = () => {
   const [searchQuery, setSearchQuery] = useState('')
   const [sortBy, setSortBy] = useState('newest')
+  const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid')
   const textColor = useColorModeValue('gray.600', 'gray.400')
 
   const handlePurchaseClick = () => {
@@ -46,20 +50,39 @@ const Lessons: NextPage = () => {
             bg={useColorModeValue('white', 'gray.700')}
             maxW={{ base: "100%", md: "400px" }}
           />
-          <Select
-            value={sortBy}
-            onChange={handleSort}
-            bg={useColorModeValue('white', 'gray.700')}
-            maxW={{ base: "100%", md: "200px" }}
-          >
+          <Flex gap={4}>
+            <Select
+              value={sortBy}
+              onChange={handleSort}
+              bg={useColorModeValue('white', 'gray.700')}
+              maxW={{ base: "100%", md: "200px" }}
+            >
             <option value="newest">Newest First</option>
             <option value="oldest">Oldest First</option>
             <option value="price-low">Price: Low to High</option>
             <option value="price-high">Price: High to Low</option>
-          </Select>
+            </Select>
+            <ButtonGroup size="md" isAttached variant="outline">
+              <IconButton
+                aria-label="Grid view"
+                icon={<BsGrid />}
+                onClick={() => setViewMode('grid')}
+                bg={viewMode === 'grid' ? useColorModeValue('gray.100', 'gray.600') : undefined}
+              />
+              <IconButton
+                aria-label="List view"
+                icon={<BsListUl />}
+                onClick={() => setViewMode('list')}
+                bg={viewMode === 'list' ? useColorModeValue('gray.100', 'gray.600') : undefined}
+              />
+            </ButtonGroup>
+          </Flex>
         </Flex>
 
-        <SimpleGrid columns={{ base: 1, md: 2, lg: 3 }} spacing={6}>
+        <SimpleGrid 
+          columns={viewMode === 'grid' ? { base: 1, md: 2, lg: 3 } : { base: 1 }} 
+          spacing={6}
+        >
           <LessonCard
             id="1"
             title="Getting Started with Web Development"
