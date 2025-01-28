@@ -96,13 +96,22 @@ const Header = () => {
             <Box display={{ base: 'none', md: 'block' }}>
               <Menu isOpen={isProfileOpen} onClose={onProfileToggle}>
                 <MenuButton
-                  as={IconButton}
-                  icon={<FiUser />}
+                  as={Button}
                   variant="ghost"
                   rounded="full"
                   aria-label="User menu"
                   onClick={onProfileToggle}
-                />
+                  leftIcon={<FiUser />}
+                  rightIcon={user ? <Box w={2} h={2} bg="green.400" rounded="full" /> : undefined}
+                >
+                  {user ? (
+                    <Text fontSize="sm" maxW="150px" isTruncated>
+                      {user.email}
+                    </Text>
+                  ) : (
+                    'Sign In'
+                  )}
+                </MenuButton>
                 <MenuList>
                   {user ? (
                     <>
