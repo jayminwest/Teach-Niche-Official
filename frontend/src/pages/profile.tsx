@@ -56,10 +56,10 @@ const ProfilePage = () => {
           {/* Profile Header */}
           <HStack justify="space-between" align="center">
             <VStack align="start" spacing={1}>
-              <Text className="text-2xl font-semibold">
+              <span className="text-2xl font-semibold">
                 {user.user_metadata?.full_name || 'User'}
-              </Text>
-              <Text className="text-gray-600">{user.email}</Text>
+              </span>
+              <span className="text-gray-600">{user.email}</span>
             </VStack>
             <Button variant="primary" label="Edit Profile" />
           </HStack>
@@ -68,7 +68,7 @@ const ProfilePage = () => {
 
           {/* Settings */}
           <VStack spacing={4} align="stretch">
-            <Text className="text-xl font-semibold">Settings</Text>
+            <span className="text-xl font-semibold">Settings</span>
             <select 
               className="w-full px-4 py-2 rounded-md border border-gray-300 dark:border-gray-600 
                        bg-white dark:bg-gray-700 focus:ring-2 focus:ring-blue-500"
@@ -99,7 +99,7 @@ const ProfilePage = () => {
 
           {/* Account Actions */}
           <VStack spacing={3} align="stretch">
-            <Text className="text-xl font-semibold">Account Actions</Text>
+            <span className="text-xl font-semibold">Account Actions</span>
             <Button variant="secondary" label="Change Password" className="w-full" />
             <Button
               variant="secondary"
