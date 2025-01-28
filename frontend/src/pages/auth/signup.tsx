@@ -1,50 +1,35 @@
-import { useState } from 'react';
-import { useRouter } from 'next/router';
-import { 
-  Box, 
-  Container, 
-  Heading, 
-  Text, 
-  Link, 
-  useColorModeValue, 
-  FormControl, 
-  FormLabel, 
-  Input, 
-  Button 
-} from '@chakra-ui/react';
-import NextLink from 'next/link';
-import { supabase } from '../../lib/supabase';
+import { Container, Box, Heading, Text, Link, useColorModeValue, useToast } from '@chakra-ui/react'
+import { AuthForm } from '../../components/auth/AuthForm'
+import NextLink from 'next/link'
+import { useRouter } from 'next/router'
+import { useAuth } from '../../context/AuthContext'
 
 export default function SignupPage() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
-  const router = useRouter();
+  const toast = useToast()
+  const router = useRouter()
+  const { signUp, isLoading } = useAuth()
 
-  const handleSignup = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-    setError('');
-
+  const handleSignup = async (email: string, password: string) => {
     try {
-      const { error } = await supabase.auth.signUp({
-        email,
-        password,
-        options: {
-          emailRedirectTo: `${window.location.origin}/profile`,
-        },
-      });
-
-      if (error) throw error;
-      
-      router.push('/auth/confirm');
-    } catch (err) {
-      setError(err.message);
-    } finally {
-      setLoading(false);
+      await signUp(email, password)
+      toast({
+        title: 'Sign up successful',
+        description: 'Please check your email to confirm your account.',
+        status: 'success',
+        duration: 5000,
+        isClosable: true,
+      })
+      router.push('/auth/confirm')
+    } catch (error) {
+      toast({
+        title: 'Sign up failed',
+        description: error instanceof Error ? error.message : 'An error occurred',
+        status: 'error',
+        duration: 5000,
+        isClosable: true,
+      })
     }
-  };
+  }
 
   return (
     <Container maxW="md" py={12}>
@@ -52,40 +37,11 @@ export default function SignupPage() {
         <Heading as="h1" size="xl" mb={6} textAlign="center" color={useColorModeValue('gray.800', 'white')}>
           Sign Up
         </Heading>
-        <form onSubmit={handleSignup}>
-          <FormControl isInvalid={!!error} mb={4}>
-            <FormLabel>Email</FormLabel>
-            <Input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-            />
-          </FormControl>
-          <FormControl isInvalid={!!error} mb={4}>
-            <FormLabel>Password</FormLabel>
-            <Input
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-              minLength={6}
-            />
-          </FormControl>
-          {error && (
-            <Text color="red.500" mb={4}>
-              {error}
-            </Text>
-          )}
-          <Button
-            type="submit"
-            colorScheme="blue"
-            isLoading={loading}
-            width="full"
-          >
-            Sign Up
-          </Button>
-        </form>
+        <AuthForm 
+          type="signup" 
+          onSubmit={handleSignup}
+          isLoading={isLoading}
+        />
         <Text mt={4} textAlign="center">
           Already have an account?{' '}
           <Link as={NextLink} href="/auth/login" color="blue.500">
@@ -94,5 +50,5 @@ export default function SignupPage() {
         </Text>
       </Box>
     </Container>
-  );
+  )
 }
