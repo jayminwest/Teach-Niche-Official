@@ -47,23 +47,22 @@ const DeleteAccountPage = () => {
         headers: {
           'Content-Type': 'application/json'
         },
+        body: JSON.stringify({ userId: user.id }),
         credentials: 'include'
       });
 
-      if (!response.ok) {
-        const text = await response.text();
-        console.error('Delete account response:', text);
-        let errorMessage = 'Failed to delete account';
-        try {
-          const data = JSON.parse(text);
-          errorMessage = data?.error || errorMessage;
-        } catch (e) {
-          console.error('Failed to parse error response:', e);
-        }
-        throw new Error(errorMessage);
+      let data;
+      const text = await response.text();
+      try {
+        data = JSON.parse(text);
+      } catch (e) {
+        console.error('Failed to parse response:', text);
+        throw new Error('Invalid response from server');
       }
-      
-      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data?.error || 'Failed to delete account');
+      }
 
       const { error: signOutError } = await supabase.auth.signOut();
       if (signOutError) {
