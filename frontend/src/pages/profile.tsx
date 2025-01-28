@@ -72,7 +72,9 @@ const ProfilePage = () => {
   const handleLogout = async () => {
     try {
       setIsLoading(true);
-      await signOut();
+      const { error } = await supabase.auth.signOut();
+      if (error) throw error;
+      await signOut(); // Context cleanup
       router.push('/auth/login');
     } catch (error) {
       toast({
