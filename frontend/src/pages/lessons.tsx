@@ -23,15 +23,6 @@ const Lessons: NextPage = () => {
     >
       <Box mb={{ base: 6, md: 8 }}>
         <Box>
-          <Heading 
-            size={{ base: "xl", md: "2xl" }} 
-            mb={{ base: 2, md: 4 }}
-          >
-            Lessons!
-          </Heading>
-          <Text fontSize={{ base: "md", md: "lg" }} color={textColor}>
-            Explore our collection of lessons and tutorials.
-          </Text>
         </Box>
 
         <SimpleGrid columns={{ base: 1, md: 2, lg: 3 }} spacing={6}>
