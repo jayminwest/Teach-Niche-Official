@@ -42,8 +42,8 @@ export const LessonCard = ({
   const priceColor = useColorModeValue('gray.800', 'white')
 
   return (
-    <Card hoverable>
-      <Box position="relative">
+    <Card hoverable height="500px">
+      <Box position="relative" height="100%" display="flex" flexDirection="column">
         {isNew && (
           <Badge
             position="absolute"
@@ -67,16 +67,16 @@ export const LessonCard = ({
           borderRadius="md"
           mb={4}
         />
-        <Flex direction="column" gap={3}>
+        <Flex direction="column" gap={3} flex={1}>
           <Heading as="h3" size="md" noOfLines={2}>
             {title}
           </Heading>
           
-          <Text color={textColor} noOfLines={3}>
+          <Text color={textColor} noOfLines={3} minHeight="72px">
             {description}
           </Text>
 
-          <Flex justify="space-between" align="center" mt={2}>
+          <Flex justify="space-between" align="center" mt="auto">
             {isPurchased ? (
               <>
                 <Text fontSize="sm" color={textColor}>
