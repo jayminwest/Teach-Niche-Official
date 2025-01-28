@@ -102,23 +102,6 @@ const ProfilePage = () => {
                   {/* Notification Settings */}
                   <VStack spacing={4} align="stretch">
                     <span className="text-xl font-semibold">Settings</span>
-                    <select 
-                      className="w-full px-4 py-2 rounded-md border border-gray-300 dark:border-gray-600 
-                               bg-white dark:bg-gray-700 focus:ring-2 focus:ring-blue-500"
-                    >
-                      <option>Email Notifications</option>
-                      <option>Push Notifications</option>
-                      <option>None</option>
-                    </select>
-
-                    <select 
-                      className="w-full px-4 py-2 rounded-md border border-gray-300 dark:border-gray-600 
-                               bg-white dark:bg-gray-700 focus:ring-2 focus:ring-blue-500"
-                    >
-                      <option>English</option>
-                      <option>Spanish</option>
-                      <option>French</option>
-                    </select>
 
                     <Button 
                       variant="secondary" 
