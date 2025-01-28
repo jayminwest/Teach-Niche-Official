@@ -4,7 +4,7 @@ import { useRouter } from 'next/router'
 import React from 'react'
 import Link from 'next/link'
 import Hero from '../components/Hero'
-import { Card } from '../components/Card'
+import { LessonCard } from '../components/LessonCard'
 import { RiBookOpenLine, RiArrowRightLine } from 'react-icons/ri'
 
 function ErrorBoundary({ children }: { children: React.ReactNode }) {
@@ -51,34 +51,32 @@ export default function Home() {
           <SimpleGrid columns={{ base: 1, md: 2, lg: 3 }} spacing={6}>
             {[
               {
-                id: 1,
+                id: '1',
                 title: 'Web Development Basics',
                 description: 'Learn HTML, CSS and JavaScript fundamentals',
-                price: '49.99'
+                price: 49.99
               },
               {
-                id: 2, 
+                id: '2', 
                 title: 'Python for Beginners',
                 description: 'Start your programming journey with Python',
-                price: '39.99'
+                price: 39.99
               },
               {
-                id: 3,
+                id: '3',
                 title: 'Data Visualization',
                 description: 'Master data visualization with D3.js',
-                price: '59.99'
+                price: 59.99
               }
             ].map((lesson) => (
-              <Card key={lesson.id} hoverable>
-                <Heading size="md" mb={2}>{lesson.title}</Heading>
-                <Text mb={4} color={textColor}>{lesson.description}</Text>
-                <Text 
-                  fontWeight="bold" 
-                  color={useColorModeValue('blue.600', 'blue.300')}
-                >
-                  ${lesson.price}
-                </Text>
-              </Card>
+              <LessonCard
+                key={lesson.id}
+                id={lesson.id}
+                title={lesson.title}
+                description={lesson.description}
+                price={lesson.price}
+                onPurchaseClick={() => router.push(`/lessons/${lesson.id}`)}
+              />
             ))}
           </SimpleGrid>
         </Box>
