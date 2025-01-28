@@ -34,7 +34,7 @@ export const LessonCard = ({
   isPurchased,
   purchasedAt,
   isNew,
-  imageUrl = 'https://via.placeholder.com/400x225',
+  imageUrl = 'https://images.unsplash.com/photo-1736943993933-c1a407ed783c',
   onPurchaseClick,
   onPlayClick,
 }: LessonCardProps) => {
