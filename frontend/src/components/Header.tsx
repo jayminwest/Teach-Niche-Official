@@ -72,12 +72,11 @@ const Header = () => {
             flex={1} 
             justify="center"
             align="center"
-            mx={8}
           >
-            <HStack spacing={4}>
+            <HStack spacing={8} position="absolute" left="50%" transform="translateX(-50%)">
               {NAV_ITEMS.map(({ href, label }) => (
                 <Link key={href} href={href}>
-                  <Button variant="ghost" px={4}>
+                  <Button variant="ghost" size="md">
                     {label}
                   </Button>
                 </Link>
