@@ -106,10 +106,18 @@ const ProfilePage = () => {
         credentials: 'include'
       });
 
-      const data = await response.json();
+      let data;
+      try {
+        const text = await response.text();
+        data = JSON.parse(text);
+      } catch (e) {
+        console.error('Error parsing response:', e);
+        throw new Error('Invalid server response');
+      }
       
       if (!response.ok) {
-        throw new Error(data.error || 'Failed to delete account');
+        console.error('Server error:', data);
+        throw new Error(data?.error || 'Failed to delete account');
       }
 
       // Sign out locally after successful deletion

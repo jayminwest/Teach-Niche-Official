@@ -12,9 +12,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   }
 
   try {
-    // Delete user data
-    const { error } = await supabase.auth.api.deleteUser(user.id);
+    // Delete user data and associated content
+    const { data, error } = await supabase.auth.admin.deleteUser(user.id);
+    
     if (error) {
+      console.error('Error deleting user:', error);
       return res.status(500).json({ error: error.message });
     }
 
