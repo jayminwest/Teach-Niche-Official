@@ -253,18 +253,19 @@ const ProfilePage = () => {
       <ModalContent>
         <ModalHeader>Change Password</ModalHeader>
         <ModalCloseButton />
-        <ModalBody>
+        <ModalBody pb={6}>
           <FormControl>
-            <FormLabel>New Password</FormLabel>
+            <FormLabel mb={2}>New Password</FormLabel>
             <Input
               type="password"
               value={newPassword}
               onChange={(e) => setNewPassword(e.target.value)}
               placeholder="Enter new password"
+              size="lg"
             />
           </FormControl>
         </ModalBody>
-        <ModalFooter>
+        <ModalFooter gap={3}>
           <Button
             variant="primary"
             label="Update Password"
