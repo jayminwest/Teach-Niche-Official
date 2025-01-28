@@ -17,6 +17,7 @@ type AuthContextType = {
   signUp: (email: string, password: string) => Promise<AuthResponse>
   signOut: () => Promise<void>
   resetPassword: (email: string) => Promise<void>
+  signInWithGoogle: () => Promise<AuthResponse>
 }
 
 const AuthContext = createContext<AuthContextType>({
@@ -150,6 +151,20 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         const error = await response.json();
         throw new Error(error.detail || 'Password reset failed');
       }
+    },
+    signInWithGoogle: async () => {
+      const { data, error } = await supabase.auth.signInWithOAuth({
+        provider: 'google',
+        options: {
+          redirectTo: `${window.location.origin}/auth/callback`
+        }
+      });
+
+      if (error) {
+        throw error;
+      }
+
+      return { user: data.user, session: data.session };
     },
   }
 
