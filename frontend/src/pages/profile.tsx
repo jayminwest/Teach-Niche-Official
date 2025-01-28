@@ -97,12 +97,15 @@ const ProfilePage = () => {
 
     try {
       setIsLoading(true);
-      const { error } = await supabase.auth.updateUser({
-        data: { deleted: true }
-      });
-      if (error) throw error;
-
-      await signOut();
+      // First delete the user
+      const { error: deleteError } = await supabase.auth.admin.deleteUser(user.id);
+      if (deleteError) throw deleteError;
+      
+      // Then sign out locally
+      const { error: signOutError } = await supabase.auth.signOut();
+      if (signOutError) throw signOutError;
+      
+      await signOut(); // Context cleanup
       router.push('/auth/login');
       toast({
         title: "Account deleted successfully",
