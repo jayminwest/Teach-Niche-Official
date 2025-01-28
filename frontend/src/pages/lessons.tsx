@@ -8,9 +8,17 @@ import {
   ButtonGroup,
   IconButton,
   useColorModeValue,
+  Tabs,
+  TabList,
+  Tab,
+  TabPanels,
+  TabPanel,
 } from '@chakra-ui/react'
 import { LessonCard } from '../components/LessonCard'
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useEffect } from 'react'
+import { useAuth } from '../context/AuthContext'
+import { supabase } from '../lib/supabase'
+import { useRouter } from 'next/router'
 import { BsGrid, BsListUl } from 'react-icons/bs'
 
 interface Lesson {
@@ -19,6 +27,7 @@ interface Lesson {
   description: string;
   price: number;
   isNew?: boolean;
+  purchased_at?: string;
 }
 
 const SAMPLE_LESSONS: Lesson[] = [
@@ -51,15 +60,44 @@ const SAMPLE_LESSONS: Lesson[] = [
 ];
 
 const Lessons: NextPage = () => {
+  const { session } = useAuth()
+  const router = useRouter()
   const [searchQuery, setSearchQuery] = useState('')
   const [sortBy, setSortBy] = useState('newest')
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid')
+  const [purchasedLessons, setPurchasedLessons] = useState<Lesson[]>([])
+  const [tabIndex, setTabIndex] = useState(0)
   const textColor = useColorModeValue('gray.600', 'gray.400')
 
+  useEffect(() => {
+    if (!session) {
+      router.push('/auth/login')
+    }
+  }, [session, router])
+
+  useEffect(() => {
+    const fetchPurchasedLessons = async () => {
+      if (!session) return
+      
+      try {
+        const { data, error } = await supabase
+          .from('purchased_lessons')
+          .select('*')
+          .order('purchased_at', { ascending: false });
+
+        if (error) throw error;
+        setPurchasedLessons(data || []);
+      } catch (error) {
+        console.error('Error fetching purchased lessons:', error);
+      }
+    };
+
+    fetchPurchasedLessons();
+  }, [session]);
+
   const filteredLessons = useMemo(() => {
-    let results = [...SAMPLE_LESSONS];
+    let results = tabIndex === 0 ? [...SAMPLE_LESSONS] : [...purchasedLessons];
     
-    // Apply search filter
     if (searchQuery) {
       const query = searchQuery.toLowerCase();
       results = results.filter(lesson => 
@@ -68,7 +106,6 @@ const Lessons: NextPage = () => {
       );
     }
     
-    // Apply sorting
     results.sort((a, b) => {
       switch (sortBy) {
         case 'price-low':
@@ -98,13 +135,25 @@ const Lessons: NextPage = () => {
     setSortBy(e.target.value)
   }
 
+  if (!session) {
+    return null;
+  }
+
   return (
     <Box 
       minH="100vh" 
       bg={useColorModeValue('gray.50', 'gray.900')}
       p="4"
     >
-      <Box mb={{ base: 6, md: 8 }}>
+      <Tabs onChange={setTabIndex} mb={6}>
+        <TabList>
+          <Tab>All Lessons</Tab>
+          <Tab>My Purchased Lessons</Tab>
+        </TabList>
+
+        <TabPanels>
+          <TabPanel>
+            <Box mb={{ base: 6, md: 8 }}>
         <Flex 
           gap={4} 
           mb={6} 
