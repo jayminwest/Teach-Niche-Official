@@ -4,7 +4,7 @@ import { useAuth } from '../context/AuthContext';
 import { Section } from '../components/Section';
 import { Card } from '../components/Card';
 import { Button } from '../components/Button';
-import { Spinner, useToast, VStack, HStack, Text, Divider } from '@chakra-ui/react';
+import { Spinner, useToast, VStack, HStack, Text, Divider, Tabs, TabList, TabPanels, Tab, TabPanel } from '@chakra-ui/react';
 
 const ProfilePage = () => {
   const { user, isLoading, signOut } = useAuth();
@@ -51,72 +51,109 @@ const ProfilePage = () => {
 
   return (
     <Section title="Profile" subtitle="Manage your account settings">
-      <Card className="max-w-2xl mx-auto">
+      <Card className="max-w-4xl mx-auto">
         <VStack spacing={6} align="stretch">
-          {/* Profile Header */}
-          <HStack justify="space-between" align="center">
-            <VStack align="start" spacing={1}>
-              <span className="text-2xl font-semibold">
-                {user.user_metadata?.full_name || 'User'}
-              </span>
-              <span className="text-gray-600">{user.email}</span>
-            </VStack>
-            <Button variant="primary" label="Edit Profile" />
-          </HStack>
+          <Tabs isLazy>
+            <TabList>
+              <Tab>Profile</Tab>
+              <Tab>Created Lessons</Tab>
+              <Tab>Purchased Lessons</Tab>
+              <Tab>Settings</Tab>
+            </TabList>
 
-          <Divider />
+            <TabPanels>
+              {/* Profile Tab */}
+              <TabPanel>
+                <VStack spacing={6} align="stretch">
+                  <HStack justify="space-between" align="center">
+                    <VStack align="start" spacing={1}>
+                      <span className="text-2xl font-semibold">
+                        {user.user_metadata?.full_name || 'User'}
+                      </span>
+                      <span className="text-gray-600">{user.email}</span>
+                    </VStack>
+                    <Button variant="primary" label="Edit Profile" />
+                  </HStack>
+                </VStack>
+              </TabPanel>
 
-          {/* Settings */}
-          <VStack spacing={4} align="stretch">
-            <span className="text-xl font-semibold">Settings</span>
-            <select 
-              className="w-full px-4 py-2 rounded-md border border-gray-300 dark:border-gray-600 
-                       bg-white dark:bg-gray-700 focus:ring-2 focus:ring-blue-500"
-            >
-              <option>Email Notifications</option>
-              <option>Push Notifications</option>
-              <option>None</option>
-            </select>
+              {/* Created Lessons Tab */}
+              <TabPanel>
+                <VStack spacing={4} align="stretch">
+                  <Text fontSize="lg">Your Created Lessons</Text>
+                  <Button variant="primary" label="Create New Lesson" />
+                  {/* Add lesson list here */}
+                  <Text color="gray.500">No lessons created yet</Text>
+                </VStack>
+              </TabPanel>
 
-            <select 
-              className="w-full px-4 py-2 rounded-md border border-gray-300 dark:border-gray-600 
-                       bg-white dark:bg-gray-700 focus:ring-2 focus:ring-blue-500"
-            >
-              <option>English</option>
-              <option>Spanish</option>
-              <option>French</option>
-            </select>
+              {/* Purchased Lessons Tab */}
+              <TabPanel>
+                <VStack spacing={4} align="stretch">
+                  <Text fontSize="lg">Your Purchased Lessons</Text>
+                  {/* Add purchased lessons list here */}
+                  <Text color="gray.500">No lessons purchased yet</Text>
+                </VStack>
+              </TabPanel>
 
-            <Button 
-              variant="secondary" 
-              label="Save Changes" 
-              onClick={handleSaveChanges}
-              className="w-full" 
-            />
-          </VStack>
+              {/* Settings Tab */}
+              <TabPanel>
+                <VStack spacing={6} align="stretch">
+                  {/* Notification Settings */}
+                  <VStack spacing={4} align="stretch">
+                    <span className="text-xl font-semibold">Settings</span>
+                    <select 
+                      className="w-full px-4 py-2 rounded-md border border-gray-300 dark:border-gray-600 
+                               bg-white dark:bg-gray-700 focus:ring-2 focus:ring-blue-500"
+                    >
+                      <option>Email Notifications</option>
+                      <option>Push Notifications</option>
+                      <option>None</option>
+                    </select>
 
-          <Divider />
+                    <select 
+                      className="w-full px-4 py-2 rounded-md border border-gray-300 dark:border-gray-600 
+                               bg-white dark:bg-gray-700 focus:ring-2 focus:ring-blue-500"
+                    >
+                      <option>English</option>
+                      <option>Spanish</option>
+                      <option>French</option>
+                    </select>
 
-          {/* Account Actions */}
-          <VStack spacing={3} align="stretch">
-            <span className="text-xl font-semibold">Account Actions</span>
-            <Button variant="secondary" label="Change Password" className="w-full" />
-            <Button
-              variant="secondary"
-              label="Log Out"
-              className="w-full"
-              onClick={async () => {
-                await signOut();
-                router.push('/auth/login');
-              }}
-            />
-            <Button
-              variant="secondary"
-              label="Delete Account"
-              className="w-full text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20"
-              onClick={handleDeleteAccount}
-            />
-          </VStack>
+                    <Button 
+                      variant="secondary" 
+                      label="Save Changes" 
+                      onClick={handleSaveChanges}
+                      className="w-full" 
+                    />
+                  </VStack>
+
+                  <Divider />
+
+                  {/* Account Actions */}
+                  <VStack spacing={3} align="stretch">
+                    <span className="text-xl font-semibold">Account Actions</span>
+                    <Button variant="secondary" label="Change Password" className="w-full" />
+                    <Button
+                      variant="secondary"
+                      label="Log Out"
+                      className="w-full"
+                      onClick={async () => {
+                        await signOut();
+                        router.push('/auth/login');
+                      }}
+                    />
+                    <Button
+                      variant="secondary"
+                      label="Delete Account"
+                      className="w-full text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20"
+                      onClick={handleDeleteAccount}
+                    />
+                  </VStack>
+                </VStack>
+              </TabPanel>
+            </TabPanels>
+          </Tabs>
         </VStack>
       </Card>
     </Section>
