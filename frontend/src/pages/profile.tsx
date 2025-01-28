@@ -148,19 +148,9 @@ const ProfilePage = () => {
     });
   };
 
-  const handleDeleteAccount = () => {
-    if (window.confirm("Are you sure you want to delete your account? This action cannot be undone.")) {
-      toast({
-        title: "Account deleted",
-        status: "error",
-        duration: 3000,
-        isClosable: true,
-      });
-    }
-  };
-
   return (
-    <Section title="Profile" subtitle="Manage your account settings">
+    <>
+      <Section title="Profile" subtitle="Manage your account settings">
       <Card className="max-w-4xl mx-auto">
         <VStack spacing={6} align="stretch">
           <Tabs isLazy>
@@ -255,8 +245,6 @@ const ProfilePage = () => {
         </VStack>
       </Card>
     </Section>
-    
-    {/* Change Password Modal */}
     <Modal 
       isOpen={isChangePasswordModalOpen} 
       onClose={() => setIsChangePasswordModalOpen(false)}
@@ -292,6 +280,7 @@ const ProfilePage = () => {
         </ModalFooter>
       </ModalContent>
     </Modal>
+    </>
   );
 };
 
