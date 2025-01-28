@@ -17,40 +17,10 @@ export const AuthForm = ({ type }: AuthFormProps) => {
     setError(null)
     
     try {
-      // Use absolute URL for API endpoints in production
-      const baseUrl = process.env.NODE_ENV === 'production' 
-        ? process.env.NEXT_PUBLIC_SITE_URL
-        : ''
-      const endpoint = `${baseUrl}/api/auth/${type}`
-      
-      const response = await fetch(endpoint, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ email, password }),
-      })
-
-      // Check if response is JSON
-      const contentType = response.headers.get('content-type')
-      if (!contentType || !contentType.includes('application/json')) {
-        const text = await response.text()
-        throw new Error(`Unexpected response: ${text}`)
-      }
-
-      const data = await response.json()
-
-      if (!response.ok) {
-        throw new Error(data.details || data.message || 'Authentication failed')
-      }
-
-      // Handle successful authentication
       if (type === 'login') {
-        const { error } = await signIn(email, password)
-        if (error) throw error
+        await signIn(email, password)
       } else {
-        const { error } = await signUp(email, password)
-        if (error) throw error
+        await signUp(email, password)
       }
     } catch (error: unknown) {
       const message = error instanceof Error ? error.message : 'An error occurred. Please try again.'
