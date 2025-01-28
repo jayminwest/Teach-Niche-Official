@@ -33,7 +33,6 @@ const NAV_ITEMS: NavItem[] = [
   { href: '/', label: 'Home' },
   { href: '/lessons', label: 'Lessons' },
   { href: '/about', label: 'About' },
-  { href: '/my-purchased-lessons', label: 'My Purchased Lessons' },
 ] as const
 
 
