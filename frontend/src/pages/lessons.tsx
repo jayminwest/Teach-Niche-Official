@@ -6,9 +6,7 @@ import {
   VStack,
   useColorModeValue,
 } from '@chakra-ui/react'
-import Layout from '../components/Layout'
 import { LessonCard } from '../components/LessonCard'
-
 
 const Lessons: NextPage = () => {
   const textColor = useColorModeValue('gray.600', 'gray.400')
@@ -18,12 +16,11 @@ const Lessons: NextPage = () => {
   }
 
   return (
-    <Layout showHeader={false} showFooter={false}>
-      <Box 
-        minH="100vh" 
-        bg={useColorModeValue('gray.50', 'gray.900')}
-        p="4"
-      >
+    <Box 
+      minH="100vh" 
+      bg={useColorModeValue('gray.50', 'gray.900')}
+      p="4"
+    >
           <VStack spacing={{ base: 6, md: 8 }} align="stretch">
         <Box>
           <Heading 
@@ -47,8 +44,7 @@ const Lessons: NextPage = () => {
         />
           </VStack>
         </Box>
-      </Box>
-    </Layout>
+    </Box>
   )
 }
 
