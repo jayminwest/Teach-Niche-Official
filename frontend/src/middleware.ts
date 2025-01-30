@@ -8,7 +8,9 @@ export async function middleware(request: NextRequest) {
     '/auth/signup',
     '/auth/reset-password',
     '/auth/callback',
-    '/'  // assuming your homepage is public
+    '/',
+    '/_next',  // Add this to prevent middleware running on Next.js internals
+    '/api'     // Add this if you have API routes
   ]
 
   // Check if the current path is public

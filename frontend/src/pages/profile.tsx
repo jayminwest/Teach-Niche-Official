@@ -94,23 +94,18 @@ const ProfilePage = () => {
   };
 
   useEffect(() => {
-    console.log('🔍 Profile page - Auth state:', { user: !!user, authLoading })
-    if (!authLoading && !user) {  // Only redirect when we're sure auth is done loading
-      console.log('⚠️ No user found, redirecting to login...')
-      router.push('/auth/login')
+    if (!authLoading && !user) {
+      router.replace('/auth/login');
     }
   }, [user, authLoading, router]);
 
-  if (authLoading) {
+  // Add this early return before your main render
+  if (authLoading || !user) {
     return (
       <div className="flex h-screen items-center justify-center">
         <Spinner size="xl" color="blue.500" />
       </div>
     );
-  }
-
-  if (!authLoading && !user) {
-    return null;
   }
 
   const handleSaveChanges = () => {
