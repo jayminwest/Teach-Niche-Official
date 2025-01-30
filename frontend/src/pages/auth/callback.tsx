@@ -1,35 +1,50 @@
 import { useEffect } from 'react'
 import { Box, Spinner, Center } from '@chakra-ui/react'
-import { useAuth } from '../../context/AuthContext'
 import { useRouter } from 'next/router'
 import { supabase } from '../../lib/supabase'
 
 export default function AuthCallback() {
-  const { isLoading, session } = useAuth()
   const router = useRouter()
   
   useEffect(() => {
-    // Get the code from URL
-    const code = router.query.code
-
     const handleCallback = async () => {
       try {
-        if (code) {
-          // Exchange the code for a session
-          const { error } = await supabase.auth.exchangeCodeForSession(String(code))
-          if (error) throw error
+        // Get the URL hash
+        const hashParams = new URLSearchParams(window.location.hash.substring(1));
+        const accessToken = hashParams.get('access_token');
+        const refreshToken = hashParams.get('refresh_token');
+
+        if (accessToken && refreshToken) {
+          // Set the session directly
+          const { error } = await supabase.auth.setSession({
+            access_token: accessToken,
+            refresh_token: refreshToken
+          });
+          
+          if (error) throw error;
           
           // Redirect to profile page
-          router.push('/profile')
+          router.push('/profile');
+        } else {
+          // If no tokens found, try to exchange code
+          const code = router.query.code;
+          if (code) {
+            const { error } = await supabase.auth.exchangeCodeForSession(String(code));
+            if (error) throw error;
+            
+            router.push('/profile');
+          }
         }
       } catch (error) {
-        console.error('Error handling auth callback:', error)
-        router.push('/auth/login')
+        console.error('Error in auth callback:', error);
+        router.push('/auth/login');
       }
-    }
+    };
 
-    handleCallback()
-  }, [router.query.code, router])
+    if (typeof window !== 'undefined') {
+      handleCallback();
+    }
+  }, [router]);
 
   return (
     <Center h="100vh">
@@ -37,5 +52,5 @@ export default function AuthCallback() {
         <Spinner size="xl" />
       </Box>
     </Center>
-  )
+  );
 }
