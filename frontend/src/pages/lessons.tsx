@@ -129,8 +129,41 @@ const Lessons: NextPage = () => {
   }, [searchQuery, sortBy]);
 
 
-  const handlePurchaseClick = () => {
-    console.log('Purchase clicked')
+  const handlePurchaseClick = async (lessonId: string) => {
+    console.log('Purchase initiated for lesson:', lessonId);
+    
+    try {
+      // Log the user's session state
+      console.log('User session state:', session?.user?.id ? 'Authenticated' : 'Not authenticated');
+      
+      // Attempt to create a checkout session
+      const response = await fetch('/api/stripe/checkout_session', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          lessonId,
+          userId: session?.user?.id
+        }),
+      });
+
+      console.log('Stripe API Response status:', response.status);
+      
+      if (!response.ok) {
+        const errorData = await response.json();
+        console.error('Stripe checkout session creation failed:', errorData);
+        throw new Error('Failed to create checkout session');
+      }
+
+      const data = await response.json();
+      console.log('Stripe checkout session created successfully:', data);
+      
+      // Additional handling of the checkout session would go here
+      
+    } catch (error) {
+      console.error('Error during purchase process:', error);
+    }
   }
 
   const handlePlayClick = (lessonId: string) => {
@@ -230,7 +263,7 @@ const Lessons: NextPage = () => {
               isNew={lesson.isNew}
               isPurchased={purchasedLessons.some(pl => pl.id === lesson.id)}
               purchasedAt={purchasedLessons.find(pl => pl.id === lesson.id)?.purchase_date}
-              onPurchaseClick={handlePurchaseClick}
+              onPurchaseClick={() => handlePurchaseClick(lesson.id)}
               onPlayClick={handlePlayClick}
             />
           ))}
