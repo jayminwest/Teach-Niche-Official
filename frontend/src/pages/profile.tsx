@@ -94,12 +94,12 @@ const ProfilePage = () => {
   };
 
   useEffect(() => {
-    console.log('🔍 Profile page - Auth state:', { user: !!user, isLoading })
-    if (!isLoading && !user) {
+    console.log('🔍 Profile page - Auth state:', { user: !!user, authLoading })
+    if (!authLoading && !user) {  // Only redirect when we're sure auth is done loading
       console.log('⚠️ No user found, redirecting to login...')
       router.push('/auth/login')
     }
-  }, [user, isLoading, router]);
+  }, [user, authLoading, router]);
 
   if (authLoading) {
     return (
@@ -109,7 +109,7 @@ const ProfilePage = () => {
     );
   }
 
-  if (!user) {
+  if (!authLoading && !user) {
     return null;
   }
 

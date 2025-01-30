@@ -89,27 +89,26 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     
     const fetchSession = async () => {
       try {
+        setIsLoading(true);  // Ensure loading state is set before fetch
         console.log('🔄 Fetching initial session...')
         const { data: { session } } = await supabase.auth.getSession()
         console.log('📥 Initial session:', session ? 'exists' : 'null')
         
-        if (!mounted) {
-          console.log('⚠️ Component unmounted, skipping state updates')
-          return
-        }
+        if (!mounted) return;
 
-        setSession(session)
-        setUser(session?.user ?? null)
-        
         if (session?.user) {
-          console.log('👤 Creating/updating profile for user:', session.user.id)
+          setSession(session)
+          setUser(session.user)
           await createOrUpdateProfile(session.user)
+        } else {
+          setSession(null)
+          setUser(null)
+          setProfile(null)
         }
       } catch (error) {
         console.error('❌ Error fetching session:', error)
       } finally {
         if (mounted) {
-          console.log('✅ Setting loading state to false')
           setIsLoading(false)
         }
       }
@@ -120,27 +119,22 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
       console.log('🔔 Auth state changed:', event, 'Session:', session ? 'exists' : 'null')
       
-      if (!mounted) {
-        console.log('⚠️ Component unmounted, skipping auth state change')
-        return
+      if (!mounted) return;
+
+      if (session?.user) {
+        setSession(session)
+        setUser(session.user)
+        await createOrUpdateProfile(session.user)
+      } else {
+        setSession(null)
+        setUser(null)
+        setProfile(null)
       }
 
-      setSession(session)
-      setUser(session?.user ?? null)
-      
-      if (event === 'SIGNED_IN' && session?.user) {
-        console.log('✅ User signed in, updating profile...')
-        await createOrUpdateProfile(session.user)
-        if (mounted) {
-          console.log('🔄 Redirecting to profile...')
-          router.push('/profile')
-        }
+      if (event === 'SIGNED_IN') {
+        router.push('/profile')
       } else if (event === 'SIGNED_OUT') {
-        console.log('👋 User signed out')
-        setProfile(null)
-        if (mounted) {
-          router.push('/auth/login')
-        }
+        router.push('/auth/login')
       }
     })
 
@@ -149,7 +143,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       mounted = false
       subscription.unsubscribe()
     }
-  }, [router])
+  }, [router]) // Only depend on router
 
   const value = {
     user,

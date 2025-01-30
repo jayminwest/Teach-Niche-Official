@@ -28,5 +28,5 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/api/auth/:path*'],
+  matcher: ['/api/auth/:path*']  // Only protect API routes for now
 }
