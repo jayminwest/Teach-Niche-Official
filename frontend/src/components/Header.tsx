@@ -121,7 +121,7 @@ const Header = () => {
                   {user ? (
                     <>
                       <MenuItem as={Link} href="/profile">Profile</MenuItem>
-                      <MenuItem onClick={signOut}>Logout</MenuItem>
+                      <MenuItem onClick={() => signOut()}>Logout</MenuItem>
                     </>
                   ) : (
                     <>
@@ -171,10 +171,7 @@ const Header = () => {
                     <Button 
                       w="full" 
                       variant="ghost" 
-                      onClick={() => {
-                        signOut()
-                        onMenuClose()
-                      }}
+                      onClick={() => signOut()}
                     >
                       Logout
                     </Button>

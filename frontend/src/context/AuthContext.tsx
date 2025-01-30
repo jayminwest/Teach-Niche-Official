@@ -198,26 +198,18 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     },
     signOut: async () => {
       try {
-        // First sign out from Supabase
-        const { error } = await supabase.auth.signOut()
-        if (error) throw error;
+        await supabase.auth.signOut()
         
-        // Then call your API endpoint if needed
-        const response = await fetch('/api/auth/logout', {
-          method: 'POST',
-        });
+        // Clear local state immediately
+        setSession(null)
+        setUser(null)
+        setProfile(null)
         
-        if (!response.ok) {
-          throw new Error('Logout failed');
-        }
-        
-        // Clear local state
-        setSession(null);
-        setUser(null);
-        setProfile(null);
+        // Force router navigation
+        router.push('/auth/login')
       } catch (error) {
-        console.error('Error during sign out:', error);
-        throw error;
+        console.error('Error during sign out:', error)
+        throw error
       }
     },
     resetPassword: async (email: string) => {
