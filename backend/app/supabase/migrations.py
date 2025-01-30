@@ -120,14 +120,17 @@ def apply_migration(section: str, migration_data: Dict[str, Any] = None) -> Dict
         sql = migration_data.get('sql') if migration_data else INITIAL_SCHEMA
         
         # Execute raw SQL for migrations
-        response = supabase.table('_rpc').rpc('exec_sql', {'query': sql}).execute()
+        response = supabase.postgrest.rpc('exec_sql', {'query': sql}).execute()
         
-        if hasattr(response, 'error') and response.error:
-            raise Exception(f"Migration failed: {response.error}")
+        data = response.data if response.data else {}
+        error = response.error if hasattr(response, 'error') else None
+        
+        if error:
+            raise Exception(f"Migration failed: {error}")
             
         return {
             'status': 'success',
-            'data': response.get('data', {})
+            'data': data
         }
     except Exception as e:
         return {
