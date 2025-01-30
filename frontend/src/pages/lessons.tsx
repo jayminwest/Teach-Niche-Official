@@ -140,20 +140,23 @@ const Lessons: NextPage = () => {
         throw new Error('Stripe failed to load');
       }
 
+      // Create checkout session through our API
+      const response = await fetch('/api/stripe/checkout_session', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          lessonId,
+          price
+        }),
+      });
+
+      const { sessionId } = await response.json();
+
+      // Redirect to Stripe checkout
       const { error } = await stripe.redirectToCheckout({
-        lineItems: [{
-          price_data: {
-            currency: 'usd',
-            product_data: {
-              name: `Lesson ${lessonId}`,
-            },
-            unit_amount: Math.round(price * 100), // Convert to cents
-          },
-          quantity: 1,
-        }],
-        mode: 'payment',
-        successUrl: `${window.location.origin}/lessons?success=true`,
-        cancelUrl: `${window.location.origin}/lessons?canceled=true`,
+        sessionId
       });
 
       if (error) {
