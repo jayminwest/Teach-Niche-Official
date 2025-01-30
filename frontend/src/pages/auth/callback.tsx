@@ -1,45 +1,45 @@
 import { useEffect } from 'react'
-import { Box, Spinner, Center } from '@chakra-ui/react'
+import { Box, Spinner, Center, Text, VStack } from '@chakra-ui/react'
 import { useRouter } from 'next/router'
 import { supabase } from '../../lib/supabase'
 import { useAuth } from '../../context/AuthContext'
 
 export default function AuthCallback() {
   const router = useRouter()
-  const { isLoading } = useAuth()
+  const { isLoading, user } = useAuth()
   
   useEffect(() => {
     const handleCallback = async () => {
       try {
-        // Handle the callback - this will automatically exchange the code
         const { data, error } = await supabase.auth.getSession()
         
         if (error) throw error
         
         if (data?.session) {
-          // Add a small delay to ensure auth context is updated
-          setTimeout(() => {
-            router.push('/profile')
-          }, 1000) // Increased from 500ms to 1000ms
+          // Wait for auth context to update
+          if (user) {
+            router.replace('/profile')
+          }
         } else {
           throw new Error('No session found')
         }
       } catch (error) {
         console.error('Error in auth callback:', error)
-        router.push('/auth/login')
+        router.replace('/auth/login')
       }
     }
 
-    if (typeof window !== 'undefined' && !isLoading) {
+    if (!isLoading) {
       handleCallback()
     }
-  }, [router, isLoading])
+  }, [router, isLoading, user])
 
   return (
     <Center h="100vh">
-      <Box>
+      <VStack spacing={4}>
         <Spinner size="xl" />
-      </Box>
+        <Text>Completing sign in...</Text>
+      </VStack>
     </Center>
   )
 }
