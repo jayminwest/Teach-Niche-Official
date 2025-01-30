@@ -87,10 +87,13 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   useEffect(() => {
     const fetchSession = async () => {
+      console.log('🔄 Fetching initial session...')
       const { data: { session } } = await supabase.auth.getSession()
+      console.log('📥 Initial session:', session ? 'exists' : 'null')
       setSession(session)
       setUser(session?.user ?? null)
       if (session?.user) {
+        console.log('👤 Creating/updating profile for user:', session.user.id)
         await createOrUpdateProfile(session.user)
       }
       setIsLoading(false)
@@ -99,19 +102,26 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     fetchSession()
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
+      console.log('🔔 Auth state changed:', event, 'Session:', session ? 'exists' : 'null')
       setSession(session)
       setUser(session?.user ?? null)
       
       if (event === 'SIGNED_IN' && session?.user) {
+        console.log('✅ User signed in, updating profile...')
         await createOrUpdateProfile(session.user)
+        console.log('🔄 Redirecting to profile...')
         router.push('/profile')
       } else if (event === 'SIGNED_OUT') {
+        console.log('👋 User signed out')
         setProfile(null)
         router.push('/auth/login')
       }
     })
 
-    return () => subscription.unsubscribe()
+    return () => {
+      console.log('🧹 Cleaning up auth subscriptions')
+      subscription.unsubscribe()
+    }
   }, [router])
 
   const value = {

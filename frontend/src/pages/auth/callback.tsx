@@ -4,6 +4,8 @@ import { useAuth } from '../../context/AuthContext'
 
 export default function AuthCallback() {
   const { isLoading } = useAuth()
+  
+  console.log('⏳ Callback page loading state:', isLoading)
 
   return (
     <Center h="100vh">
