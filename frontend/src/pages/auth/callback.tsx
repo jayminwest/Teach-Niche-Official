@@ -2,9 +2,11 @@ import { useEffect } from 'react'
 import { Box, Spinner, Center } from '@chakra-ui/react'
 import { useRouter } from 'next/router'
 import { supabase } from '../../lib/supabase'
+import { useAuth } from '../../context/AuthContext'
 
 export default function AuthCallback() {
   const router = useRouter()
+  const { isLoading } = useAuth()
   
   useEffect(() => {
     const handleCallback = async () => {
@@ -15,8 +17,10 @@ export default function AuthCallback() {
         if (error) throw error
         
         if (data?.session) {
-          // Successfully authenticated
-          router.push('/profile')
+          // Add a small delay to ensure auth context is updated
+          setTimeout(() => {
+            router.push('/profile')
+          }, 500)
         } else {
           throw new Error('No session found')
         }
@@ -26,10 +30,10 @@ export default function AuthCallback() {
       }
     }
 
-    if (typeof window !== 'undefined') {
+    if (typeof window !== 'undefined' && !isLoading) {
       handleCallback()
     }
-  }, [router])
+  }, [router, isLoading])
 
   return (
     <Center h="100vh">
