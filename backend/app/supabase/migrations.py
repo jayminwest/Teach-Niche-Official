@@ -1,5 +1,5 @@
 from typing import Dict, Any
-from app.supabase.client import get_supabase_client
+from .client import get_supabase_client
 
 INITIAL_SCHEMA = """
 -- Enum Types
@@ -136,3 +136,8 @@ def apply_migration(section: str, migration_data: Dict[str, Any] = None) -> Dict
             'status': 'error',
             'message': str(e)
         }
+
+if __name__ == '__main__':
+    print("Applying initial schema migration...")
+    result = apply_migration('initial')
+    print(f"Migration result: {result}")
