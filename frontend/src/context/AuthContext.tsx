@@ -54,10 +54,13 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       const { data: existingProfile, error: fetchError } = await supabase
         .from('profiles')
         .select()
-        .eq('id', user.id)
+        .or(`id.eq.${user.id},email.eq.${user.email}`)
         .maybeSingle()
 
-      if (!existingProfile) {
+      if (existingProfile?.email === user.email && existingProfile.id !== user.id) {
+        // Email exists but belongs to different user - handle conflict
+        throw new Error('Email already associated with another account')
+      } else if (!existingProfile) {
         // Profile doesn't exist, create it
         const newProfile = {
           id: user.id,
