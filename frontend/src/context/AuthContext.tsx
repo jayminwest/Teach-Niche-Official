@@ -57,9 +57,21 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         .or(`id.eq.${user.id},email.eq.${user.email}`)
         .maybeSingle()
 
-      if (existingProfile?.email === user.email && existingProfile.id !== user.id) {
-        // Email exists but belongs to different user - handle conflict
-        throw new Error('Email already associated with another account')
+      if (existingProfile?.email === user.email) {
+        // Email exists - update the profile with new user ID if needed
+        if (existingProfile.id !== user.id) {
+          const { data: updatedProfile, error: updateError } = await supabase
+            .from('profiles')
+            .update({ id: user.id, updated_at: new Date().toISOString() })
+            .eq('email', user.email)
+            .select()
+            .single()
+          
+          if (updateError) throw updateError
+          setProfile(updatedProfile)
+        } else {
+          setProfile(existingProfile)
+        }
       } else if (!existingProfile) {
         // Profile doesn't exist, create it
         const newProfile = {
