@@ -33,6 +33,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       cancel_url: `${req.headers.origin}/lessons?canceled=true`,
     }
 
+    // Add logging
+    console.log('API URL:', apiUrl);
+    console.log('Stripe Data:', stripeData);
+
     // Make request to our backend Stripe service
     const response = await fetch(`${apiUrl}/stripe/checkout_session`, {
       method: 'POST',
@@ -42,7 +46,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       body: JSON.stringify(stripeData),
     })
 
-    const data = await response.json()
+    // Add response logging
+    console.log('Response status:', response.status);
+    const data = await response.json();
+    console.log('Response data:', data);
 
     if (!response.ok) {
       throw new Error(data.message || 'Failed to create checkout session')
