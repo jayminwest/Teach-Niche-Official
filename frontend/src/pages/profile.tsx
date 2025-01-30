@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import { useAuth } from '../context/AuthContext';
+const [isInitialLoad, setIsInitialLoad] = useState(true);
 import { Section } from '../components/Section';
 import { Card } from '../components/Card';
 import { Button } from '../components/Button';
@@ -94,16 +95,22 @@ const ProfilePage = () => {
   };
 
   useEffect(() => {
-    if (!authLoading && !user) {
-      router.replace('/auth/login');
+    if (!authLoading) {
+      if (!user) {
+        router.replace('/auth/login')
+      } else if (isInitialLoad) {
+        setIsInitialLoad(false)
+      }
     }
-  }, [user, authLoading, router]);
+  }, [user, authLoading, router, isInitialLoad]);
 
-  // Add this early return before your main render
-  if (authLoading || !user) {
+  if (authLoading || isInitialLoad) {
     return (
       <div className="flex h-screen items-center justify-center">
-        <Spinner size="xl" color="blue.500" />
+        <VStack spacing={4}>
+          <Spinner size="xl" color="blue.500" />
+          <Text>Loading profile...</Text>
+        </VStack>
       </div>
     );
   }
