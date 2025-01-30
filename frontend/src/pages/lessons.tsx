@@ -133,34 +133,39 @@ const Lessons: NextPage = () => {
     console.log('Purchase initiated for lesson:', lessonId);
     
     try {
-      // Log the user's session state
-      console.log('User session state:', session?.user?.id ? 'Authenticated' : 'Not authenticated');
-      
-      // Attempt to create a checkout session
-      const response = await fetch('/api/stripe/checkout_session', {
+      // Call backend directly instead of going through Next.js API route
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/stripe/checkout_session`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          lessonId,
-          userId: session?.user?.id,
-          price: Math.round(price * 100) // Convert to cents for Stripe
+          line_items: [{
+            price_data: {
+              currency: 'usd',
+              product_data: {
+                name: `Lesson ${lessonId}`,
+              },
+              unit_amount: Math.round(price * 100), // Convert to cents for Stripe
+            },
+            quantity: 1,
+          }],
+          mode: 'payment',
+          success_url: `${window.location.origin}/lessons?success=true`,
+          cancel_url: `${window.location.origin}/lessons?canceled=true`,
         }),
       });
 
-      console.log('Stripe API Response status:', response.status);
-      
       if (!response.ok) {
         const errorData = await response.json();
-        console.error('Stripe checkout session creation failed:', errorData);
-        throw new Error('Failed to create checkout session');
+        throw new Error(errorData.message || 'Failed to create checkout session');
       }
 
       const data = await response.json();
       console.log('Stripe checkout session created successfully:', data);
       
-      // Additional handling of the checkout session would go here
+      // Redirect to Stripe Checkout
+      window.location.href = data.url;
       
     } catch (error) {
       console.error('Error during purchase process:', error);
