@@ -20,7 +20,7 @@ export default function AuthCallback() {
           // Add a small delay to ensure auth context is updated
           setTimeout(() => {
             router.push('/profile')
-          }, 500)
+          }, 1000) // Increased from 500ms to 1000ms
         } else {
           throw new Error('No session found')
         }
