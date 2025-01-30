@@ -9,10 +9,22 @@ interface AuthResponse {
   error?: Error | null
 }
 
+interface Profile {
+  id: string
+  full_name: string
+  email: string
+  avatar_url?: string
+  bio?: string
+  social_media_tag?: string
+  stripe_account_id?: string
+  stripe_onboarding_complete: boolean
+}
+
 type AuthContextType = {
   user: User | null
   session: Session | null
   isLoading: boolean
+  profile: Profile | null
   signIn: (email: string, password: string) => Promise<AuthResponse>
   signUp: (email: string, password: string) => Promise<AuthResponse>
   signOut: () => Promise<void>
@@ -33,14 +45,54 @@ const AuthContext = createContext<AuthContextType>({
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<User | null>(null)
   const [session, setSession] = useState<Session | null>(null)
+  const [profile, setProfile] = useState<Profile | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const router = useRouter()
+
+  const createOrUpdateProfile = async (user: User) => {
+    try {
+      const { data: existingProfile, error: fetchError } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('id', user.id)
+        .single()
+
+      if (fetchError && fetchError.code === 'PGRST116') {
+        // Profile doesn't exist, create it
+        const newProfile = {
+          id: user.id,
+          email: user.email!,
+          full_name: user.user_metadata.full_name || '',
+          avatar_url: user.user_metadata.avatar_url,
+          stripe_onboarding_complete: false,
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString()
+        }
+
+        const { data: createdProfile, error: createError } = await supabase
+          .from('profiles')
+          .insert([newProfile])
+          .select()
+          .single()
+
+        if (createError) throw createError
+        setProfile(createdProfile)
+      } else if (existingProfile) {
+        setProfile(existingProfile)
+      }
+    } catch (error) {
+      console.error('Error managing profile:', error)
+    }
+  }
 
   useEffect(() => {
     const fetchSession = async () => {
       const { data: { session } } = await supabase.auth.getSession()
       setSession(session)
       setUser(session?.user ?? null)
+      if (session?.user) {
+        await createOrUpdateProfile(session.user)
+      }
       setIsLoading(false)
     }
 
@@ -50,9 +102,11 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       setSession(session)
       setUser(session?.user ?? null)
       
-      if (event === 'SIGNED_IN') {
+      if (event === 'SIGNED_IN' && session?.user) {
+        await createOrUpdateProfile(session.user)
         router.push('/profile')
       } else if (event === 'SIGNED_OUT') {
+        setProfile(null)
         router.push('/auth/login')
       }
     })
