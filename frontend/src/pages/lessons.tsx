@@ -86,7 +86,7 @@ const Lessons: NextPage = () => {
       
       try {
         const { data, error } = await supabase
-          .from('purchased_lessons')
+          .from('purchases')
           .select('*')
           .order('purchased_at', { ascending: false });
 
