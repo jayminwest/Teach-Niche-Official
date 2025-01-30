@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import { useAuth } from '../context/AuthContext';
-const [isInitialLoad, setIsInitialLoad] = useState(true);
 import { Section } from '../components/Section';
 import { Card } from '../components/Card';
 import { Button } from '../components/Button';
@@ -34,6 +33,7 @@ const ProfilePage = () => {
   const { user, isLoading: authLoading, signOut } = useAuth();
   const router = useRouter();
   const toast = useToast();
+  const [isInitialLoad, setIsInitialLoad] = useState(true);
   const [isChangePasswordModalOpen, setIsChangePasswordModalOpen] = useState(false);
   const [newPassword, setNewPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
