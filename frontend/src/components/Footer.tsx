@@ -3,7 +3,15 @@ import NextLink from 'next/link'
 
 const Footer = () => {
   return (
-    <Box as="footer" bg="gray.800" color="white" py={8} mt="auto">
+    <Box 
+      as="footer" 
+      bg="gray.800" 
+      color="white" 
+      py={8} 
+      mt="auto"
+      borderTopWidth="1px"
+      borderTopColor="gray.600"
+    >
       <Container maxW="7xl">
         <Flex
           direction={{ base: 'column', md: 'row' }}
