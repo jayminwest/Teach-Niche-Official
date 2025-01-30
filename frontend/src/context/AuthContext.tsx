@@ -53,15 +53,14 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     try {
       const { data: existingProfile, error: fetchError } = await supabase
         .from('profiles')
-        .select('*')
+        .select()
         .eq('id', user.id)
-        .single()
+        .maybeSingle()
 
-      if (fetchError && fetchError.code === 'PGRST116') {
+      if (!existingProfile) {
         // Profile doesn't exist, create it
         const newProfile = {
           id: user.id,
-          email: user.email!,
           full_name: user.user_metadata.full_name || '',
           avatar_url: user.user_metadata.avatar_url,
           stripe_onboarding_complete: false,
