@@ -123,6 +123,7 @@ const Lessons: NextPage = () => {
     return results;
   }, [searchQuery, sortBy]);
 
+
   const handlePurchaseClick = () => {
     console.log('Purchase clicked')
   }
