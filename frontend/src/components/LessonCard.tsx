@@ -50,8 +50,11 @@ export const LessonCard = ({
     try {
       setStripeStatus('Testing Stripe connection...')
       const stripeInstance = await stripe
-      if (stripeInstance) {
+      const response = await fetch('/api/stripe/test-connection')
+      if (response.status === 200) {
         setStripeStatus('Stripe loaded successfully!')
+      } else {
+        throw new Error('Stripe connection failed')
       }
       onPurchaseClick?.()
     } catch (error) {
