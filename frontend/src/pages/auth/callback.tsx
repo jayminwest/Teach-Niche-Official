@@ -9,42 +9,27 @@ export default function AuthCallback() {
   useEffect(() => {
     const handleCallback = async () => {
       try {
-        // Get the URL hash
-        const hashParams = new URLSearchParams(window.location.hash.substring(1));
-        const accessToken = hashParams.get('access_token');
-        const refreshToken = hashParams.get('refresh_token');
-
-        if (accessToken && refreshToken) {
-          // Set the session directly
-          const { error } = await supabase.auth.setSession({
-            access_token: accessToken,
-            refresh_token: refreshToken
-          });
-          
-          if (error) throw error;
-          
-          // Redirect to profile page
-          router.push('/profile');
+        // Handle the callback - this will automatically exchange the code
+        const { data, error } = await supabase.auth.getSession()
+        
+        if (error) throw error
+        
+        if (data?.session) {
+          // Successfully authenticated
+          router.push('/profile')
         } else {
-          // If no tokens found, try to exchange code
-          const code = router.query.code;
-          if (code) {
-            const { error } = await supabase.auth.exchangeCodeForSession(String(code));
-            if (error) throw error;
-            
-            router.push('/profile');
-          }
+          throw new Error('No session found')
         }
       } catch (error) {
-        console.error('Error in auth callback:', error);
-        router.push('/auth/login');
+        console.error('Error in auth callback:', error)
+        router.push('/auth/login')
       }
-    };
+    }
 
     if (typeof window !== 'undefined') {
-      handleCallback();
+      handleCallback()
     }
-  }, [router]);
+  }, [router])
 
   return (
     <Center h="100vh">
@@ -52,5 +37,5 @@ export default function AuthCallback() {
         <Spinner size="xl" />
       </Box>
     </Center>
-  );
+  )
 }
