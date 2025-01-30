@@ -67,7 +67,12 @@ const Lessons: NextPage = () => {
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid')
   const [purchasedLessons, setPurchasedLessons] = useState<Lesson[]>([])
   const [tabIndex, setTabIndex] = useState(0)
+
+  // Pre-calculate all color mode values
   const textColor = useColorModeValue('gray.600', 'gray.400')
+  const bgColor = useColorModeValue('gray.50', 'gray.900')
+  const inputBgColor = useColorModeValue('white', 'gray.700')
+  const selectedButtonBg = useColorModeValue('gray.100', 'gray.600')
 
   useEffect(() => {
     if (!session) {
@@ -147,7 +152,7 @@ const Lessons: NextPage = () => {
   return (
     <Box 
       minH="100vh" 
-      bg={useColorModeValue('gray.50', 'gray.900')}
+      bg={bgColor}
       p="4"
     >
       <Tabs onChange={setTabIndex} mb={6}>
@@ -168,14 +173,14 @@ const Lessons: NextPage = () => {
             placeholder="Search lessons..."
             value={searchQuery}
             onChange={handleSearch}
-            bg={useColorModeValue('white', 'gray.700')}
+            bg={inputBgColor}
             maxW={{ base: "100%", md: "400px" }}
           />
           <Flex gap={4} flexWrap={{ base: "wrap", md: "nowrap" }} w="100%">
             <Select
               value={sortBy}
               onChange={handleSort}
-              bg={useColorModeValue('white', 'gray.700')}
+              bg={inputBgColor}
               maxW={{ base: "100%", md: "200px" }}
               flex={{ base: "1 1 auto", md: "0 1 auto" }}
             >
@@ -195,13 +200,13 @@ const Lessons: NextPage = () => {
                 aria-label="Grid view"
                 icon={<BsGrid />}
                 onClick={() => setViewMode('grid')}
-                bg={viewMode === 'grid' ? useColorModeValue('gray.100', 'gray.600') : undefined}
+                bg={viewMode === 'grid' ? selectedButtonBg : undefined}
               />
               <IconButton
                 aria-label="List view"
                 icon={<BsListUl />}
                 onClick={() => setViewMode('list')}
-                bg={viewMode === 'list' ? useColorModeValue('gray.100', 'gray.600') : undefined}
+                bg={viewMode === 'list' ? selectedButtonBg : undefined}
               />
             </ButtonGroup>
           </Flex>
