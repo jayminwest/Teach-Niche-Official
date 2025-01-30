@@ -103,13 +103,16 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   useEffect(() => {
     let mounted = true;
     
-    // Initial session fetch
     const fetchSession = async () => {
+      if (!mounted) return;
+      
       try {
-        setIsLoading(true);
-        console.log('🔄 Fetching initial session...')
-        const { data: { session } } = await supabase.auth.getSession()
+        console.log('🔄 Starting initial session fetch...')
+        setIsLoading(true)
         
+        const { data: { session } } = await supabase.auth.getSession()
+        console.log('📦 Session fetch result:', session ? 'Session exists' : 'No session')
+
         if (!mounted) return;
 
         if (session?.user) {
@@ -121,6 +124,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         console.error('❌ Error fetching session:', error)
       } finally {
         if (mounted) {
+          console.log('✅ Initial session fetch completed')
           setIsLoading(false)
         }
       }
@@ -128,29 +132,38 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
     // Auth state change listener
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
-      console.log('🔔 Auth state changed:', event, 'Session:', session ? 'exists' : 'null')
+      console.log('🔔 Auth state changed:', event)
       
       if (!mounted) return;
-
-      if (session?.user) {
-        setSession(session)
-        setUser(session.user)
-        await createOrUpdateProfile(session.user)
+      
+      try {
+        setIsLoading(true)
         
-        // Only redirect on SIGNED_IN if we're on a auth-related page
-        if (event === 'SIGNED_IN' && 
-            router.pathname.startsWith('/auth/') && 
-            router.pathname !== '/auth/callback') {
-          router.push('/profile')
+        if (session?.user) {
+          setSession(session)
+          setUser(session.user)
+          await createOrUpdateProfile(session.user)
+          
+          if (event === 'SIGNED_IN' && 
+              router.pathname.startsWith('/auth/') && 
+              router.pathname !== '/auth/callback') {
+            router.push('/profile')
+          }
+        } else {
+          setSession(null)
+          setUser(null)
+          setProfile(null)
+          
+          if (event === 'SIGNED_OUT' && !router.pathname.startsWith('/auth/')) {
+            router.push('/auth/login')
+          }
         }
-      } else {
-        setSession(null)
-        setUser(null)
-        setProfile(null)
-        
-        // Only redirect on SIGNED_OUT if we're not already on a auth page
-        if (event === 'SIGNED_OUT' && !router.pathname.startsWith('/auth/')) {
-          router.push('/auth/login')
+      } catch (error) {
+        console.error('❌ Error in auth state change:', error)
+      } finally {
+        if (mounted) {
+          console.log('✅ Auth state change handled')
+          setIsLoading(false)
         }
       }
     })

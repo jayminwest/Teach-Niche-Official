@@ -1,8 +1,9 @@
 import { ReactNode } from 'react'
-import { Box, Container } from '@chakra-ui/react'
+import { Box, Container, Spinner, Center } from '@chakra-ui/react'
 import Header from './Header'
 import Footer from './Footer'
 import dynamic from 'next/dynamic'
+import { useAuth } from '../context/AuthContext'
 const Hero = dynamic(() => import('./Hero'), { ssr: false })
 
 type LayoutProps = {
@@ -20,6 +21,22 @@ const Layout = ({
   showFooter = true,
   headerProps = {}
 }: LayoutProps) => {
+  const { isLoading } = useAuth()
+
+  if (isLoading) {
+    return (
+      <Center minH="100vh">
+        <Spinner 
+          thickness="4px"
+          speed="0.65s"
+          emptyColor="gray.200"
+          color="blue.500"
+          size="xl"
+        />
+      </Center>
+    )
+  }
+
   return (
     <Box minH="100vh" display="flex" flexDirection="column">
       {showHeader && <Header {...headerProps} />}
