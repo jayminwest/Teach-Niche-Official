@@ -18,7 +18,7 @@ export default function LoginPage() {
         duration: 3000,
         isClosable: true,
       })
-      router.push('/dashboard')
+      router.push('/profile')
     } catch (error) {
       toast({
         title: 'Login failed',

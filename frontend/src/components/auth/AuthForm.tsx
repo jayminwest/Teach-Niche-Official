@@ -27,6 +27,9 @@ export const AuthForm = ({ type }: AuthFormProps) => {
       const message = error instanceof Error ? error.message : 'An error occurred. Please try again.'
       setError(message)
       console.error('Authentication error:', error)
+      // Reset form state
+      setEmail('')
+      setPassword('')
     }
   }
 
