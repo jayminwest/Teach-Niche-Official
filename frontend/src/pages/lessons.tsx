@@ -1,4 +1,5 @@
 import { NextPage } from 'next'
+import { loadStripe } from '@stripe/stripe-js'
 import {
   Box,
   Flex,
@@ -133,40 +134,31 @@ const Lessons: NextPage = () => {
     console.log('Purchase initiated for lesson:', lessonId);
     
     try {
-      // Call backend directly instead of going through Next.js API route
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/stripe/checkout_session`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          line_items: [{
-            price_data: {
-              currency: 'usd',
-              product_data: {
-                name: `Lesson ${lessonId}`,
-              },
-              unit_amount: Math.round(price * 100), // Convert to cents for Stripe
-            },
-            quantity: 1,
-          }],
-          mode: 'payment',
-          success_url: `${window.location.origin}/lessons?success=true`,
-          cancel_url: `${window.location.origin}/lessons?canceled=true`,
-        }),
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || 'Failed to create checkout session');
+      const stripe = await loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!);
+      
+      if (!stripe) {
+        throw new Error('Stripe failed to load');
       }
 
-      const data = await response.json();
-      console.log('Stripe checkout session created successfully:', data);
-      
-      // Redirect to Stripe Checkout
-      window.location.href = data.url;
-      
+      const { error } = await stripe.redirectToCheckout({
+        lineItems: [{
+          price_data: {
+            currency: 'usd',
+            product_data: {
+              name: `Lesson ${lessonId}`,
+            },
+            unit_amount: Math.round(price * 100), // Convert to cents
+          },
+          quantity: 1,
+        }],
+        mode: 'payment',
+        successUrl: `${window.location.origin}/lessons?success=true`,
+        cancelUrl: `${window.location.origin}/lessons?canceled=true`,
+      });
+
+      if (error) {
+        throw error;
+      }
     } catch (error) {
       console.error('Error during purchase process:', error);
     }
