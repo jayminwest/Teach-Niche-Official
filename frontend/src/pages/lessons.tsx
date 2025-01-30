@@ -129,7 +129,7 @@ const Lessons: NextPage = () => {
   }, [searchQuery, sortBy]);
 
 
-  const handlePurchaseClick = async (lessonId: string) => {
+  const handlePurchaseClick = async (lessonId: string, price: number) => {
     console.log('Purchase initiated for lesson:', lessonId);
     
     try {
@@ -144,7 +144,8 @@ const Lessons: NextPage = () => {
         },
         body: JSON.stringify({
           lessonId,
-          userId: session?.user?.id
+          userId: session?.user?.id,
+          price: Math.round(price * 100) // Convert to cents for Stripe
         }),
       });
 
@@ -263,7 +264,7 @@ const Lessons: NextPage = () => {
               isNew={lesson.isNew}
               isPurchased={purchasedLessons.some(pl => pl.id === lesson.id)}
               purchasedAt={purchasedLessons.find(pl => pl.id === lesson.id)?.purchase_date}
-              onPurchaseClick={() => handlePurchaseClick(lesson.id)}
+              onPurchaseClick={() => handlePurchaseClick(lesson.id, lesson.price)}
               onPlayClick={handlePlayClick}
             />
           ))}
