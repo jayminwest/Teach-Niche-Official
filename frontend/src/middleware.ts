@@ -1,32 +1,46 @@
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
-import { supabase } from './lib/supabase'
 
 export async function middleware(request: NextRequest) {
-  // Only run middleware on auth API routes
-  if (request.nextUrl.pathname.startsWith('/api/auth')) {
-    const session = request.cookies.get('sb-auth-token')?.value
+  // Define public paths that don't need authentication
+  const publicPaths = [
+    '/auth/login',
+    '/auth/signup',
+    '/auth/reset-password',
+    '/auth/callback',
+    '/'  // assuming your homepage is public
+  ]
 
-    if (!session) {
-      return NextResponse.redirect(new URL('/auth/login', request.url))
-    }
+  // Check if the current path is public
+  const isPublicPath = publicPaths.some(path => 
+    request.nextUrl.pathname.startsWith(path)
+  )
 
-    try {
-      const { data: { user }, error } = await supabase.auth.getUser(session)
+  if (isPublicPath) {
+    return NextResponse.next()
+  }
 
-      if (error || !user) {
-        return NextResponse.redirect(new URL('/auth/login', request.url))
-      }
+  // Check for authentication
+  const hasSession = request.cookies.get('sb-access-token')?.value || 
+                    request.cookies.get('sb-refresh-token')?.value
 
-      return NextResponse.next()
-    } catch (error) {
-      return NextResponse.redirect(new URL('/auth/login', request.url))
-    }
+  if (!hasSession) {
+    // Redirect to login if no session exists
+    return NextResponse.redirect(new URL('/auth/login', request.url))
   }
 
   return NextResponse.next()
 }
 
 export const config = {
-  matcher: ['/api/auth/:path*']  // Only protect API routes for now
+  matcher: [
+    /*
+     * Match all request paths except:
+     * - _next/static (static files)
+     * - _next/image (image optimization files)
+     * - favicon.ico (favicon file)
+     * - public folder
+     */
+    '/((?!_next/static|_next/image|favicon.ico|public/).*)',
+  ],
 }
