@@ -86,40 +86,68 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   }
 
   useEffect(() => {
+    let mounted = true;
+    
     const fetchSession = async () => {
-      console.log('🔄 Fetching initial session...')
-      const { data: { session } } = await supabase.auth.getSession()
-      console.log('📥 Initial session:', session ? 'exists' : 'null')
-      setSession(session)
-      setUser(session?.user ?? null)
-      if (session?.user) {
-        console.log('👤 Creating/updating profile for user:', session.user.id)
-        await createOrUpdateProfile(session.user)
+      try {
+        console.log('🔄 Fetching initial session...')
+        const { data: { session } } = await supabase.auth.getSession()
+        console.log('📥 Initial session:', session ? 'exists' : 'null')
+        
+        if (!mounted) {
+          console.log('⚠️ Component unmounted, skipping state updates')
+          return
+        }
+
+        setSession(session)
+        setUser(session?.user ?? null)
+        
+        if (session?.user) {
+          console.log('👤 Creating/updating profile for user:', session.user.id)
+          await createOrUpdateProfile(session.user)
+        }
+      } catch (error) {
+        console.error('❌ Error fetching session:', error)
+      } finally {
+        if (mounted) {
+          console.log('✅ Setting loading state to false')
+          setIsLoading(false)
+        }
       }
-      setIsLoading(false)
     }
 
     fetchSession()
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
       console.log('🔔 Auth state changed:', event, 'Session:', session ? 'exists' : 'null')
+      
+      if (!mounted) {
+        console.log('⚠️ Component unmounted, skipping auth state change')
+        return
+      }
+
       setSession(session)
       setUser(session?.user ?? null)
       
       if (event === 'SIGNED_IN' && session?.user) {
         console.log('✅ User signed in, updating profile...')
         await createOrUpdateProfile(session.user)
-        console.log('🔄 Redirecting to profile...')
-        router.push('/profile')
+        if (mounted) {
+          console.log('🔄 Redirecting to profile...')
+          router.push('/profile')
+        }
       } else if (event === 'SIGNED_OUT') {
         console.log('👋 User signed out')
         setProfile(null)
-        router.push('/auth/login')
+        if (mounted) {
+          router.push('/auth/login')
+        }
       }
     })
 
     return () => {
       console.log('🧹 Cleaning up auth subscriptions')
+      mounted = false
       subscription.unsubscribe()
     }
   }, [router])
