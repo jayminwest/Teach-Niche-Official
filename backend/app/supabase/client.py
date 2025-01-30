@@ -45,3 +45,6 @@ def get_supabase_client() -> Client:
 def get_supabase() -> Client:
     """Lazy initialization of Supabase client."""
     return get_supabase_client()
+
+# Create a default client instance for direct import
+supabase = get_supabase()
