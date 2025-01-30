@@ -88,7 +88,7 @@ const Lessons: NextPage = () => {
         const { data, error } = await supabase
           .from('purchases')
           .select('*')
-          .order('purchased_at', { ascending: false });
+          .order('purchase_date', { ascending: false });
 
         if (error) throw error;
         setPurchasedLessons(data || []);
@@ -229,7 +229,7 @@ const Lessons: NextPage = () => {
               price={lesson.price}
               isNew={lesson.isNew}
               isPurchased={purchasedLessons.some(pl => pl.id === lesson.id)}
-              purchasedAt={purchasedLessons.find(pl => pl.id === lesson.id)?.purchased_at}
+              purchasedAt={purchasedLessons.find(pl => pl.id === lesson.id)?.purchase_date}
               onPurchaseClick={handlePurchaseClick}
               onPlayClick={handlePlayClick}
             />
@@ -254,7 +254,7 @@ const Lessons: NextPage = () => {
             title={lesson.title}
             description={lesson.description}
             isPurchased={true}
-            purchasedAt={lesson.purchased_at}
+            purchasedAt={lesson.purchase_date}
             onPlayClick={() => handlePlayClick(lesson.id)}
           />
         ))}
