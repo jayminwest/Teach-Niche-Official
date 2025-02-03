@@ -2,6 +2,25 @@
 
 Create a secure and seamless integration between Stripe checkout, Supabase database, and the frontend lessons page to enable lesson purchases, access management, and purchase history tracking.
 
+# RELEVANT FILES:
+### Backend Files:
+backend/app/routes/stripe.py                     
+backend/app/stripe/payments.py
+backend/app/stripe/webhooks.py
+backend/app/supabase/client.py
+
+### Frontend Files:
+frontend/src/components/LessonCard.tsx           
+frontend/src/context/AuthContext.tsx 
+frontend/src/lib/supabase.ts
+frontend/src/lib/stripe.ts
+frontend/src/pages/api/stripe/checkout_session.ts
+frontend/src/pages/lessons.tsx
+
+## ArcPrompts:
+specs/stripe_integration_prompt.md               
+specs/stripe_supabase_conn.md 
+
 ## Mid-Level Objectives
 
 1. Database Schema & Access Control
