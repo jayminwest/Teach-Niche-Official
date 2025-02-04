@@ -48,7 +48,7 @@ async def create_checkout_session(data: dict):
             payment_method_types=['card'],
             line_items=line_items,
             mode=data.get('mode', 'payment'),
-            success_url=data.get('success_url', 'https://example.com/success'),
+            success_url=data.get('success_url', 'https://example.com/success') + "?session_id={CHECKOUT_SESSION_ID}",
             cancel_url=data.get('cancel_url', 'https://example.com/cancel'),
         )
 
