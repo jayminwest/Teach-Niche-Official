@@ -1,6 +1,12 @@
 import { loadStripe } from '@stripe/stripe-js';
 
-const stripePublishableKey = process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY;
+import Stripe from 'stripe';
+
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
+  apiVersion: '2023-10-16',
+});
+
+export default stripe;
 
 if (!stripePublishableKey) {
   throw new Error(
