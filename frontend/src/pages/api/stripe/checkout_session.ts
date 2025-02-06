@@ -42,8 +42,8 @@ export default async function handler(
       ],
       mode: 'payment',
       metadata: {
-        lesson_id: lessonId,
-        user_id: req.body.userId
+        lesson_id: lessonId.toString(),
+        user_id: userId.toString()
       },
       success_url: `${req.headers.origin}/checkout/success?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${req.headers.origin}/lessons?canceled=true`,

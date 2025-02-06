@@ -28,7 +28,8 @@ export default function Success() {
         const responseData = await response.json();
         
         if (!response.ok) {
-          throw new Error(responseData.message || 'Failed to verify payment');
+          setError(responseData.message || 'Failed to verify payment');
+          return;
         }
 
         const { success } = responseData;
@@ -38,10 +39,12 @@ export default function Success() {
           setTimeout(() => {
             router.push('/profile');
           }, 2000);
+        } else {
+          setError(responseData.message || 'Payment verification failed');
         }
-      } catch (error) {
+      } catch (error: any) {
         console.error('Error processing success:', error);
-        setError('Failed to process payment confirmation');
+        setError(error.message || 'Failed to process payment confirmation');
       }
     };
 

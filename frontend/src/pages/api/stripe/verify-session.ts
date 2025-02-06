@@ -17,6 +17,13 @@ export default async function handler(
   try {
     const { session_id } = req.body;
 
+    if (!session_id) {
+      return res.status(400).json({
+        success: false,
+        message: 'Session ID is required'
+      });
+    }
+
     console.log('Retrieving session:', session_id);
     const session = await stripe.checkout.sessions.retrieve(session_id);
     console.log('Session retrieved:', session);
@@ -33,10 +40,10 @@ export default async function handler(
     console.log('Session metadata:', metadata);
     
     if (!metadata.lesson_id || !metadata.user_id) {
-      console.log('Missing required metadata');
+      console.log('Missing required metadata:', metadata);
       return res.status(400).json({
         success: false,
-        message: 'Missing required purchase information'
+        message: 'Missing required purchase information. Please ensure lesson_id and user_id are provided.'
       });
     }
 
