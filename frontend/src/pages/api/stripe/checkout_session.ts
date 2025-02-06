@@ -56,13 +56,16 @@ export default async function handler(
     if (!response.ok) {
       const errorData = await response.json();
       console.error('Backend API error:', errorData);
-      throw new Error(`Checkout session creation failed: ${errorData.detail || JSON.stringify(errorData)}`);
+      return res.status(response.status).json(errorData);
     }
 
     const session = await response.json();
     res.status(200).json({ sessionId: session.id })
-  } catch (error) {
+  } catch (error: any) {
     console.error('Error creating checkout session:', error)
-    res.status(500).json({ message: 'Error creating checkout session' })
+    res.status(500).json({ 
+      message: error.message || 'Error creating checkout session',
+      detail: error.detail || error.toString()
+    })
   }
 }

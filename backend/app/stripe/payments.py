@@ -122,4 +122,10 @@ async def create_checkout_session(data: dict):
 
         return JSONResponse(content={'id': checkout_session.id})
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        print(f"Error in create_checkout_session: {str(e)}")
+        if isinstance(e, HTTPException):
+            raise e
+        raise HTTPException(
+            status_code=500,
+            detail=f"Error creating checkout session: {str(e)}"
+        )
