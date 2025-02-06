@@ -70,7 +70,7 @@ export default async function handler(
       });
     }
 
-    const { lesson_id, user_id } = metadata;
+    const { lesson_id, user_id } = finalMetadata;
 
     // Record the purchase in Supabase
     const { data, error } = await supabase

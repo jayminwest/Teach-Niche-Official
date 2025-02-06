@@ -60,8 +60,8 @@ export default async function handler(
         lesson_id: String(lessonId),
         user_id: String(userId)
       },
-      success_url: `${req.headers.origin}/checkout/success?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${req.headers.origin}/lessons?canceled=true`,
+      success_url: `${process.env.NEXT_PUBLIC_BASE_URL || req.headers.origin}/checkout/success?session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${process.env.NEXT_PUBLIC_BASE_URL || req.headers.origin}/lessons?canceled=true`,
     })
 
     res.status(200).json({ sessionId: session.id })
