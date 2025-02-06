@@ -65,9 +65,11 @@ async def upload_video(
         print("Upload completed successfully!")
         print(f"Video data received: {video_data}")
         
+        # Extract video ID from the URI string
+        video_id = video_data.split('/')[-1] if isinstance(video_data, str) else ''
+        
         return {
-            'video_id': video_data.get('uri', '').split('/')[-1],
-            'player_embed_url': video_data.get('player_embed_url'),
+            'video_id': video_id,
             'status': 'success'
         }
         
