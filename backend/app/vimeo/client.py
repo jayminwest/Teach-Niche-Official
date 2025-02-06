@@ -22,5 +22,6 @@ def get_vimeo_client() -> vimeo.VimeoClient:
     return vimeo.VimeoClient(
         token=settings.VIMEO_ACCESS_TOKEN,
         key=settings.VIMEO_CLIENT_ID,
-        secret=settings.VIMEO_CLIENT_SECRET
+        secret=settings.VIMEO_CLIENT_SECRET,
+        api_version='3.4'  # Use latest stable API version
     )
