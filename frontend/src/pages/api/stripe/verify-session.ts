@@ -25,8 +25,15 @@ export default async function handler(
     }
 
     console.log('Retrieving session:', session_id);
-    const session = await stripe.checkout.sessions.retrieve(session_id);
-    console.log('Session retrieved:', session);
+    const session = await stripe.checkout.sessions.retrieve(session_id, {
+      expand: ['metadata']
+    });
+    console.log('Session retrieved:', {
+      id: session.id,
+      payment_status: session.payment_status,
+      metadata: session.metadata,
+      amount_total: session.amount_total
+    });
 
     if (session.payment_status !== 'paid') {
       console.log('Payment not completed:', session.payment_status);

@@ -23,7 +23,18 @@ export default async function handler(
       })
     }
 
-    console.log('Creating checkout session with:', { lessonId, price, userId })
+    // Validate and convert IDs to strings
+    const metadata = {
+      lesson_id: String(lessonId),
+      user_id: String(userId)
+    };
+    
+    console.log('Creating checkout session with:', { 
+      lessonId, 
+      price, 
+      userId,
+      metadata 
+    });
     
     // Create Stripe checkout session
     const session = await stripe.checkout.sessions.create({
@@ -41,10 +52,7 @@ export default async function handler(
         },
       ],
       mode: 'payment',
-      metadata: {
-        lesson_id: lessonId.toString(),
-        user_id: userId.toString()
-      },
+      metadata,
       success_url: `${req.headers.origin}/checkout/success?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${req.headers.origin}/lessons?canceled=true`,
     })
