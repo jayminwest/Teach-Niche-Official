@@ -44,6 +44,18 @@ class Settings(BaseModel):
     )
     STRIPE_SECRET_KEY: str = Field(default="test-key")
     STRIPE_WEBHOOK_SECRET: str = Field(default="test-webhook-secret")
+    VIMEO_ACCESS_TOKEN: str = Field(
+        default="",
+        description="Vimeo API access token for video management"
+    )
+    VIMEO_CLIENT_ID: str = Field(
+        default="",
+        description="Vimeo API client ID"
+    )
+    VIMEO_CLIENT_SECRET: str = Field(
+        default="",
+        description="Vimeo API client secret"
+    )
     CORS_ORIGINS: List[str] = ["http://localhost:3000"]
 
     class Config:
