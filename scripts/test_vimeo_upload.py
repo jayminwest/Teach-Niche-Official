@@ -1,6 +1,7 @@
 import asyncio
 import os
 import sys
+import subprocess
 from pathlib import Path
 
 # Add the backend directory to Python path
@@ -9,6 +10,38 @@ sys.path.append(str(backend_dir))
 
 from app.vimeo.client import get_vimeo_client
 from app.vimeo.upload import upload_video
+
+def create_test_mp4(filepath: Path, duration_secs: int = 5):
+    """
+    Creates a minimal valid MP4 file for testing.
+    Uses ffmpeg to create a test video with color bars.
+    
+    Args:
+        filepath: Where to save the test MP4
+        duration_secs: Length of test video in seconds
+    """
+    try:
+        # Create color bars video using ffmpeg
+        cmd = [
+            'ffmpeg',
+            '-f', 'lavfi',  # Use lavfi input format
+            '-i', f'testsrc=duration={duration_secs}:size=320x240:rate=30',  # Generate test pattern
+            '-c:v', 'libx264',  # Use H.264 codec
+            '-y',  # Overwrite output file if exists
+            str(filepath)
+        ]
+        
+        print(f"Creating test video file at {filepath}")
+        subprocess.run(cmd, check=True, capture_output=True)
+        print(f"Successfully created {duration_secs}s test video")
+        
+    except subprocess.CalledProcessError as e:
+        print(f"Error creating test video: {e}")
+        print(f"ffmpeg stderr: {e.stderr.decode()}")
+        raise
+    except FileNotFoundError:
+        print("Error: ffmpeg not found. Please install ffmpeg to create test videos.")
+        raise
 
 async def main():
     # Get video path from environment or use default
@@ -20,10 +53,7 @@ async def main():
     
     # Create a test video file if none exists
     if not video_path.exists():
-        print(f"Creating test video file at {video_path}")
-        # Create a minimal valid MP4 file for testing
-        with open(video_path, 'wb') as f:
-            f.write(b'\x00' * 1024)  # 1KB dummy video file
+        create_test_mp4(video_path)
     
     print(f"Starting video upload from {video_path}...")
     print(f"Checking Vimeo credentials...")
