@@ -27,7 +27,12 @@ export default async function handler(
     });
 
     // Call our backend API
-    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || ''}/stripe/checkout_session`, {
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL?.replace(/\/$/, '');
+    if (!apiUrl) {
+      throw new Error('NEXT_PUBLIC_API_URL environment variable is not set');
+    }
+    
+    const response = await fetch(`${apiUrl}/stripe/checkout_session`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
