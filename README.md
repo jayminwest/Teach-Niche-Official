@@ -1,13 +1,28 @@
-# Project Name
+# TeachNiche
 
-A full-stack application with Next.js frontend and Python backend.
+A creator-centric learning marketplace platform that enables educators to share and monetize their knowledge through video lessons.
 
-git checkout garrett_branch
+Developed by Jaymin West
+
+## Features
+
+- 🎓 Create and sell video-based lessons
+- 💰 Secure payments via Stripe Connect
+- 🎥 Professional video hosting through Vimeo
+- 🔐 Authentication and user management with Supabase
+- 💻 Modern, responsive interface built with Next.js
+
+## Tech Stack
+
+- Frontend: Next.js with TypeScript and Tailwind CSS
+- Backend: Python/FastAPI
+- Authentication & Database: Supabase
+- Payment Processing: Stripe Connect
+- Video Hosting: Vimeo
 
 ## Prerequisites
 
-- Docker
-- Docker Compose
+- Docker & Docker Compose
 - Node.js 18+ (for local development)
 - Python 3.11+ (for local development)
 
@@ -16,40 +31,53 @@ git checkout garrett_branch
 1. Clone the repository
 
 2. Create environment files:
-   - Copy .env.example to .env.dev for development
-   - Copy .env.example to .env.prod for production
+   - Copy `.env.example` to `.env.dev` for development
+   - Copy `.env.example` to `.env.prod` for production
 
 3. Development Environment:
-   - Run the application in development mode with hot-reloading: 
-     docker-compose up --build
-   - Access frontend at http://localhost:3000
-   - Access backend at http://localhost:8000
+   ```bash
+   docker-compose up --build
+   ```
+   - Frontend: http://localhost:3000
+   - Backend: http://localhost:8000
 
 4. Production Environment:
-   - Run the application in production mode:
-     docker-compose -f docker-compose.prod.yml up --build
-   - Access frontend at http://localhost:3000
-   - Access backend at http://localhost:8000
+   ```bash
+   docker-compose -f docker-compose.prod.yml up --build
+   ```
 
 ## Local Development (Without Docker)
 
-1. Frontend:
-   - Navigate to frontend directory
-   - Install dependencies: npm install
-   - Start development server: npm run dev
-   - Run tests: npm test
-   - Run tests in watch mode: npm run test:watch
-   - Generate test coverage report: npm run test:coverage
+### Frontend
+```bash
+cd frontend
+npm install
+npm run dev    # Start development server
+npm test      # Run tests
+npm run test:watch    # Run tests in watch mode
+npm run test:coverage # Generate coverage report
+```
 
-2. Backend:
-   - Navigate to backend directory
-   - Create virtual environment
-   - Install dependencies: pip install -r requirements.txt
-   - Start server: python main.py
+### Backend
+```bash
+cd backend
+python -m venv venv
+source venv/bin/activate  # On Windows: venv\Scripts\activate
+pip install -r requirements.txt
+python main.py
+```
 
 ## Environment Variables
 
-Development: .env.dev
-Production: .env.prod
+- Development: `.env.dev`
+- Production: `.env.prod`
 
-Do not commit environment files to version control.
+Note: Environment files contain sensitive information and should not be committed to version control.
+
+## Contributing
+
+Please read our contributing guidelines before submitting pull requests.
+
+## License
+
+MIT License
