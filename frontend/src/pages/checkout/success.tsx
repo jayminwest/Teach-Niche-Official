@@ -43,8 +43,17 @@ export default function Success() {
           setError(responseData.message || 'Payment verification failed');
         }
       } catch (error: any) {
-        console.error('Error processing success:', error);
-        setError(error.message || 'Failed to process payment confirmation');
+        console.error('Error processing success:', {
+          error,
+          message: error.message,
+          status: error.status
+        });
+        if (error instanceof Response) {
+          const data = await error.json();
+          setError(data.message || 'Failed to process payment confirmation');
+        } else {
+          setError(error.message || 'Failed to process payment confirmation');
+        }
       }
     };
 

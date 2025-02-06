@@ -25,9 +25,18 @@ export default async function handler(
     }
 
     console.log('Retrieving session:', session_id);
-    const session = await stripe.checkout.sessions.retrieve(session_id, {
-      expand: ['metadata']
-    });
+    let session;
+    try {
+      session = await stripe.checkout.sessions.retrieve(session_id, {
+        expand: ['metadata']
+      });
+    } catch (stripeError: any) {
+      console.error('Stripe API error:', stripeError);
+      return res.status(400).json({
+        success: false,
+        message: stripeError.message || 'Error retrieving Stripe session'
+      });
+    }
     console.log('Session retrieved:', {
       id: session.id,
       payment_status: session.payment_status,
@@ -70,10 +79,15 @@ export default async function handler(
       ]);
 
     if (error) {
-      console.error('Supabase error:', error);
+      console.error('Supabase error:', {
+        error,
+        message: error.message,
+        details: error.details
+      });
       return res.status(500).json({ 
         success: false,
-        message: 'Failed to record purchase' 
+        message: 'Failed to record purchase',
+        details: error.message
       });
     }
 
