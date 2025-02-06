@@ -1,9 +1,4 @@
 import { NextApiRequest, NextApiResponse } from 'next'
-import Stripe from 'stripe'
-
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: '2023-10-16'
-})
 
 export default async function handler(
   req: NextApiRequest,
@@ -23,47 +18,39 @@ export default async function handler(
       })
     }
 
-    // Validate and convert IDs to strings
-    const metadata = {
-      lesson_id: String(lessonId),
-      user_id: String(userId)
-    };
-    
-    console.log('Creating checkout session with:', { 
-      lessonId, 
-      price, 
-      userId,
-      metadata 
-    });
-    
-    // Create Stripe checkout session
-    const session = await stripe.checkout.sessions.create({
-      payment_method_types: ['card'],
-      line_items: [
-        {
+    // Call our backend API
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/stripe/checkout_session`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        line_items: [{
           price_data: {
             currency: 'usd',
             product_data: {
               name: `Lesson ${lessonId}`,
-              metadata: {
-                lesson_id: String(lessonId),
-                user_id: String(userId)
-              }
+              metadata: { lesson_id: String(lessonId), user_id: String(userId) }
             },
-            unit_amount: Math.round(price * 100), // Convert to cents
+            unit_amount: Math.round(price * 100),
           },
           quantity: 1,
+        }],
+        metadata: {
+          lesson_id: String(lessonId),
+          user_id: String(userId)
         },
-      ],
-      mode: 'payment',
-      metadata: {
-        lesson_id: String(lessonId),
-        user_id: String(userId)
-      },
-      success_url: `${process.env.NEXT_PUBLIC_BASE_URL || req.headers.origin}/checkout/success?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${process.env.NEXT_PUBLIC_BASE_URL || req.headers.origin}/lessons?canceled=true`,
-    })
+        success_url: `${process.env.NEXT_PUBLIC_BASE_URL}/checkout/success?session_id={CHECKOUT_SESSION_ID}`,
+        cancel_url: `${process.env.NEXT_PUBLIC_BASE_URL}/lessons?canceled=true`,
+      })
+    });
 
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.detail || 'Failed to create checkout session');
+    }
+
+    const session = await response.json();
     res.status(200).json({ sessionId: session.id })
   } catch (error) {
     console.error('Error creating checkout session:', error)
