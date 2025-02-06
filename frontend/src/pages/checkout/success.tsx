@@ -1,51 +1,73 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
-import { supabase } from '../../lib/supabase';
-import stripe from '../../lib/stripe';
+import { Box, Text, Spinner, Container } from '@chakra-ui/react';
 
 export default function Success() {
   const router = useRouter();
+  const [status, setStatus] = useState('processing');
+  const [error, setError] = useState('');
 
   useEffect(() => {
     const handleStripeSuccess = async () => {
       const { session_id } = router.query;
 
+      if (!session_id) {
+        setError('No session ID provided');
+        return;
+      }
+
       try {
-        if (!session_id) {
-          console.error('No session ID provided in query parameters');
-          throw new Error('No session ID provided in query parameters');
+        const response = await fetch('/api/stripe/verify-session', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ session_id }),
+        });
+
+        if (!response.ok) {
+          throw new Error('Failed to verify payment');
         }
 
-        // Fetch the checkout session from Stripe
-        const session = await stripe.checkout.sessions.retrieve(session_id);
-
-        // Verify the session and extract metadata
-        const { lesson_id, user_id } = session.metadata;
-
-        // Record the purchase in Supabase
-        const { data, error } = await supabase
-          .from('purchases')
-          .insert([
-            {
-              lesson_id,
-              user_id,
-              amount: session.amount_total / 100, // Convert cents to dollars
-              created_at: new Date(),
-            }
-          ]);
-
-        if (error) throw error;
-
-        router.push('/profile');
-
+        const { success } = await response.json();
+        
+        if (success) {
+          setStatus('complete');
+          setTimeout(() => {
+            router.push('/profile');
+          }, 2000);
+        }
       } catch (error) {
-        console.error('Error processing Stripe success:', error);
-        router.push('/checkout/cancel');
+        console.error('Error processing success:', error);
+        setError('Failed to process payment confirmation');
       }
     };
 
-    handleStripeSuccess();
-  }, [router]);
+    if (router.query.session_id) {
+      handleStripeSuccess();
+    }
+  }, [router.query]);
 
-  return <div>Processing your purchase...</div>;
+  return (
+    <Container maxW="md" py={12}>
+      <Box textAlign="center">
+        {status === 'processing' && (
+          <>
+            <Spinner size="xl" mb={4} />
+            <Text>Processing your purchase...</Text>
+          </>
+        )}
+        {status === 'complete' && (
+          <Text color="green.500" fontSize="lg">
+            Purchase successful! Redirecting to your profile...
+          </Text>
+        )}
+        {error && (
+          <Text color="red.500">
+            {error}
+          </Text>
+        )}
+      </Box>
+    </Container>
+  );
 }
