@@ -6,11 +6,11 @@ Developed by Jaymin West
 
 ## Features
 
-- 🎓 Create and sell video-based lessons
-- 💰 Secure payments via Stripe Connect
-- 🎥 Professional video hosting through Vimeo
-- 🔐 Authentication and user management with Supabase
-- 💻 Modern, responsive interface built with Next.js
+- Create and sell video-based lessons
+- Secure payments via Stripe Connect
+- Professional video hosting through Vimeo
+- Authentication and user management with Supabase
+- Modern, responsive interface built with Next.js
 
 ## Tech Stack
 
