@@ -25,6 +25,10 @@ async def main():
             f.write(b'\x00' * 1024)  # 1KB dummy video file
     
     print(f"Starting video upload from {video_path}...")
+    print(f"Checking Vimeo credentials...")
+    client = get_vimeo_client()
+    print(f"Client initialized with API version: {client.api_version}")
+    
     result = await upload_video(
         str(video_path),
         "Test Upload",
@@ -32,6 +36,10 @@ async def main():
     )
     
     print("\nUpload result:", result)
+    if result['status'] == 'error':
+        print("\nError Details:")
+        print(f"Message: {result.get('message')}")
+        print(f"Type: {result.get('error_type')}")
 
 if __name__ == "__main__":
     asyncio.run(main())
