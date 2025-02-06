@@ -140,6 +140,11 @@ const Lessons: NextPage = () => {
         throw new Error('Stripe failed to load');
       }
 
+      // Get user ID from session
+      if (!session?.user?.id) {
+        throw new Error('User not authenticated');
+      }
+
       // Create checkout session through our API
       const response = await fetch('/api/stripe/checkout_session', {
         method: 'POST',
@@ -148,9 +153,15 @@ const Lessons: NextPage = () => {
         },
         body: JSON.stringify({
           lessonId,
-          price
+          price,
+          userId: session.user.id
         }),
       });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(`Checkout session creation failed: ${errorData.message}`);
+      }
 
       const { sessionId } = await response.json();
 
