@@ -65,7 +65,13 @@ async def get_lesson_creator_stripe_account(lesson_id: str) -> str:
             
         return response.data.get('stripe_account_id')
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        print(f"Error in create_checkout_session: {str(e)}")
+        if isinstance(e, HTTPException):
+            raise e
+        raise HTTPException(
+            status_code=500,
+            detail=f"Error creating checkout session: {str(e)}"
+        )
 
 @router.post("/checkout_session")
 async def create_checkout_session(data: dict):

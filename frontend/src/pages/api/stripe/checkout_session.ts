@@ -18,8 +18,16 @@ export default async function handler(
       })
     }
 
+    console.log('Creating checkout session with data:', {
+      lessonId,
+      price,
+      userId,
+      baseUrl: process.env.NEXT_PUBLIC_BASE_URL,
+      apiUrl: process.env.NEXT_PUBLIC_API_URL
+    });
+
     // Call our backend API
-    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/stripe/checkout_session`, {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || ''}/stripe/checkout_session`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -46,8 +54,9 @@ export default async function handler(
     });
 
     if (!response.ok) {
-      const error = await response.json();
-      throw new Error(error.detail || 'Failed to create checkout session');
+      const errorData = await response.json();
+      console.error('Backend API error:', errorData);
+      throw new Error(`Checkout session creation failed: ${errorData.detail || JSON.stringify(errorData)}`);
     }
 
     const session = await response.json();
