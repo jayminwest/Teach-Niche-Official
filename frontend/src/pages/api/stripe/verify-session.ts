@@ -100,11 +100,17 @@ export default async function handler(
 
     return res.status(200).json({ success: true });
 
-  } catch (error) {
-    console.error('Error verifying session:', error);
+  } catch (error: any) {
+    console.error('Error verifying session:', {
+      error,
+      message: error.message,
+      name: error.name,
+      stack: error.stack
+    });
     return res.status(500).json({ 
       success: false,
-      message: 'Error verifying payment session' 
+      message: 'Error verifying payment session',
+      details: error.message 
     });
   }
 }

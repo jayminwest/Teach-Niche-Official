@@ -46,11 +46,12 @@ export default function Success() {
         console.error('Error processing success:', {
           error,
           message: error.message,
-          status: error.status
+          status: error.status,
+          stack: error.stack
         });
         if (error instanceof Response) {
           const data = await error.json();
-          setError(data.message || 'Failed to process payment confirmation');
+          setError(data.message || data.details || 'Failed to process payment confirmation');
         } else {
           setError(error.message || 'Failed to process payment confirmation');
         }
