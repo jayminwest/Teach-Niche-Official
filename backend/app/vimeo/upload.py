@@ -37,6 +37,7 @@ async def upload_video(
     
     try:
         # Initialize upload
+        print(f"Initializing upload for: {title}")
         video_data = client.upload(
             file_path,
             data={
@@ -45,6 +46,7 @@ async def upload_video(
                 'privacy': privacy
             }
         )
+        print("Upload completed successfully!")
         
         return {
             'video_id': video_data.get('uri', '').split('/')[-1],
