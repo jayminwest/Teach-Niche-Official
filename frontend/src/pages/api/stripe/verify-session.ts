@@ -27,9 +27,7 @@ export default async function handler(
     console.log('Retrieving session:', session_id);
     let session;
     try {
-      session = await stripe.checkout.sessions.retrieve(session_id, {
-        expand: ['metadata']
-      });
+      session = await stripe.checkout.sessions.retrieve(session_id);
     } catch (stripeError: any) {
       console.error('Stripe API error:', stripeError);
       return res.status(400).json({
