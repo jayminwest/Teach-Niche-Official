@@ -89,5 +89,8 @@ def get_settings() -> Settings:
         SUPABASE_URL=os.getenv("SUPABASE_URL", os.getenv("NEXT_PUBLIC_SUPABASE_URL", "http://localhost:8000")),
         SUPABASE_SERVICE_KEY=os.getenv("SUPABASE_SERVICE_KEY", "test-service-key"),
         SUPABASE_ANON_KEY=os.getenv("NEXT_PUBLIC_SUPABASE_ANON_KEY", "test-key"),
-        STRIPE_SECRET_KEY=os.getenv("STRIPE_SECRET_KEY", "test-key")
+        STRIPE_SECRET_KEY=os.getenv("STRIPE_SECRET_KEY", "test-key"),
+        VIMEO_ACCESS_TOKEN=os.getenv("VIMEO_ACCESS_TOKEN", ""),
+        VIMEO_CLIENT_ID=os.getenv("VIMEO_CLIENT_ID", ""),
+        VIMEO_CLIENT_SECRET=os.getenv("VIMEO_CLIENT_SECRET", "")
     )
