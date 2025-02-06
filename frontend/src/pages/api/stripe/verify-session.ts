@@ -27,7 +27,9 @@ export default async function handler(
     console.log('Retrieving session:', session_id);
     let session;
     try {
-      session = await stripe.checkout.sessions.retrieve(session_id);
+      session = await stripe.checkout.sessions.retrieve(session_id, {
+        expand: ['line_items.data.price.product']
+      });
     } catch (stripeError: any) {
       console.error('Stripe API error:', stripeError);
       return res.status(400).json({
@@ -50,10 +52,17 @@ export default async function handler(
       });
     }
 
+    // Try to get metadata from both session and line items
     const metadata = session.metadata || {};
-    console.log('Session metadata:', metadata);
+    const lineItemMetadata = session.line_items?.data[0]?.price?.product?.metadata || {};
+    const finalMetadata = {
+      ...lineItemMetadata,
+      ...metadata
+    };
     
-    if (!metadata.lesson_id || !metadata.user_id) {
+    console.log('Combined metadata:', finalMetadata);
+    
+    if (!finalMetadata.lesson_id || !finalMetadata.user_id) {
       console.log('Missing required metadata:', metadata);
       return res.status(400).json({
         success: false,

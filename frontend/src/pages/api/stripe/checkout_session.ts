@@ -45,6 +45,10 @@ export default async function handler(
             currency: 'usd',
             product_data: {
               name: `Lesson ${lessonId}`,
+              metadata: {
+                lesson_id: String(lessonId),
+                user_id: String(userId)
+              }
             },
             unit_amount: Math.round(price * 100), // Convert to cents
           },
@@ -52,7 +56,10 @@ export default async function handler(
         },
       ],
       mode: 'payment',
-      metadata,
+      metadata: {
+        lesson_id: String(lessonId),
+        user_id: String(userId)
+      },
       success_url: `${req.headers.origin}/checkout/success?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${req.headers.origin}/lessons?canceled=true`,
     })
