@@ -28,7 +28,14 @@ async def main():
     print(f"Starting video upload from {video_path}...")
     print(f"Checking Vimeo credentials...")
     client = get_vimeo_client()
-    print(f"Client initialized with API version: {client.api_version}")
+    
+    # Verify credentials by making a simple API call
+    try:
+        about_me = client.get('/me')
+        print(f"Connected to Vimeo as: {about_me.json().get('name', 'Unknown User')}")
+    except Exception as e:
+        print(f"Failed to verify Vimeo credentials: {str(e)}")
+        return
     
     result = await upload_video(
         str(video_path),
