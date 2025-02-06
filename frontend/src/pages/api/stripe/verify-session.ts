@@ -17,16 +17,30 @@ export default async function handler(
   try {
     const { session_id } = req.body;
 
+    console.log('Retrieving session:', session_id);
     const session = await stripe.checkout.sessions.retrieve(session_id);
+    console.log('Session retrieved:', session);
 
     if (session.payment_status !== 'paid') {
+      console.log('Payment not completed:', session.payment_status);
       return res.status(400).json({ 
         success: false,
-        message: 'Payment not completed' 
+        message: `Payment not completed. Status: ${session.payment_status}` 
       });
     }
 
-    const { lesson_id, user_id } = session.metadata;
+    const metadata = session.metadata || {};
+    console.log('Session metadata:', metadata);
+    
+    if (!metadata.lesson_id || !metadata.user_id) {
+      console.log('Missing required metadata');
+      return res.status(400).json({
+        success: false,
+        message: 'Missing required purchase information'
+      });
+    }
+
+    const { lesson_id, user_id } = metadata;
 
     // Record the purchase in Supabase
     const { data, error } = await supabase

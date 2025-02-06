@@ -25,11 +25,13 @@ export default function Success() {
           body: JSON.stringify({ session_id }),
         });
 
+        const responseData = await response.json();
+        
         if (!response.ok) {
-          throw new Error('Failed to verify payment');
+          throw new Error(responseData.message || 'Failed to verify payment');
         }
 
-        const { success } = await response.json();
+        const { success } = responseData;
         
         if (success) {
           setStatus('complete');

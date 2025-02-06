@@ -14,8 +14,17 @@ export default async function handler(
   }
 
   try {
-    const { lessonId, price } = req.body
+    const { lessonId, price, userId } = req.body
+    
+    if (!lessonId || !price || !userId) {
+      return res.status(400).json({ 
+        message: 'Missing required fields',
+        required: { lessonId, price, userId }
+      })
+    }
 
+    console.log('Creating checkout session with:', { lessonId, price, userId })
+    
     // Create Stripe checkout session
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ['card'],
