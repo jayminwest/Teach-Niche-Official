@@ -58,6 +58,31 @@ interface ListLessonsParams {
 // GET /api/lessons/created
 // Returns current user's created lessons
 
+// POST /api/lessons
+interface CreateLessonParams {
+  title: string;
+  description?: string;
+  price: number;
+  content?: string;
+  content_url?: string;
+  categories?: string[]; // category ids
+}
+
+// PATCH /api/lessons/{id}
+interface UpdateLessonParams {
+  title?: string;
+  description?: string;
+  price?: number;
+  content?: string;
+  content_url?: string;
+  status?: 'draft' | 'published' | 'archived';
+  is_featured?: boolean;
+  categories?: string[];
+}
+
+// DELETE /api/lessons/{id}
+// Soft deletes lesson
+
 // GET /api/lessons/{id}
 interface Lesson {
   id: string;
@@ -92,6 +117,24 @@ interface Category {
 // GET /api/categories/{category_id}/lessons
 // Returns lessons in a category
 
+// POST /api/categories (admin only)
+interface CreateCategoryParams {
+  name: string;
+}
+
+// PATCH /api/categories/{id} (admin only)
+interface UpdateCategoryParams {
+  name: string;
+}
+
+// POST /api/lessons/{lesson_id}/categories
+interface AddLessonCategoryParams {
+  category_id: string;
+}
+
+// DELETE /api/lessons/{lesson_id}/categories/{category_id}
+// Removes category from lesson
+
 // GET /api/reviews/lesson/{lesson_id}
 interface Review {
   id: string;
@@ -108,6 +151,30 @@ interface CreateReviewParams {
   lesson_id: string;
   rating: number;
   comment?: string;
+}
+
+// PATCH /api/reviews/{id}
+interface UpdateReviewParams {
+  rating?: number;
+  comment?: string;
+}
+
+// DELETE /api/reviews/{id}
+// Deletes review if owned by user
+
+// GET /api/profiles/{user_id}/reviews
+// Get all reviews by user
+
+// GET /api/profiles/{user_id}/earnings
+interface CreatorEarnings {
+  total_earnings: number;
+  pending_earnings: number;
+  paid_earnings: number;
+  recent_purchases: Purchase[];
+  earnings_by_period: {
+    period: string;
+    amount: number;
+  }[];
 }
 ```
 
@@ -228,6 +295,38 @@ create policy "Users can view own purchases" on purchases
 -- Only server can insert purchases (after Stripe confirmation)
 create policy "Server can insert purchases" on purchases
   for insert with check (false); -- Handled via server API only
+```
+
+### Reviews
+```sql
+-- Enable RLS
+alter table reviews enable row level security;
+
+-- Anyone can read reviews for published lessons
+create policy "Reviews are viewable by everyone" on reviews
+  for select using (
+    exists (
+      select 1 from lessons 
+      where lessons.id = reviews.lesson_id 
+      and lessons.status = 'published'
+    )
+  );
+
+-- Users can create/update their own reviews
+create policy "Users can manage their own reviews" on reviews
+  for all using (user_id = auth.uid());
+```
+
+### Categories
+```sql
+-- Enable RLS
+alter table categories enable row level security;
+
+-- Anyone can read categories
+create policy "Categories are viewable by everyone" on categories
+  for select using (true);
+
+-- Only admins can manage categories (needs admin role implementation)
 ```
 
 ### Profiles
