@@ -50,7 +50,7 @@ async def upload_video(
         
         # Attempt upload
         try:
-            video_data = client.upload(
+            video_data = await client.upload(
                 file_path,
                 data={
                     'name': title,
