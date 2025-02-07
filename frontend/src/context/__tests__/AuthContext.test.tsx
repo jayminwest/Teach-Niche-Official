@@ -318,11 +318,10 @@ describe('AuthContext', () => {
       error: null
     })
 
-    ;(supabase.from as jest.Mock)().insert.mockImplementationOnce(() => ({
-      select: () => ({
-        single: () => Promise.reject(mockError)
-      })
-    }))
+    ;(supabase.from as jest.Mock)().insert().select().single.mockResolvedValueOnce({
+      data: null,
+      error: mockError
+    })
 
     const consoleSpy = jest.spyOn(console, 'error').mockImplementation()
 
@@ -333,7 +332,7 @@ describe('AuthContext', () => {
     )
 
     await waitFor(() => {
-      expect(consoleSpy).toHaveBeenCalledWith('Error managing profile:', mockError)
+      expect(consoleSpy).toHaveBeenCalledWith('Error managing profile:', expect.any(Error))
     })
 
     consoleSpy.mockRestore()

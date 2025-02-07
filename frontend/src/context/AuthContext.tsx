@@ -90,7 +90,10 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           .select()
           .single()
 
-        if (createError) throw createError
+        if (createError) {
+          console.error('Error managing profile:', createError)
+          return
+        }
         setProfile(createdProfile)
       } else if (existingProfile) {
         setProfile(existingProfile)
