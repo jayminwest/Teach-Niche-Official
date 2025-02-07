@@ -5,7 +5,7 @@ import stripe
 from typing import Dict, Any
 from fastapi.testclient import TestClient
 
-@pytest.fixture(scope="module")
+@pytest.fixture
 def test_user_credentials(random_string, mocker) -> Dict[str, str]:
     """Create a test user that persists for all tests in this module."""
     email = f"test_user_{random_string}@example.com"
@@ -35,7 +35,7 @@ def test_user_credentials(random_string, mocker) -> Dict[str, str]:
     user_data = register_user_with_email(email, password)
     return {"email": email, "password": password, "user_data": user_data}
 
-@pytest.fixture(scope="module")
+@pytest.fixture
 def test_creator_account(test_client, random_string, mocker) -> Dict[str, Any]:
     """Create a test creator account with Stripe Connect setup."""
     email = f"test_creator_{random_string}@example.com"
