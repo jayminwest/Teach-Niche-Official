@@ -24,27 +24,29 @@ async def test_vimeo_client_initialization(mock_vimeo):
 
 @pytest.mark.asyncio
 @patch('app.vimeo.upload.get_vimeo_client')
-async def test_successful_video_upload(mock_client):
+@patch('os.path.exists')
+async def test_successful_video_upload(mock_exists, mock_client):
     """Test successful video upload flow"""
-    mock_client.return_value.upload = MagicMock(
-        return_value={
-            'uri': '/videos/12345',
-            'link': 'https://vimeo.com/12345',
-            'name': 'test_video'
-        }
+    mock_client.return_value.upload = AsyncMock(
+        return_value=MagicMock(
+            uri='/videos/12345',
+            link='https://vimeo.com/12345',
+            name='test_video'
+        )
     )
+    mock_exists.return_value = True
     
     result = await upload_video(
-        file_path="test.mp4",
+        file_path="backend/tests/media/fixtures/test_video.mp4",
         title="Test Video",
         description="Test Description",
         privacy={"view": "disable"}
     )
     
     mock_client.return_value.upload.assert_called_once_with(
-        "test.mp4",
+        "backend/tests/media/fixtures/test_video.mp4",
         data={
-            'name': 'Test Video',
+            'name': 'Test Video', 
             'description': 'Test Description',
             'privacy': {'view': 'disable'}
         }
