@@ -4,17 +4,40 @@
 
 ### Database Schema
 ```sql
-create table lessons (
-  id uuid default uuid_generate_v4() primary key,
-  title text not null,
-  description text not null,
-  price decimal not null,
-  is_new boolean default true,
-  image_url text,
-  creator_id uuid references auth.users not null,
-  created_at timestamp with time zone default timezone('utc'::text, now()),
-  status text check (status in ('draft', 'published')) default 'draft',
-  video_id text
+CREATE TABLE lessons (
+    id uuid PRIMARY KEY,
+    title text NOT NULL,
+    description text,
+    price numeric(19,4) NOT NULL CHECK (price >= 0),
+    vimeo_video_id text,
+    creator_id uuid NOT NULL REFERENCES profiles(id),
+    created_at timestamp with time zone NOT NULL DEFAULT NOW(),
+    updated_at timestamp with time zone NOT NULL DEFAULT NOW(),
+    stripe_product_id text,
+    stripe_price_id text,
+    content text,
+    content_url text,
+    thumbnail_url text,
+    vimeo_url text,
+    is_featured boolean NOT NULL DEFAULT FALSE,
+    status lesson_status NOT NULL DEFAULT 'draft',
+    deleted_at timestamp with time zone,
+    version integer NOT NULL DEFAULT 1
+);
+
+-- Categories
+CREATE TABLE categories (
+    id uuid PRIMARY KEY,
+    name text NOT NULL UNIQUE,
+    created_at timestamp with time zone NOT NULL DEFAULT NOW(),
+    updated_at timestamp with time zone NOT NULL DEFAULT NOW()
+);
+
+-- Lesson Categories Junction
+CREATE TABLE lesson_category (
+    lesson_id uuid NOT NULL REFERENCES lessons(id),
+    category_id uuid NOT NULL REFERENCES categories(id),
+    PRIMARY KEY (lesson_id, category_id)
 );
 ```
 
@@ -53,13 +76,23 @@ interface Lesson {
 
 ### Database Schema
 ```sql
-create table purchases (
-  id uuid default uuid_generate_v4() primary key,
-  user_id uuid references auth.users not null,
-  lesson_id uuid references lessons not null,
-  purchased_at timestamp with time zone default timezone('utc'::text, now()),
-  stripe_payment_intent_id text not null,
-  status text check (status in ('completed', 'refunded')) default 'completed'
+CREATE TABLE purchases (
+    id uuid PRIMARY KEY,
+    user_id uuid NOT NULL REFERENCES profiles(id),
+    lesson_id uuid NOT NULL REFERENCES lessons(id),
+    creator_id uuid NOT NULL REFERENCES profiles(id),
+    purchase_date timestamp with time zone NOT NULL DEFAULT NOW(),
+    stripe_session_id text NOT NULL UNIQUE,
+    amount numeric(19,4) NOT NULL CHECK (amount >= 0),
+    platform_fee numeric(19,4) NOT NULL CHECK (platform_fee >= 0),
+    creator_earnings numeric(19,4) NOT NULL CHECK (creator_earnings >= 0),
+    payment_intent_id text NOT NULL,
+    fee_percentage numeric(5,2) NOT NULL CHECK (fee_percentage BETWEEN 0 AND 100),
+    status purchase_status NOT NULL DEFAULT 'pending',
+    metadata jsonb,
+    created_at timestamp with time zone NOT NULL DEFAULT NOW(),
+    updated_at timestamp with time zone NOT NULL DEFAULT NOW(),
+    version integer NOT NULL DEFAULT 1
 );
 ```
 
@@ -83,15 +116,19 @@ interface Purchase {
 
 ### Database Schema
 ```sql
-create table profiles (
-  id uuid references auth.users primary key,
-  full_name text,
-  email text not null,
-  avatar_url text,
-  bio text,
-  social_media_tag text,
-  stripe_account_id text,
-  stripe_onboarding_complete boolean default false
+CREATE TABLE profiles (
+    id uuid PRIMARY KEY,
+    full_name text NOT NULL,
+    email text NOT NULL UNIQUE,
+    bio text,
+    avatar_url text,
+    social_media_tag text,
+    created_at timestamp with time zone NOT NULL DEFAULT NOW(),
+    updated_at timestamp with time zone NOT NULL DEFAULT NOW(),
+    stripe_account_id text,
+    stripe_onboarding_complete boolean NOT NULL DEFAULT FALSE,
+    vimeo_access_token text,
+    deleted_at timestamp with time zone
 );
 ```
 
