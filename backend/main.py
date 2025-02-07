@@ -90,7 +90,7 @@ def create_fastapi_app() -> FastAPI:
     
     # Register lessons router first to avoid route conflicts
     app.include_router(lessons_router, prefix=f"{api_v1_prefix}", tags=["lessons"])
-    app.include_router(vimeo_router, prefix=f"{api_v1_prefix}", tags=["vimeo"])
+    app.include_router(vimeo_router, prefix=f"{api_v1_prefix}/vimeo", tags=["vimeo"])
     app.include_router(stripe_onboarding_router, prefix=f"{api_v1_prefix}/stripe", tags=["stripe"])
     app.include_router(stripe_payments_router, prefix=f"{api_v1_prefix}/stripe", tags=["stripe"])
     app.include_router(stripe_dashboard_router, prefix=f"{api_v1_prefix}/stripe", tags=["stripe"])
