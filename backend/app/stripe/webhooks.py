@@ -80,7 +80,7 @@ def _handle_payment_method_attached(event_data: dict) -> None:
     # Add event handling logic
 
 
-@router.post("/api/v1/stripe/webhook", status_code=200)
+@router.post("/webhook", status_code=200)
 async def handle_stripe_webhook(request: Request):
     """Main entry point for Stripe webhook processing.
     
