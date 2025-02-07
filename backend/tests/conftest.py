@@ -3,10 +3,15 @@ import os
 import pytest
 from fastapi.testclient import TestClient
 
-try:
-    from backend.main import create_fastapi_app
-except ImportError:
-    from main import create_fastapi_app
+# Add backend directory to Python path
+import sys
+from pathlib import Path
+
+backend_dir = str(Path(__file__).parent.parent)
+if backend_dir not in sys.path:
+    sys.path.insert(0, backend_dir)
+
+from main import create_fastapi_app
 
 @pytest.fixture
 def test_client():
