@@ -9,7 +9,7 @@ dependencies = [
     "fastapi",
     "uvicorn",
     "supabase",
-    "python-dotenv",
+    "python-dotenv", 
     "httpx",
     "stripe",
     "pydantic",
@@ -23,7 +23,8 @@ requires = ["setuptools>=42"]
 build-backend = "setuptools.build_meta"
 
 [tool.setuptools.packages.find]
-where = ["backend"]
+where = ["."]
 
 [tool.pytest.ini_options]
-pythonpath = ["backend"]
+pythonpath = ["."]
+testpaths = ["tests"]
