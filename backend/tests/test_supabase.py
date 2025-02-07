@@ -208,7 +208,17 @@ class TestSupabaseIntegration:
             "title": "Test Lesson",
             "description": "Test Description",
             "price": 10.00,
-            "created_at": "2024-01-01T00:00:00"
+            "created_at": "2024-01-01T00:00:00",
+            "content": "Lesson content",
+            "content_url": "https://example.com/content",
+            "thumbnail_url": "https://example.com/thumb.jpg",
+            "vimeo_video_id": "12345678",
+            "vimeo_url": "https://vimeo.com/12345678",
+            "creator_id": "user123",
+            "stripe_product_id": "prod_123",
+            "stripe_price_id": "price_123",
+            "deleted_at": None,
+            "version": 1
         }
         
         lesson = Lesson(**valid_data)
@@ -221,5 +231,15 @@ class TestSupabaseIntegration:
                 id="123",
                 title="",  # Empty title should fail
                 description="Test",
-                price=-10.00  # Negative price should fail
+                price=-10.00,  # Negative price should fail
+                content="content",
+                content_url="https://example.com/content",
+                thumbnail_url="https://example.com/thumb.jpg", 
+                vimeo_video_id="12345678",
+                vimeo_url="https://vimeo.com/12345678",
+                creator_id="user123",
+                stripe_product_id="prod_123",
+                stripe_price_id="price_123",
+                deleted_at=None,
+                version=1
             )
