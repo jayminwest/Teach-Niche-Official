@@ -28,16 +28,6 @@
 
 ## Priority 2: Core Components (Week 2-3)
 
-### Layout Components
-- [ ] Layout.tsx (0% → 80%)
-  - Test component rendering
-  - Test prop variations
-  - Test children rendering
-
-- [ ] Header.tsx (88% → 95%)
-  - Add missing function coverage
-  - Test menu interactions
-
 ### Content Components
 - [ ] LessonCard.tsx (72% → 90%)
   - Test purchase click handler

@@ -10,5 +10,9 @@
     "build:frontend": "cd frontend && npm run build",
     "start:frontend": "cd frontend && npm start",
     "start": "cd frontend && npm run build && npm start"
+  },
+  "devDependencies": {
+    "@testing-library/jest-dom": "^6.6.3",
+    "@testing-library/react": "^16.2.0"
   }
 }

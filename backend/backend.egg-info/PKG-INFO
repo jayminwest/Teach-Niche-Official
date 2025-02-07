@@ -1,0 +1,15 @@
+Metadata-Version: 2.2
+Name: backend
+Version: 0.1.0
+Summary: Backend for Teach Niche
+Author-email: Jaymin West <jaymin@teachniche.com>
+Requires-Dist: fastapi
+Requires-Dist: uvicorn
+Requires-Dist: supabase
+Requires-Dist: python-dotenv
+Requires-Dist: httpx
+Requires-Dist: stripe
+Requires-Dist: pydantic
+Requires-Dist: flask
+Requires-Dist: pytest
+Requires-Dist: requests

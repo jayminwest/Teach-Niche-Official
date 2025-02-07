@@ -8,7 +8,7 @@ from app.supabase.auth import (
 )
 from app.supabase.client import get_supabase_client
 
-router = APIRouter(prefix="/api")
+router = APIRouter(prefix="")
 security = HTTPBearer()
 
 async def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(security)):
