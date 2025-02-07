@@ -54,25 +54,21 @@ async def list_user_created_lessons(user_id: str, db: Client = Depends(get_db)):
     return [Lesson(**lesson) for lesson in lessons.data]
 
 from uuid import UUID
+from datetime import datetime
 
 @router.post("/lessons", response_model=Lesson, status_code=201)
-async def create_lesson(lesson_data: Dict[str, Any] = Body(...)) -> Dict[str, Any]:
+async def create_lesson(lesson_data: LessonCreate = Body(...)) -> Dict[str, Any]:
     """Create a new lesson."""
     db = get_supabase_client()
     try:
-        print(f"Creating lesson with data: {lesson_data}")  # Debug log
+        print(f"Creating lesson with data: {lesson_data.dict()}")  # Debug log
         
-        # Validate creator_id is a valid UUID
-        try:
-            creator_id = UUID(lesson_data.get("creator_id", ""))
-            lesson_data["creator_id"] = str(creator_id)
-        except (ValueError, AttributeError, TypeError):
-            raise HTTPException(
-                status_code=400,
-                detail="Invalid creator_id format. Must be a valid UUID."
-            )
-            
-        response = db.table('lessons').insert(lesson_data).execute()
+        # Convert to dict and add timestamps
+        data = lesson_data.dict()
+        data["created_at"] = datetime.utcnow().isoformat()
+        data["updated_at"] = data["created_at"]
+        
+        response = db.table('lessons').insert(data).execute()
         if response.error:
             print(f"Supabase error: {response.error}")  # Debug log
             raise HTTPException(

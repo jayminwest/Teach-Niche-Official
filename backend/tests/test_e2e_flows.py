@@ -129,12 +129,17 @@ class TestUserPurchaseFlow:
         auth_token = auth_data["session"]["access_token"]
 
         # 2. Create test lesson
-        lesson_data = {
-            "title": "Test E2E Lesson",
-            "description": "Test Description for E2E Flow",
-            "price": 1000,  # $10.00
-            "creator_id": test_creator_account["creator_data"]["user"]["id"]
-        }
+        from app.supabase.models import LessonCreate
+        
+        lesson_data = LessonCreate(
+            title="Test E2E Lesson",
+            description="Test Description for E2E Flow",
+            price=1000,  # $10.00
+            creator_id=test_creator_account["creator_data"]["user"]["id"],
+            status="draft",
+            duration=30,
+            difficulty="beginner"
+        ).dict()
         lesson_response = test_client.post(
             "/api/v1/lessons",
             json=lesson_data,
