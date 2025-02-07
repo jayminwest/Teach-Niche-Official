@@ -36,6 +36,7 @@ describe('Supabase Client', () => {
     jest.isolateModules(() => {
       const { supabase } = require('../supabase');
       expect(supabase).toBeDefined();
+    });
     
     expect(mockCreateClient).toHaveBeenCalledWith(
       mockSupabaseUrl,
