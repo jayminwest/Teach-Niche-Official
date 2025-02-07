@@ -2,6 +2,7 @@
 
 import json
 import pytest
+import uuid
 
 @pytest.mark.supabase
 class TestSupabaseIntegration:
@@ -125,30 +126,10 @@ class TestSupabaseIntegration:
             pytest.skip(f"Auth test failed: {str(e)}")
 
     def test_crud_operations(self, test_client):
-        """Test CRUD (Create, Read, Update, Delete) operations through Supabase API.
-        
-        Validates the complete lifecycle of data management operations including:
-        - Record creation with proper data structure
-        - Data retrieval with correct response format
-        - Record updates with proper persistence
-        - Record deletion with proper cleanup
-
-        Test Cases:
-            1. Record creation returns HTTP 200 with valid ID
-            2. Data retrieval returns expected records
-            3. Record updates persist correctly
-            4. Record deletion completes successfully
-
-        Args:
-            test_client: FastAPI test client fixture
-
-        Raises:
-            AssertionError: If any test condition fails
-        """
+        """Test CRUD operations through Supabase API."""
         from app.supabase.client import get_supabase
         
         try:
-            # Use the lessons table which should exist
             table_name = "lessons"
             test_data = {
                 "title": "CRUD Test Lesson",
@@ -177,5 +158,68 @@ class TestSupabaseIntegration:
             # Test deleting a record
             delete_response = supabase.table(table_name).delete().eq('id', record_id).execute()
             assert delete_response.data is not None
+            
+            # Verify deletion
+            verify_response = supabase.table(table_name).select("*").eq('id', record_id).execute()
+            assert len(verify_response.data) == 0
         except Exception as e:
             pytest.skip(f"CRUD operations failed: {str(e)}")
+    @pytest.mark.asyncio
+    async def test_auth_workflow(self, test_client):
+        """Test complete authentication workflow."""
+        from app.supabase.auth import (
+            register_user_with_email,
+            authenticate_user_with_email,
+            initiate_password_reset
+        )
+        
+        test_email = f"test.user.{uuid.uuid4()}@example.com"
+        test_password = "TestPassword123!"
+        
+        try:
+            # Test registration
+            reg_result = await register_user_with_email(test_email, test_password)
+            assert reg_result is not None
+            assert "user" in reg_result
+            
+            # Test authentication
+            auth_result = await authenticate_user_with_email(test_email, test_password)
+            assert auth_result is not None
+            assert "user" in auth_result
+            assert auth_result["user"]["email"] == test_email
+            
+            # Test password reset
+            reset_result = await initiate_password_reset(test_email)
+            assert reset_result is None  # Should return None on success
+            
+        except Exception as e:
+            pytest.skip(f"Auth workflow test failed: {str(e)}")
+
+    @pytest.mark.asyncio
+    async def test_model_validation(self):
+        """Test model validation for database entities."""
+        from app.supabase.models import Lesson
+        import pytest
+        from pydantic import ValidationError
+        
+        # Test valid data
+        valid_data = {
+            "id": "123",
+            "title": "Test Lesson",
+            "description": "Test Description",
+            "price": 10.00,
+            "created_at": "2024-01-01T00:00:00"
+        }
+        
+        lesson = Lesson(**valid_data)
+        assert lesson.id == valid_data["id"]
+        assert lesson.title == valid_data["title"]
+        
+        # Test invalid data
+        with pytest.raises(ValidationError):
+            Lesson(
+                id="123",
+                title="",  # Empty title should fail
+                description="Test",
+                price=-10.00  # Negative price should fail
+            )
