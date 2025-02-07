@@ -121,6 +121,87 @@
 - VAT/Tax event processing
 - Regional regulatory event handling
 
+## Stripe Connect MVP Implementation Details
+
+### OAuth Flow Implementation
+1. State Parameter Management
+```python
+def generate_state_param():
+    """Generate secure state parameter for CSRF protection."""
+    return secrets.token_urlsafe(32)
+
+def verify_state_param(state: str):
+    """Verify state parameter matches stored value."""
+    # Implement using Redis or similar for distributed systems
+    stored_state = cache.get('stripe_oauth_state')
+    if not stored_state or not secrets.compare_digest(stored_state, state):
+        raise HTTPException(status_code=400, detail='Invalid state parameter')
+```
+
+2. Database Schema for Connect Accounts
+```sql
+-- Add to your Supabase schema
+create table stripe_connected_accounts (
+    id uuid references auth.users primary key,
+    stripe_account_id text unique not null,
+    charges_enabled boolean default false,
+    payouts_enabled boolean default false,
+    requirements jsonb,
+    created_at timestamp with time zone default timezone('utc'::text, now()) not null,
+    updated_at timestamp with time zone default timezone('utc'::text, now()) not null
+);
+
+-- Function to update account status
+create or replace function update_stripe_account_status(
+    account_id uuid,
+    stripe_id text,
+    charges boolean,
+    payouts boolean,
+    reqs jsonb
+) returns void as $$
+begin
+    insert into stripe_connected_accounts (id, stripe_account_id, charges_enabled, payouts_enabled, requirements)
+    values (account_id, stripe_id, charges, payouts, reqs)
+    on conflict (id) do update
+    set 
+        charges_enabled = excluded.charges_enabled,
+        payouts_enabled = excluded.payouts_enabled,
+        requirements = excluded.requirements,
+        updated_at = now();
+end;
+$$ language plpgsql;
+```
+
+3. Environment Variables Needed
+```
+STRIPE_CLIENT_ID=your_stripe_client_id
+BASE_URL=your_api_base_url
+```
+
+### Key Implementation Notes
+1. Use Stripe's Express accounts for fastest integration
+2. Leverage Stripe's hosted onboarding flow
+3. Store minimal account data - let Stripe handle the rest
+4. Use webhooks to stay in sync with account status
+5. Implement proper OAuth state verification
+6. Store Connect account IDs securely
+7. Use Stripe's built-in dashboard for connected accounts
+
+### Minimal Required Endpoints
+1. OAuth Flow
+- GET /stripe/connect/oauth -> Redirect to Stripe
+- GET /stripe/connect/oauth/callback -> Handle account connection
+
+2. Account Management
+- POST /stripe/account/session -> Create onboarding session
+- GET /stripe/account/{id} -> Check account status
+
+3. Webhooks
+- POST /stripe/webhook -> Handle account.updated events
+
+4. Payments
+- POST /stripe/checkout_session -> Create checkout with destination charge
+
 ## Implementation Notes
 - All endpoints need:
   - Error handling
