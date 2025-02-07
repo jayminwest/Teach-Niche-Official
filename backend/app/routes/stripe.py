@@ -199,11 +199,12 @@ async def create_stripe_checkout_session(data: dict = Body(...)) -> dict:
     try:
         account_id = data.get("account_id")
         line_items = data.get("line_items")
+        lesson_id = data.get("lesson_id")
         
-        if not account_id or not line_items:
+        if not all([account_id, line_items, lesson_id]):
             raise HTTPException(
                 status_code=400,
-                detail="Missing required fields: account_id and line_items"
+                detail="Missing required fields: account_id, line_items, and lesson_id"
             )
             
         if not isinstance(line_items, list) or not line_items:
@@ -211,6 +212,11 @@ async def create_stripe_checkout_session(data: dict = Body(...)) -> dict:
                 status_code=400,
                 detail="line_items must be a non-empty list"
             )
+
+        # Ensure metadata contains lesson_id
+        if not data.get("metadata", {}).get("lesson_id"):
+            data["metadata"] = data.get("metadata", {})
+            data["metadata"]["lesson_id"] = lesson_id
             
         session = payments.create_checkout_session(account_id, line_items)
         return session

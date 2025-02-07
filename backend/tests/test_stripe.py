@@ -152,6 +152,7 @@ class TestStripeIntegration:
             '/api/v1/stripe/checkout_session',
             json={
                 "account_id": "test_account_123",
+                "lesson_id": "test_lesson_123",
                 "line_items": [{
                     "price_data": {
                         "currency": self.TEST_CURRENCY,
@@ -159,7 +160,10 @@ class TestStripeIntegration:
                         "unit_amount": self.TEST_UNIT_AMOUNT,
                     },
                     "quantity": self.TEST_QUANTITY,
-                }]
+                }],
+                "metadata": {
+                    "lesson_id": "test_lesson_123"
+                }
             }
         )
         assert response.status_code == 200
