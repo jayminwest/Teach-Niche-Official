@@ -74,12 +74,14 @@ async def test_upload_invalid_file(mock_client):
 @pytest.mark.asyncio
 @patch('app.vimeo.upload.get_vimeo_client')
 @patch('app.vimeo.upload.os.path.exists')
-async def test_upload_api_error(mock_exists, mock_client):
+@patch('app.vimeo.upload.os.path.getsize')
+async def test_upload_api_error(mock_getsize, mock_exists, mock_client):
     """Test handling of Vimeo API errors"""
     mock_client.return_value.upload = AsyncMock(
         side_effect=Exception("API Error")
     )
-    mock_exists.return_value = True  # Ensure file check passes
+    mock_exists.return_value = True  # File exists check passes
+    mock_getsize.return_value = 1024  # Mock valid file size
     
     with pytest.raises(HTTPException) as exc:
         await upload_video("valid.mp4", "Test")

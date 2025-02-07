@@ -45,8 +45,14 @@ async def upload_video(
         # Verify file exists and is readable
         if not os.path.exists(file_path):
             raise FileNotFoundError("Video file not found")
-            
-        print(f"File size: {os.path.getsize(file_path)} bytes")
+        
+        try:
+            print(f"""File size: {os.path.getsize(file_path)} bytes""")
+        except OSError as e:
+            raise HTTPException(
+                status_code=400, 
+                detail=f"File access error: {str(e)}"
+            )
         
         # Attempt upload
         try:
