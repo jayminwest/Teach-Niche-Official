@@ -54,7 +54,7 @@ const TestComponent = () => {
     try {
       await signIn('test@example.com', 'password')
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Sign in failed')
+      setError(err instanceof Error ? err.message : 'Unknown error')
     }
   }
 

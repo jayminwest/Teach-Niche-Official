@@ -190,18 +190,18 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         });
 
         if (error) {
-          throw error;
+          throw new Error(error.message);
         }
 
         // Update local session state
         setSession(data.session);
         setUser(data.user);
-        
+      
         return { user: data.user, session: data.session };
       } catch (error) {
         // Make sure to reset loading state on error
         setIsLoading(false);
-        throw error;
+        throw error instanceof Error ? error : new Error('Sign in failed');
       }
     },
     signUp: async (email: string, password: string) => {
