@@ -1,24 +1,37 @@
-import { supabase, handleAuthStateChange } from '../supabase'
+import { createClient } from '@supabase/supabase-js'
+import { handleAuthStateChange } from '../supabase'
 
-// Mock environment variables
-const originalEnv = process.env
-beforeEach(() => {
-  jest.resetModules()
-  process.env = {
-    ...originalEnv,
-    NEXT_PUBLIC_SUPABASE_URL: 'https://test.supabase.co',
-    NEXT_PUBLIC_SUPABASE_ANON_KEY: 'test-key'
-  }
-})
-
-afterEach(() => {
-  process.env = originalEnv
-})
+// Mock createClient
+jest.mock('@supabase/supabase-js', () => ({
+  createClient: jest.fn()
+}))
 
 describe('Supabase Client', () => {
+  const mockSupabaseUrl = 'https://test.supabase.co'
+  const mockSupabaseKey = 'test-key'
+  
+  beforeEach(() => {
+    // Reset modules before each test
+    jest.resetModules()
+    
+    // Reset environment
+    process.env.NEXT_PUBLIC_SUPABASE_URL = mockSupabaseUrl
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY = mockSupabaseKey
+  })
+
+  afterEach(() => {
+    jest.resetAllMocks()
+  })
+
   it('initializes supabase client with correct config', () => {
-    expect(supabase.supabaseUrl).toBe('https://test.supabase.co')
-    expect(supabase.supabaseKey).toBe('test-key')
+    // Import supabase after setting up mocks
+    const { supabase } = require('../supabase')
+    
+    expect(createClient).toHaveBeenCalledWith(
+      mockSupabaseUrl,
+      mockSupabaseKey,
+      expect.any(Object)
+    )
   })
 
   it('throws error when environment variables are missing', () => {
