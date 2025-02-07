@@ -27,37 +27,18 @@ Environment Variables:
     API_VERSION: Version of the API (default: 1.0.0)
 """
 
-from fastapi import FastAPI
+from fastapi import FastAPI, APIRouter
 from fastapi.middleware.cors import CORSMiddleware
 from app.core.config import get_settings
-try:
-    from app.routes.base import api_router as base_router
-except ImportError:
-    # Fallback to empty router if base routes aren't available
-    from fastapi import APIRouter
-    base_router = APIRouter()
-
-try:
-    from app.routes.supabase import router as supabase_router
-except ImportError:
-    from fastapi import APIRouter
-    supabase_router = APIRouter()
-
-try:
-    from app.stripe.onboarding import router as stripe_onboarding_router
-    from app.stripe.payments import router as stripe_payments_router 
-    from app.stripe.dashboard import router as stripe_dashboard_router
-    from app.stripe.payouts import router as stripe_payouts_router
-    from app.stripe.webhooks import router as stripe_webhooks_router
-    from app.stripe.compliance import router as stripe_compliance_router
-except ImportError:
-    from fastapi import APIRouter
-    stripe_onboarding_router = APIRouter()
-    stripe_payments_router = APIRouter()
-    stripe_dashboard_router = APIRouter() 
-    stripe_payouts_router = APIRouter()
-    stripe_webhooks_router = APIRouter()
-    stripe_compliance_router = APIRouter()
+from app.routes.base import api_router as base_router
+from app.routes.supabase import router as supabase_router
+from app.stripe.onboarding import router as stripe_onboarding_router
+from app.stripe.payments import router as stripe_payments_router 
+from app.stripe.dashboard import router as stripe_dashboard_router
+from app.stripe.payouts import router as stripe_payouts_router
+from app.stripe.webhooks import router as stripe_webhooks_router
+from app.stripe.compliance import router as stripe_compliance_router
+from app.routes.lessons import lessons_router
 
 # Initialize application settings
 APP_SETTINGS = get_settings()
@@ -98,9 +79,9 @@ def create_fastapi_app() -> FastAPI:
     )
 
     # Register all API routers with versioned prefix
-    # Register all API routers with versioned prefix
     app.include_router(base_router, prefix="/api")
     app.include_router(supabase_router, prefix="/api/supabase/v1")
+    app.include_router(lessons_router, prefix="/api/v1/lessons", tags=["lessons"])
     # Stripe routers
     app.include_router(stripe_onboarding_router, prefix="/api/v1/stripe", tags=["stripe"])
     app.include_router(stripe_payments_router, prefix="/api/v1/stripe", tags=["stripe"])
