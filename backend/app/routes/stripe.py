@@ -172,10 +172,7 @@ async def create_stripe_dashboard_session(account_id: str = Body(..., embed=True
         )
 
 @router.post("/checkout_session")
-async def create_stripe_checkout_session(
-    account_id: str = Body(..., embed=True),
-    line_items: list = Body(..., embed=True)
-) -> dict:
+async def create_stripe_checkout_session(data: dict = Body(...)) -> dict:
     """Creates a Stripe checkout session for processing payments.
 
     This endpoint generates a checkout session for processing payments through Stripe.
@@ -200,7 +197,10 @@ async def create_stripe_checkout_session(
         {'id': 'cs_123', 'url': 'https://checkout.stripe.com/pay/cs_123'}
     """
     try:
-        session = payments.create_checkout_session(account_id, line_items)
+        session = payments.create_checkout_session(
+            data.get("account_id"),
+            data.get("line_items", [])
+        )
         return session
     except Exception as error:
         raise HTTPException(

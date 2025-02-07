@@ -130,10 +130,8 @@ class TestStripeIntegration:
         client_secret = response.json().get('client_secret')
         assert client_secret == 'test_secret_123'
 
-    @mock.patch('app.stripe.payments.stripe.checkout.Session.create')
+    @mock.patch('app.stripe.payments.create_checkout_session')
     def test_checkout_session_creation(self, mock_checkout, test_client):
-        # Mock the Stripe API response
-        mock_checkout.return_value = SimpleNamespace(id='test_session_123')
         """Test Stripe checkout session creation for payments.
 
         Verifies that the checkout session endpoint:
@@ -147,11 +145,14 @@ class TestStripeIntegration:
         Raises:
             AssertionError: If response code isn't 200 or session ID is missing
         """
+        # Mock the Stripe API response
+        mock_checkout.return_value = {"id": "test_session_123", "url": "https://test.url"}
+        
         response = test_client.post(
             '/api/v1/stripe/checkout_session',
             json={
-                'account_id': self.TEST_ACCOUNT_ID,
-                'line_items': [
+                "account_id": "test_account_123",
+                "line_items": [
                     {
                         "price_data": {
                             "currency": self.TEST_CURRENCY,
@@ -159,8 +160,8 @@ class TestStripeIntegration:
                             "unit_amount": self.TEST_UNIT_AMOUNT,
                         },
                         "quantity": self.TEST_QUANTITY,
-                    },
-                ],
+                    }
+                ]
             }
         )
         assert response.status_code == 200
