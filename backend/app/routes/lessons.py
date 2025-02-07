@@ -61,25 +61,46 @@ async def create_lesson(lesson_data: LessonCreate = Body(...)) -> Dict[str, Any]
     """Create a new lesson."""
     db = get_supabase_client()
     try:
-        print(f"Creating lesson with data: {lesson_data.dict()}")  # Debug log
-        
         # Convert to dict and add timestamps
         data = lesson_data.dict()
         data["created_at"] = datetime.utcnow().isoformat()
         data["updated_at"] = data["created_at"]
         
+        # Debug logging
+        print("Creating lesson with data:")
+        for key, value in data.items():
+            print(f"  {key}: {value}")
+        
+        # Insert into database
         response = db.table('lessons').insert(data).execute()
+        
+        # Debug response
+        print("Supabase response:")
+        print(f"  Data: {response.data if hasattr(response, 'data') else 'No data'}")
+        print(f"  Error: {response.error if hasattr(response, 'error') else 'No error'}")
+        
         if response.error:
-            print(f"Supabase error: {response.error}")  # Debug log
+            print(f"Supabase error details: {response.error}")
             raise HTTPException(
                 status_code=400,
-                detail=f"Failed to create lesson: {response.error.message}"
+                detail=f"Failed to create lesson: {response.error.message if hasattr(response.error, 'message') else str(response.error)}"
             )
+            
+        if not response.data:
+            raise HTTPException(
+                status_code=500,
+                detail="No data returned from database after insert"
+            )
+            
         return response.data[0]
+        
     except HTTPException:
         raise
     except Exception as e:
-        print(f"Exception creating lesson: {str(e)}")  # Debug log
+        import traceback
+        print(f"Exception creating lesson:")
+        print(f"  Error: {str(e)}")
+        print(f"  Traceback: {traceback.format_exc()}")
         raise HTTPException(
             status_code=500,
             detail=f"Error creating lesson: {str(e)}"
