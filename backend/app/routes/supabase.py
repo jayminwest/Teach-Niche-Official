@@ -19,7 +19,7 @@ from app.supabase.auth import (
     authenticate_user_with_email as sign_in_with_email,
     initiate_password_reset as send_password_reset_email
 )
-from app.supabase.client import get_supabase_client
+from app.supabase.client import get_supabase_client, supabase
 from app.supabase.api import (
     create_record as create_db_record,
     read_records as read_db_records,
@@ -249,7 +249,8 @@ async def delete_record_endpoint(table: str = Body(...), record_id: int = Body(.
 async def get_user_profile(user_id: str) -> Dict[str, Any]:
     """Get user profile data."""
     try:
-        response = supabase.from_("profiles").select("*").eq("id", user_id).single().execute()
+        client = get_supabase_client()
+        response = client.from_("profiles").select("*").eq("id", user_id).single().execute()
         if response.get('error'):
             raise HTTPException(status_code=404, detail="Profile not found")
         return response.get('data', {})
@@ -263,7 +264,8 @@ async def update_user_profile(
 ) -> Dict[str, Any]:
     """Update user profile data."""
     try:
-        response = supabase.from_("profiles").update(profile_data).eq("id", user_id).execute()
+        client = get_supabase_client()
+        response = client.from_("profiles").update(profile_data).eq("id", user_id).execute()
         if response.get('error'):
             raise HTTPException(status_code=400, detail="Profile update failed")
         return response.get('data', {})
