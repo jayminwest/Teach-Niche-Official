@@ -1,51 +1,42 @@
-"""Test configuration and fixtures for the backend application."""
+"""Test configuration and fixtures."""
 import os
-import sys
-from pathlib import Path
-
 import pytest
 from fastapi.testclient import TestClient
 
-# Add the project root to Python path
-project_root = str(Path(__file__).parent.parent.parent)
-sys.path.append(project_root)
-
-# Import and create the FastAPI app
-from backend.main import create_fastapi_app
-
-# Create FastAPI app instance for testing
-app = create_fastapi_app()
+try:
+    from backend.main import create_fastapi_app
+except ImportError:
+    from main import create_fastapi_app
 
 @pytest.fixture
 def test_client():
-    """Fixture that provides a configured TestClient for FastAPI application testing."""
+    """Provides a TestClient for FastAPI application testing."""
+    app = create_fastapi_app()
     with TestClient(app) as client:
         yield client
 
 @pytest.fixture(autouse=True)
 def setup_test_environment():
-    """Fixture that automatically sets up and tears down test environment variables."""
-    # Setup test environment variables
-    os.environ["NEXT_PUBLIC_SUPABASE_URL"] = "http://localhost:8000"
-    os.environ["NEXT_PUBLIC_SUPABASE_ANON_KEY"] = "test-key"
-    os.environ["STRIPE_SECRET_KEY"] = "test-key"
+    """Sets up and tears down test environment variables."""
+    os.environ.update({
+        "NEXT_PUBLIC_SUPABASE_URL": "http://localhost:8000",
+        "NEXT_PUBLIC_SUPABASE_ANON_KEY": "test-key",
+        "STRIPE_SECRET_KEY": "test-key"
+    })
     
-    yield  # Test runs here
+    yield
     
-    # Teardown - clean up environment variables
-    os.environ.pop("NEXT_PUBLIC_SUPABASE_URL", None)
-    os.environ.pop("NEXT_PUBLIC_SUPABASE_ANON_KEY", None)
-    os.environ.pop("STRIPE_SECRET_KEY", None)
+    for key in ["NEXT_PUBLIC_SUPABASE_URL", "NEXT_PUBLIC_SUPABASE_ANON_KEY", "STRIPE_SECRET_KEY"]:
+        os.environ.pop(key, None)
 
 @pytest.fixture
 def mock_stripe():
-    """Fixture for mocking Stripe API calls."""
-    # Add any Stripe-specific mocks here
+    """Mocks Stripe API calls."""
     yield
 
 @pytest.fixture
 def mock_supabase(mocker):
-    """Fixture for mocking Supabase client"""
+    """Mocks Supabase client."""
     mock = mocker.patch("backend.app.supabase.client.get_supabase_client")
     mock.return_value.table.return_value.insert.return_value.execute.return_value.data = [{'id': 'test-model-id'}]
     return mock
