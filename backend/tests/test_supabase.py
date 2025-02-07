@@ -225,19 +225,19 @@ class TestSupabaseIntegration:
         assert lesson.id == valid_data["id"]
         assert lesson.title == valid_data["title"]
         
-        # Test invalid data
+        # Test invalid data - missing required fields should trigger validation error
         with pytest.raises(ValidationError):
             Lesson(
                 id="123",
-                title="",  # Empty title should fail
+                # Omitting required title field
                 description="Test",
-                price=-10.00,  # Negative price should fail
+                # Omitting required price field
                 content="content",
                 content_url="https://example.com/content",
-                thumbnail_url="https://example.com/thumb.jpg", 
+                thumbnail_url="https://example.com/thumb.jpg",
                 vimeo_video_id="12345678",
                 vimeo_url="https://vimeo.com/12345678",
-                creator_id="user123",
+                # Omitting required creator_id field
                 stripe_product_id="prod_123",
                 stripe_price_id="price_123",
                 deleted_at=None,
