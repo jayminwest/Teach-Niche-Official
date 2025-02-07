@@ -152,16 +152,14 @@ class TestStripeIntegration:
             '/api/v1/stripe/checkout_session',
             json={
                 "account_id": "test_account_123",
-                "line_items": [
-                    {
-                        "price_data": {
-                            "currency": self.TEST_CURRENCY,
-                            "product_data": {"name": self.TEST_PRODUCT_NAME},
-                            "unit_amount": self.TEST_UNIT_AMOUNT,
-                        },
-                        "quantity": self.TEST_QUANTITY,
-                    }
-                ]
+                "line_items": [{
+                    "price_data": {
+                        "currency": self.TEST_CURRENCY,
+                        "product_data": {"name": self.TEST_PRODUCT_NAME},
+                        "unit_amount": self.TEST_UNIT_AMOUNT,
+                    },
+                    "quantity": self.TEST_QUANTITY,
+                }]
             }
         )
         assert response.status_code == 200
