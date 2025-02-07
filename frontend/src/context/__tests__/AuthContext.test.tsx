@@ -393,9 +393,6 @@ describe('AuthContext', () => {
       })
     })
     ;(supabase.from as jest.Mock).mockImplementation(() => mockFrom())
-      data: { ...existingProfile, id: mockUser.id },
-      error: null
-    })
 
     render(
       <AuthProvider>
