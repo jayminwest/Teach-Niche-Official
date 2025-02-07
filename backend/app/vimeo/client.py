@@ -6,11 +6,11 @@ handling authentication and providing a reusable client instance.
 """
 
 from functools import lru_cache
-import vimeo
+import pyvimeo
 from ..core.config import get_settings
 
 @lru_cache()
-def get_vimeo_client() -> vimeo.VimeoClient:
+def get_vimeo_client() -> pyvimeo.VimeoClient:
     """
     Get a cached instance of the Vimeo API client.
     
