@@ -57,3 +57,20 @@
 - Connect with lesson creation flow
 - Integrate with user permissions
 - Link with payment/access control
+
+## 5. Thumbnail Management
+
+### GET /api/vimeo/thumbnails/{video_id}
+- Retrieves available thumbnails for a video
+- Important for lesson preview/display
+
+### POST /api/vimeo/thumbnails/{video_id}
+- Allows setting custom thumbnail
+- Essential for lesson presentation
+
+## 6. Video Access Management
+
+### POST /api/vimeo/access/{video_id}
+- Updates video access settings
+- Controls who can view content
+- Essential for paid content protection
