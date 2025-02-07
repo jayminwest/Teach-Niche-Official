@@ -31,10 +31,10 @@ async def test_successful_video_upload(mock_exists, mock_client):
         return_value=MagicMock(
             uri='/videos/12345',
             link='https://vimeo.com/12345',
-            name='test_video',
             status_code=201
         )
     )
+    mock_client.return_value.upload.return_value.name = 'test_video'
     mock_exists.return_value = True
     
     result = await upload_video(
