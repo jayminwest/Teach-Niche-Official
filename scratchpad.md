@@ -84,3 +84,38 @@
 - Updates video access settings
 - Controls who can view content
 - Essential for paid content protection
+- Validates against purchases table
+- Checks lesson_status and purchase_status
+- Respects profiles.deleted_at for access control
+
+## Database Integration Details
+
+### Lesson Status Management
+- Tracks lesson_status enum ('draft', 'published', 'archived')
+- Manages purchase_status enum ('pending', 'completed', 'failed', 'refunded')
+- Updates lessons.version for change tracking
+- Handles soft deletes via deleted_at timestamps
+
+### Database Relationships
+- Validates creator_id against profiles.id
+- Links lessons to categories through lesson_category junction
+- Tracks purchases with user_id, lesson_id, and creator_id
+- Manages reviews with rating constraints (1-5)
+
+### Security & Access Control
+- Verifies profiles.vimeo_access_token for API access
+- Checks profiles.deleted_at for user access
+- Validates purchases.status for content access
+- Manages stripe_product_id and stripe_price_id synchronization
+
+### Analytics Integration
+- Links video metrics to reviews table
+- Tracks purchase history and status
+- Monitors lesson engagement through purchases
+- Handles featured content (lessons.is_featured)
+
+### Content Management
+- Updates lessons.thumbnail_url for video previews
+- Manages lessons.vimeo_video_id and lessons.vimeo_url
+- Tracks content updates via lessons.updated_at
+- Handles lesson metadata (title, description, price)
