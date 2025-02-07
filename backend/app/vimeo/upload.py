@@ -44,7 +44,7 @@ async def upload_video(
         
         # Verify file exists and is readable
         if not os.path.exists(file_path):
-            raise FileNotFoundError("File not found")
+            raise FileNotFoundError("Video file not found")
             
         print(f"File size: {os.path.getsize(file_path)} bytes")
         
