@@ -481,7 +481,7 @@ describe('AuthContext', () => {
     const signUpButton = screen.getByText(/Sign Up/i)
     
     await act(async () => {
-      await userEvent.click(signUpButton)
+      await userEvent.click(validSignUpButton)
     })
 
     await waitFor(() => {
