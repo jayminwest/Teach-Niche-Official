@@ -1,9 +1,9 @@
 from fastapi import APIRouter, HTTPException, Depends
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from app.supabase.auth import (
-    sign_up_with_email,
-    sign_in_with_email,
-    send_password_reset_email,
+    register_user_with_email,
+    authenticate_user_with_email,
+    initiate_password_reset,
     sign_in_with_google,
 )
 from app.supabase.client import get_supabase_client
@@ -28,21 +28,21 @@ async def read_root():
 @router.post("/auth/signup")
 async def signup(email: str, password: str):
     try:
-        return sign_up_with_email(email, password)
+        return register_user_with_email(email, password)
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
 
 @router.post("/auth/signin")
 async def signin(email: str, password: str):
     try:
-        return sign_in_with_email(email, password)
+        return authenticate_user_with_email(email, password)
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
 
 @router.post("/auth/reset-password")
 async def reset_password(email: str):
     try:
-        send_password_reset_email(email)
+        initiate_password_reset(email)
         return {"message": "Password reset email sent"}
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
