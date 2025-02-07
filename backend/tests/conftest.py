@@ -7,17 +7,14 @@ from pathlib import Path
 import pytest
 from fastapi.testclient import TestClient
 
-# Add backend directory to Python path
-backend_dir = Path(__file__).parent.parent.absolute()
-sys.path.insert(0, str(backend_dir))
+# Add project root to Python path
+project_root = Path(__file__).parent.parent.parent.absolute()
+sys.path.insert(0, str(project_root))
 
-from main import create_fastapi_app
+from backend.main import create_fastapi_app
 
 # Create FastAPI app instance
 app = create_fastapi_app()
-
-# Ensure backend is imported for coverage
-import backend
 
 @pytest.fixture(scope="module")
 def test_client():
