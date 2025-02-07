@@ -1,0 +1,227 @@
+import { render, screen, act, waitFor } from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
+import { AuthProvider, useAuth } from '../AuthContext'
+import { supabase } from '../../lib/supabase'
+import { useRouter } from 'next/router'
+
+// Mock next/router
+jest.mock('next/router', () => ({
+  useRouter: jest.fn()
+}))
+
+// Mock supabase client
+jest.mock('../../lib/supabase', () => ({
+  supabase: {
+    auth: {
+      getSession: jest.fn(),
+      onAuthStateChange: jest.fn(() => ({
+        data: { subscription: { unsubscribe: jest.fn() } }
+      })),
+      signInWithPassword: jest.fn(),
+      signInWithOAuth: jest.fn(),
+      signOut: jest.fn()
+    },
+    from: jest.fn(() => ({
+      select: jest.fn(() => ({
+        or: jest.fn(() => ({
+          maybeSingle: jest.fn()
+        })),
+        single: jest.fn()
+      })),
+      insert: jest.fn(() => ({
+        select: jest.fn(() => ({
+          single: jest.fn()
+        }))
+      })),
+      update: jest.fn(() => ({
+        eq: jest.fn(() => ({
+          select: jest.fn(() => ({
+            single: jest.fn()
+          }))
+        }))
+      }))
+    }))
+  }
+}))
+
+// Test component that uses auth context
+const TestComponent = () => {
+  const { user, signIn, signOut } = useAuth()
+  return (
+    <div>
+      {user ? (
+        <>
+          <div data-testid="user-email">{user.email}</div>
+          <button onClick={() => signOut()}>Sign Out</button>
+        </>
+      ) : (
+        <button onClick={() => signIn('test@example.com', 'password')}>
+          Sign In
+        </button>
+      )}
+    </div>
+  )
+}
+
+describe('AuthContext', () => {
+  const mockRouter = {
+    push: jest.fn(),
+    pathname: '/test'
+  }
+  
+  beforeEach(() => {
+    jest.clearAllMocks()
+    ;(useRouter as jest.Mock).mockReturnValue(mockRouter)
+  })
+
+  it('provides initial auth state', async () => {
+    const mockSession = {
+      user: null,
+      session: null
+    }
+    
+    ;(supabase.auth.getSession as jest.Mock).mockResolvedValueOnce({
+      data: { session: null }
+    })
+
+    render(
+      <AuthProvider>
+        <TestComponent />
+      </AuthProvider>
+    )
+
+    await waitFor(() => {
+      expect(screen.getByText(/Sign In/i)).toBeInTheDocument()
+    })
+  })
+
+  it('handles sign in successfully', async () => {
+    const mockUser = {
+      id: '123',
+      email: 'test@example.com',
+      user_metadata: {}
+    }
+    const mockSession = { user: mockUser }
+
+    ;(supabase.auth.signInWithPassword as jest.Mock).mockResolvedValueOnce({
+      data: { user: mockUser, session: mockSession },
+      error: null
+    })
+
+    ;(supabase.from as jest.Mock)().select().or().maybeSingle.mockResolvedValueOnce({
+      data: null,
+      error: null
+    })
+
+    render(
+      <AuthProvider>
+        <TestComponent />
+      </AuthProvider>
+    )
+
+    const signInButton = screen.getByText(/Sign In/i)
+    await act(async () => {
+      await userEvent.click(signInButton)
+    })
+
+    await waitFor(() => {
+      expect(screen.getByTestId('user-email')).toHaveTextContent('test@example.com')
+    })
+  })
+
+  it('handles sign out successfully', async () => {
+    const mockUser = {
+      id: '123',
+      email: 'test@example.com',
+      user_metadata: {}
+    }
+    const mockSession = { user: mockUser }
+
+    ;(supabase.auth.getSession as jest.Mock).mockResolvedValueOnce({
+      data: { session: mockSession }
+    })
+
+    ;(supabase.auth.signOut as jest.Mock).mockResolvedValueOnce({
+      error: null
+    })
+
+    render(
+      <AuthProvider>
+        <TestComponent />
+      </AuthProvider>
+    )
+
+    const signOutButton = await screen.findByText(/Sign Out/i)
+    await act(async () => {
+      await userEvent.click(signOutButton)
+    })
+
+    await waitFor(() => {
+      expect(mockRouter.push).toHaveBeenCalledWith('/auth/login')
+    })
+  })
+
+  it('handles profile creation for new users', async () => {
+    const mockUser = {
+      id: '123',
+      email: 'test@example.com',
+      user_metadata: { full_name: 'Test User' }
+    }
+    const mockSession = { user: mockUser }
+
+    ;(supabase.auth.getSession as jest.Mock).mockResolvedValueOnce({
+      data: { session: mockSession }
+    })
+
+    ;(supabase.from as jest.Mock)().select().or().maybeSingle.mockResolvedValueOnce({
+      data: null,
+      error: null
+    })
+
+    const mockProfile = {
+      id: '123',
+      email: 'test@example.com',
+      full_name: 'Test User'
+    }
+
+    ;(supabase.from as jest.Mock)().insert().select().single.mockResolvedValueOnce({
+      data: mockProfile,
+      error: null
+    })
+
+    render(
+      <AuthProvider>
+        <TestComponent />
+      </AuthProvider>
+    )
+
+    await waitFor(() => {
+      expect(screen.getByTestId('user-email')).toBeInTheDocument()
+    })
+  })
+
+  it('handles sign in errors', async () => {
+    const mockError = new Error('Invalid credentials')
+    
+    ;(supabase.auth.signInWithPassword as jest.Mock).mockResolvedValueOnce({
+      data: { user: null, session: null },
+      error: mockError
+    })
+
+    render(
+      <AuthProvider>
+        <TestComponent />
+      </AuthProvider>
+    )
+
+    const signInButton = screen.getByText(/Sign In/i)
+    
+    await act(async () => {
+      await userEvent.click(signInButton)
+    })
+
+    await waitFor(() => {
+      expect(screen.getByText(/Sign In/i)).toBeInTheDocument()
+    })
+  })
+})
