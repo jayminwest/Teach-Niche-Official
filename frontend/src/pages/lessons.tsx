@@ -262,6 +262,7 @@ const Lessons: NextPage = () => {
         </Flex>
 
         <SimpleGrid 
+          role="list"
           columns={{ 
             base: 1, 
             md: viewMode === 'grid' ? 2 : 1,

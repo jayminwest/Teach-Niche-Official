@@ -74,16 +74,23 @@ describe('Lessons Page', () => {
     renderPage()
     const searchInput = screen.getByPlaceholderText('Search lessons...')
     fireEvent.change(searchInput, { target: { value: 'React' } })
-    expect(screen.getByText('Advanced React Patterns')).toBeInTheDocument()
-    expect(screen.queryByText('TypeScript Mastery')).not.toBeInTheDocument()
+    const headings = screen.getAllByRole('heading')
+    const reactHeading = headings.find(h => h.textContent === 'Advanced React Patterns')
+    const typescriptHeading = headings.find(h => h.textContent === 'TypeScript Mastery')
+    
+    expect(reactHeading).toBeInTheDocument()
+    expect(typescriptHeading).not.toBeInTheDocument()
   })
 
   it('handles sort selection', () => {
     renderPage()
     const sortSelect = screen.getByRole('combobox')
     fireEvent.change(sortSelect, { target: { value: 'price-high' } })
-    const lessons = screen.getAllByRole('article')
-    expect(lessons[0]).toHaveTextContent('59.99')
+    const lessons = screen.getAllByRole('listitem')
+    const prices = lessons.map(l => 
+      l.textContent?.match(/\d+\.\d+/)?.[0]
+    ).filter(Boolean)
+    expect(Number(prices[0])).toBe(59.99)
   })
 
   it('switches view mode', () => {
@@ -92,10 +99,11 @@ describe('Lessons Page', () => {
     const listButton = screen.getByLabelText('List view')
     
     fireEvent.click(listButton)
-    expect(screen.getByRole('grid')).toHaveStyle({ gridTemplateColumns: '1' })
+    const lessonGrid = screen.getByRole('list')
+    expect(lessonGrid).toHaveStyle({ gridTemplateColumns: '1fr' })
     
     fireEvent.click(gridButton)
-    expect(screen.getByRole('grid')).not.toHaveStyle({ gridTemplateColumns: '1' })
+    expect(lessonGrid).toHaveStyle({ gridTemplateColumns: 'repeat(3, 1fr)' })
   })
 
   it('handles lesson purchase', async () => {
@@ -122,7 +130,8 @@ describe('Lessons Page', () => {
     
     fireEvent.click(purchasedTab)
     
-    expect(screen.queryByText('Purchase')).not.toBeInTheDocument()
+    const purchaseButtons = screen.queryAllByRole('button', { name: /Purchase/i })
+    expect(purchaseButtons).toHaveLength(0)
   })
 
   it('redirects to login when no session', () => {
