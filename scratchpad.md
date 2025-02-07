@@ -165,6 +165,23 @@ interface UpdateReviewParams {
 // GET /api/profiles/{user_id}/reviews
 // Get all reviews by user
 
+// POST /api/lessons/{lesson_id}/publish
+// Changes lesson status to 'published'
+
+// POST /api/lessons/{lesson_id}/archive
+// Changes lesson status to 'archived'
+
+// GET /api/lessons/drafts
+// Returns creator's draft lessons
+
+// GET /api/lessons/{lesson_id}/video-status
+interface VideoStatus {
+  status: 'processing' | 'ready' | 'failed';
+  vimeo_status?: string;
+  processing_progress?: number;
+  thumbnail_options?: string[];
+}
+
 // GET /api/profiles/{user_id}/earnings
 interface CreatorEarnings {
   total_earnings: number;
