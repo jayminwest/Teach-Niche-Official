@@ -3,15 +3,16 @@ import { handleAuthStateChange, supabase } from '../supabase'
 
 jest.mock('@supabase/supabase-js')
 
-const mockCreateClient = jest.fn()
+const mockCreateClient = jest.fn().mockReturnValue({
+  auth: {
+    onAuthStateChange: jest.fn()
+  }
+})
 
 // Setup createClient mock
 ;(createClient as jest.Mock).mockImplementation((...args) => {
-  return {
-    auth: {
-      onAuthStateChange: jest.fn()
-    }
-  }
+  mockCreateClient(...args)
+  return mockCreateClient()
 })
 
 describe('Supabase Client', () => {
