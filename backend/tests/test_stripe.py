@@ -130,9 +130,9 @@ class TestStripeIntegration:
         client_secret = response.json().get('client_secret')
         assert client_secret == 'test_secret_123'
 
+    @mock.patch('app.stripe.payments.stripe.checkout.Session.create')
     @mock.patch('app.stripe.payments.get_lesson_creator_stripe_account')
-    @mock.patch('app.stripe.payments.create_checkout_session')
-    def test_checkout_session_creation(self, mock_checkout, mock_get_account, test_client):
+    def test_checkout_session_creation(self, mock_get_account, mock_checkout, test_client):
         """Test Stripe checkout session creation for payments.
 
         Verifies that the checkout session endpoint:
@@ -146,40 +146,39 @@ class TestStripeIntegration:
         Raises:
             AssertionError: If response code isn't 200 or session ID is missing
         """
-        # Mock the account lookup and Stripe API response
+        # Mock the account lookup
         mock_get_account.return_value = "test_connected_account_123"
-        mock_checkout.return_value = {"id": "test_session_123", "url": "https://test.url"}
         
-        # Use a proper UUID format for lesson_id
+        # Mock the Stripe checkout session creation
+        mock_checkout.return_value = SimpleNamespace(id='test_session_123')
+        
         test_lesson_id = "123e4567-e89b-12d3-a456-426614174000"
         
         response = test_client.post(
             '/api/v1/stripe/checkout_session',
             json={
-                "account_id": "test_account_123",
-                "lesson_id": test_lesson_id,
-                "line_items": [{
-                    "price_data": {
-                        "currency": self.TEST_CURRENCY,
-                        "product_data": {"name": self.TEST_PRODUCT_NAME},
-                        "unit_amount": self.TEST_UNIT_AMOUNT,
+                'line_items': [{
+                    'price_data': {
+                        'currency': self.TEST_CURRENCY,
+                        'product_data': {'name': self.TEST_PRODUCT_NAME},
+                        'unit_amount': self.TEST_UNIT_AMOUNT,
                     },
-                    "quantity": self.TEST_QUANTITY,
+                    'quantity': self.TEST_QUANTITY,
                 }],
-                "metadata": {
-                    "lesson_id": test_lesson_id
+                'metadata': {
+                    'lesson_id': test_lesson_id
                 },
-                "success_url": "https://example.com/success",
-                "cancel_url": "https://example.com/cancel"
+                'success_url': 'https://example.com/success',
+                'cancel_url': 'https://example.com/cancel'
             }
         )
         assert response.status_code == 200
         session_id = response.json().get('id')
         assert session_id is not None
 
-    @mock.patch('app.stripe.payments.get_lesson_creator_stripe_account')
     @mock.patch('app.stripe.payments.stripe.checkout.Session.create')
-    def test_payments(self, mock_checkout, mock_get_account, test_client):
+    @mock.patch('app.stripe.payments.get_lesson_creator_stripe_account')
+    def test_payments(self, mock_get_account, mock_checkout, test_client):
         """Test complete Stripe payment processing flow.
     
     Combines checkout session creation tests to verify the full
@@ -192,27 +191,32 @@ class TestStripeIntegration:
     Raises:
         AssertionError: If any part of the payment flow fails
     """
-        # Mock the account lookup and Stripe API response
+        # Mock the account lookup
         mock_get_account.return_value = "test_connected_account_123"
+        
+        # Mock the Stripe checkout session creation
         mock_checkout.return_value = SimpleNamespace(id='test_session_123')
         
-        # Test checkout session creation
-        response = test_client.post('/api/v1/stripe/checkout_session', json={
-            'account_id': 'test_account_123',  # Use mock account ID
-            'line_items': [
-                {
-                    "price_data": {
-                        "currency": self.TEST_CURRENCY,
-                        "product_data": {"name": self.TEST_PRODUCT_NAME},
-                        "unit_amount": self.TEST_UNIT_AMOUNT,
+        test_lesson_id = "123e4567-e89b-12d3-a456-426614174000"
+        
+        response = test_client.post(
+            '/api/v1/stripe/checkout_session',
+            json={
+                'line_items': [{
+                    'price_data': {
+                        'currency': self.TEST_CURRENCY,
+                        'product_data': {'name': self.TEST_PRODUCT_NAME},
+                        'unit_amount': self.TEST_UNIT_AMOUNT,
                     },
-                    "quantity": self.TEST_QUANTITY,
+                    'quantity': self.TEST_QUANTITY,
+                }],
+                'metadata': {
+                    'lesson_id': test_lesson_id
                 },
-            ],
-            'mode': 'payment',
-            'success_url': 'https://example.com/success',
-            'cancel_url': 'https://example.com/cancel'
-        })
+                'success_url': 'https://example.com/success',
+                'cancel_url': 'https://example.com/cancel'
+            }
+        )
         assert response.status_code == 200
 
     def test_payout_configuration(self, test_client):
