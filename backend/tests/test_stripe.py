@@ -274,7 +274,8 @@ class TestStripeIntegration:
         assert call_kwargs['payment_intent_data']['application_fee_amount'] == expected_fee
         assert call_kwargs['payment_intent_data']['transfer_data']['destination'] == test_connected_account
 
-    def test_payout_configuration(self, test_client):
+    @pytest.mark.asyncio
+    async def test_payout_configuration(self, test_client):
         """Test Stripe payout schedule configuration.
 
         Verifies that the payout setup endpoint:
