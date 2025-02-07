@@ -136,7 +136,7 @@ class TestUserPurchaseFlow:
             "creator_id": test_creator_account["creator_data"]["user"]["id"]
         }
         lesson_response = test_client.post(
-            "/lessons",
+            "/api/v1/lessons",
             json=lesson_data,
             headers={"Authorization": f"Bearer {auth_token}"}
         )
