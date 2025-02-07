@@ -148,11 +148,14 @@ class TestStripeIntegration:
         # Mock the Stripe API response
         mock_checkout.return_value = {"id": "test_session_123", "url": "https://test.url"}
         
+        # Use a proper UUID format for lesson_id
+        test_lesson_id = "123e4567-e89b-12d3-a456-426614174000"
+        
         response = test_client.post(
             '/api/v1/stripe/checkout_session',
             json={
                 "account_id": "test_account_123",
-                "lesson_id": "test_lesson_123",
+                "lesson_id": test_lesson_id,
                 "line_items": [{
                     "price_data": {
                         "currency": self.TEST_CURRENCY,
@@ -162,7 +165,7 @@ class TestStripeIntegration:
                     "quantity": self.TEST_QUANTITY,
                 }],
                 "metadata": {
-                    "lesson_id": "test_lesson_123"
+                    "lesson_id": test_lesson_id
                 }
             }
         )
