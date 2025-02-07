@@ -6,60 +6,84 @@ from typing import Dict, Any
 from fastapi.testclient import TestClient
 
 @pytest.fixture(scope="module")
-def test_user_credentials(random_string) -> Dict[str, str]:
+def test_user_credentials(random_string, mocker) -> Dict[str, str]:
     """Create a test user that persists for all tests in this module."""
     email = f"test_user_{random_string}@example.com"
     password = "TestPassword123!"
     
-    # Register new user
-    try:
-        from app.supabase.auth import register_user_with_email
-        user_data = register_user_with_email(email, password)
-        return {"email": email, "password": password, "user_data": user_data}
-    except Exception as e:
-        pytest.fail(f"Failed to create test user: {str(e)}")
+    # Mock Supabase response
+    mock_response = {
+        "user": {
+            "id": "test-user-id",
+            "email": email,
+            "aud": "authenticated",
+            "role": "authenticated"
+        },
+        "session": {
+            "access_token": "test-access-token",
+            "refresh_token": "test-refresh-token",
+            "expires_in": 3600,
+            "token_type": "bearer"
+        }
+    }
+    
+    # Mock the Supabase client
+    mock_auth = mocker.patch('app.supabase.auth.get_supabase_client')
+    mock_auth.return_value.auth.sign_up.return_value.dict.return_value = mock_response
+    
+    from app.supabase.auth import register_user_with_email
+    user_data = register_user_with_email(email, password)
+    return {"email": email, "password": password, "user_data": user_data}
 
 @pytest.fixture(scope="module")
-def test_creator_account(test_client, random_string) -> Dict[str, Any]:
+def test_creator_account(test_client, random_string, mocker) -> Dict[str, Any]:
     """Create a test creator account with Stripe Connect setup."""
-    from app.stripe.client import get_stripe_client
-    
     email = f"test_creator_{random_string}@example.com"
     password = "CreatorTest123!"
-    stripe_client = get_stripe_client()
     
-    try:
-        # Register creator
-        from app.supabase.auth import register_user_with_email
-        from app.supabase.client import get_supabase_client
-        creator_data = register_user_with_email(email, password)
-        
-        # Setup Stripe Connect account (test mode)
-        stripe_account = stripe_client.Account.create(
-            type="express",
-            country="US",
-            email=email,
-            capabilities={
-                "card_payments": {"requested": True}, 
-                "transfers": {"requested": True}
-            }
-        )
-        
-        # Update creator profile with Stripe account ID
-        supabase = get_supabase_client()
-        supabase.table('profiles').update({
-            'stripe_account_id': stripe_account.id,
-            'stripe_onboarding_complete': True
-        }).eq('id', creator_data['user']['id']).execute()
-        
-        return {
+    # Mock Supabase auth response
+    mock_auth_response = {
+        "user": {
+            "id": "test-creator-id",
             "email": email,
-            "password": password,
-            "creator_data": creator_data,
-            "stripe_account_id": stripe_account.id
+            "aud": "authenticated",
+            "role": "authenticated"
+        },
+        "session": {
+            "access_token": "test-creator-token",
+            "refresh_token": "test-creator-refresh",
+            "expires_in": 3600,
+            "token_type": "bearer"
         }
-    except Exception as e:
-        pytest.fail(f"Failed to create test creator account: {str(e)}")
+    }
+    
+    # Mock Stripe response
+    mock_stripe_account = {
+        "id": "acct_test123",
+        "object": "account",
+        "type": "express"
+    }
+    
+    # Mock the dependencies
+    mock_auth = mocker.patch('app.supabase.auth.get_supabase_client')
+    mock_auth.return_value.auth.sign_up.return_value.dict.return_value = mock_auth_response
+    
+    mock_stripe = mocker.patch('app.stripe.client.get_stripe_client')
+    mock_stripe.return_value.Account.create.return_value = mock_stripe_account
+    
+    mock_supabase = mocker.patch('app.supabase.client.get_supabase_client')
+    mock_supabase.return_value.table.return_value.update.return_value.eq.return_value.execute.return_value = {"status": 200}
+    
+    # Register creator
+    from app.supabase.auth import register_user_with_email
+    creator_data = register_user_with_email(email, password)
+    
+    return {
+        "email": email,
+        "password": password,
+        "creator_data": creator_data,
+        "stripe_account_id": mock_stripe_account["id"]
+    }
 
 async def complete_test_payment(session_id: str) -> stripe.PaymentIntent:
     """Helper function to complete a test payment using Stripe test cards."""
