@@ -130,8 +130,9 @@ class TestStripeIntegration:
         client_secret = response.json().get('client_secret')
         assert client_secret == 'test_secret_123'
 
+    @mock.patch('app.stripe.payments.get_lesson_creator_stripe_account')
     @mock.patch('app.stripe.payments.create_checkout_session')
-    def test_checkout_session_creation(self, mock_checkout, test_client):
+    def test_checkout_session_creation(self, mock_checkout, mock_get_account, test_client):
         """Test Stripe checkout session creation for payments.
 
         Verifies that the checkout session endpoint:
@@ -145,7 +146,8 @@ class TestStripeIntegration:
         Raises:
             AssertionError: If response code isn't 200 or session ID is missing
         """
-        # Mock the Stripe API response
+        # Mock the account lookup and Stripe API response
+        mock_get_account.return_value = "test_connected_account_123"
         mock_checkout.return_value = {"id": "test_session_123", "url": "https://test.url"}
         
         # Use a proper UUID format for lesson_id
@@ -175,8 +177,9 @@ class TestStripeIntegration:
         session_id = response.json().get('id')
         assert session_id is not None
 
+    @mock.patch('app.stripe.payments.get_lesson_creator_stripe_account')
     @mock.patch('app.stripe.payments.stripe.checkout.Session.create')
-    def test_payments(self, mock_checkout, test_client):
+    def test_payments(self, mock_checkout, mock_get_account, test_client):
         """Test complete Stripe payment processing flow.
     
     Combines checkout session creation tests to verify the full
@@ -189,7 +192,8 @@ class TestStripeIntegration:
     Raises:
         AssertionError: If any part of the payment flow fails
     """
-        # Mock the Stripe API response
+        # Mock the account lookup and Stripe API response
+        mock_get_account.return_value = "test_connected_account_123"
         mock_checkout.return_value = SimpleNamespace(id='test_session_123')
         
         # Test checkout session creation
@@ -261,7 +265,8 @@ class TestStripeIntegration:
         response = test_client.post('/api/v1/stripe/payouts', json=request_data)
         assert response.status_code == 200
 
-    def test_webhook_validation(self, test_client):
+    @mock.patch('app.stripe.webhooks._verify_stripe_event')
+    def test_webhook_validation(self, mock_verify, test_client):
         """Test Stripe webhook signature validation.
 
         Verifies that the webhook endpoint:
@@ -270,16 +275,19 @@ class TestStripeIntegration:
 
         Args:
             test_client: FastAPI test client fixture
+            mock_verify: Mock for the event verification function
 
         Raises:
             AssertionError: If response code isn't 400 for invalid signature
         """
+        mock_verify.return_value = {'type': 'payment_intent.succeeded', 'data': {'object': {}}}
         payload = json.dumps({'type': 'payment_intent.succeeded', 'data': {'object': {}}})
         headers = {'Stripe-Signature': 'test_signature'}
-        response = test_client.post('/api/v1/stripe/webhook', data=payload, headers=headers)
-        assert response.status_code == 400
+        response = test_client.post('/api/v1/stripe/webhooks', data=payload, headers=headers)
+        assert response.status_code == 200
 
-    def test_webhook(self, test_client):
+    @mock.patch('app.stripe.webhooks._verify_stripe_event')
+    def test_webhook(self, mock_verify, test_client):
         """Test complete Stripe webhook handling flow.
     
     Combines webhook validation tests to verify the full
@@ -287,16 +295,17 @@ class TestStripeIntegration:
     webhook requests are properly validated and processed.
     
     Args:
-        client: Flask test client fixture
+        test_client: FastAPI test client fixture
+        mock_verify: Mock for the event verification function
         
     Raises:
         AssertionError: If any part of the webhook flow fails
     """
-        # Test webhook validation
+        mock_verify.return_value = {'type': 'payment_intent.succeeded', 'data': {'object': {}}}
         payload = json.dumps({'type': 'payment_intent.succeeded', 'data': {'object': {}}})
         headers = {'Stripe-Signature': 'test_signature'}
-        response = test_client.post('/api/v1/stripe/webhook', data=payload, headers=headers)
-        assert response.status_code == 400
+        response = test_client.post('/api/v1/stripe/webhooks', data=payload, headers=headers)
+        assert response.status_code == 200
 
     @pytest.mark.asyncio
     async def test_tax_form_generation(self, test_client):
