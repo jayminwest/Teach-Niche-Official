@@ -1,5 +1,5 @@
 import pytest
-from unittest.mock import AsyncMock, patch
+from unittest.mock import AsyncMock, patch, MagicMock
 from fastapi import HTTPException
 from app.vimeo.client import get_vimeo_client
 from app.vimeo.upload import upload_video
@@ -66,7 +66,7 @@ async def test_upload_invalid_file(mock_client):
         await upload_video("missing.mp4", "Test")
         
     assert exc.value.status_code == 400
-    assert "File not found" in exc.value.detail
+    assert "Video file not found" in exc.value.detail
 
 @pytest.mark.asyncio
 @patch('app.vimeo.upload.get_vimeo_client')
@@ -76,8 +76,9 @@ async def test_upload_api_error(mock_client):
         side_effect=Exception("API Error")
     )
     
-    with pytest.raises(HTTPException) as exc:
-        await upload_video("test.mp4", "Test")
-        
-    assert exc.value.status_code == 502
-    assert "Error uploading to Vimeo" in exc.value.detail
+    with patch('os.path.exists', return_value=True):  # Ensure file check passes
+        with pytest.raises(HTTPException) as exc:
+            await upload_video("valid.mp4", "Test")
+            
+        assert exc.value.status_code == 502
+        assert "Error uploading to Vimeo" in exc.value.detail
