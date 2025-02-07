@@ -400,7 +400,7 @@ class TestStripeDashboard:
         """Test dashboard session creation with invalid account ID."""
         response = test_client.post(
             '/api/v1/stripe/dashboard/session',
-            json={'account_id': 'invalid_account_id'}
+            json={'account': 'invalid_account_id'}
         )
         assert response.status_code == 400
 
@@ -420,7 +420,7 @@ class TestStripeDashboard:
         
         response = test_client.post(
             '/api/v1/stripe/dashboard/session',
-            json={'account_id': 'non_existent_account'}
+            json={'account': 'non_existent_account'}
         )
         assert response.status_code == 200
         data = response.json()
