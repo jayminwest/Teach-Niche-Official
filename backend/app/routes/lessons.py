@@ -1,5 +1,6 @@
+from typing import List, Optional
+from datetime import datetime
 from fastapi import APIRouter, Depends, HTTPException, Query
-from sqlalchemy.orm import Session
 from app.core.config import get_settings
 from app.supabase.client import get_supabase_client
 from app.supabase.models import Lesson, LessonCreate, LessonUpdate, Category
