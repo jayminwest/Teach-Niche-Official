@@ -39,8 +39,54 @@
 - charge.refunded - Update purchase status and creator earnings
 - payment_intent.canceled - Update purchase status
 
-## Notes
-- All new endpoints need:
+## International Support Requirements
+
+### Account Management Enhancements (onboarding.py)
+- Dynamic country code handling
+- Region-specific capabilities:
+  - EU: SEPA payments
+  - UK: BACS payments
+  - US: ACH payments
+- Country-specific business type validation
+- VAT/Tax ID collection for relevant regions
+- EU-specific ToS acceptance
+
+### Payment Processing Updates (payments.py)
+- Multi-currency support
+- Region-specific payment methods:
+  - EU: SEPA, Giropay, Sofort
+  - UK: BACS
+  - US: ACH
+- Automatic tax calculation
+- Currency conversion handling
+- Customer location-based payment options
+
+### Payout System Enhancements (payouts.py)
+- Multi-currency payout support
+- Region-specific payout methods:
+  - EU: SEPA credit transfer
+  - UK: BACS
+  - US: ACH
+- Currency conversion for payouts
+- Country-specific payout schedules
+- Default currency preferences
+
+### Compliance Requirements (compliance.py)
+- EU VAT handling
+- Country-specific verification requirements
+- Tax ID validation
+- Regulatory compliance checks
+- Required documentation by region
+
+### Enhanced Webhook Handling (webhooks.py)
+- Currency conversion event tracking
+- International dispute handling
+- Region-specific payout failure handling
+- Compliance status tracking
+- VAT/Tax event processing
+
+## Implementation Notes
+- All endpoints need:
   - Error handling
   - Rate limiting
   - Logging
@@ -49,3 +95,6 @@
   - Test coverage
   - Idempotency keys for POST requests
   - Proper response schemas
+  - International compliance checks
+  - Currency validation
+  - Region-specific error messages
