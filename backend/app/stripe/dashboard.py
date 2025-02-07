@@ -4,27 +4,31 @@ Stripe Dashboard Session Management Module
 This module handles the creation and management of Stripe Dashboard sessions for connected accounts.
 """
 
-from fastapi import APIRouter, HTTPException, Body
+from fastapi import APIRouter, HTTPException
 from fastapi.responses import JSONResponse
+from pydantic import BaseModel
 from app.stripe.client import stripe
 import app.stripe.onboarding as onboarding
+
+class DashboardSessionRequest(BaseModel):
+    account: str
 
 router = APIRouter(prefix="/dashboard")
 
 @router.post("/session")
-async def handle_dashboard_session_request(account: str = Body(...)):
+async def handle_dashboard_session_request(request: DashboardSessionRequest):
     """Handle incoming requests for Stripe Dashboard sessions."""
-    if not account:
+    if not request.account:
         raise HTTPException(status_code=400, detail="Missing account ID")
         
     try:
         # Validate account ID format first
-        if not account.startswith('acct_'):
+        if not request.account.startswith('acct_'):
             raise HTTPException(status_code=400, detail="Invalid account ID format")
 
         # Try to create session with existing account
         session = stripe.AccountSession.create(
-            account=account,
+            account=request.account,
             components={
                 "payments": {
                     "enabled": True,
