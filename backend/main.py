@@ -39,6 +39,7 @@ from app.stripe.payouts import router as stripe_payouts_router
 from app.stripe.webhooks import router as stripe_webhooks_router
 from app.stripe.compliance import router as stripe_compliance_router
 from app.routes.lessons import router as lessons_router
+from app.routes.vimeo import router as vimeo_router
 
 # Initialize application settings
 APP_SETTINGS = get_settings()
@@ -89,6 +90,7 @@ def create_fastapi_app() -> FastAPI:
     
     # Register lessons router first to avoid route conflicts
     app.include_router(lessons_router, prefix=f"{api_v1_prefix}", tags=["lessons"])
+    app.include_router(vimeo_router, prefix=f"{api_v1_prefix}", tags=["vimeo"])
     app.include_router(stripe_onboarding_router, prefix=f"{api_v1_prefix}/stripe", tags=["stripe"])
     app.include_router(stripe_payments_router, prefix=f"{api_v1_prefix}/stripe", tags=["stripe"])
     app.include_router(stripe_dashboard_router, prefix=f"{api_v1_prefix}/stripe", tags=["stripe"])
