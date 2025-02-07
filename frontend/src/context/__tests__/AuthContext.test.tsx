@@ -489,6 +489,9 @@ describe('AuthContext', () => {
     })
 
     // Test network error with valid email
+    // Cleanup previous render
+    cleanup()
+
     const TestSignUpComponentWithValidEmail = () => {
       const { signUp } = useAuth()
       const [error, setError] = useState('')
@@ -503,7 +506,7 @@ describe('AuthContext', () => {
 
       return (
         <div>
-          <button onClick={handleSignUp}>Sign Up</button>
+          <button data-testid="valid-signup-button" onClick={handleSignUp}>Sign Up</button>
           {error && <div data-testid="error-message">{error}</div>}
         </div>
       )
@@ -515,7 +518,7 @@ describe('AuthContext', () => {
       </AuthProvider>
     )
 
-    const validSignUpButton = screen.getByText(/Sign Up/i)
+    const validSignUpButton = screen.getByTestId('valid-signup-button')
     global.fetch = jest.fn().mockRejectedValueOnce(new TypeError('Failed to fetch'))
 
     await act(async () => {
