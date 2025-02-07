@@ -481,7 +481,7 @@ describe('AuthContext', () => {
     const signUpButton = screen.getByText(/Sign Up/i)
     
     await act(async () => {
-      await userEvent.click(validSignUpButton)
+      await userEvent.click(signUpButton)
     })
 
     await waitFor(() => {
@@ -522,7 +522,7 @@ describe('AuthContext', () => {
     global.fetch = jest.fn().mockRejectedValueOnce(new TypeError('Failed to fetch'))
 
     await act(async () => {
-      await userEvent.click(signUpButton)
+      await userEvent.click(validSignUpButton)
     })
 
     await waitFor(() => {
