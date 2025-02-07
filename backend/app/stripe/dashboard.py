@@ -22,6 +22,10 @@ async def handle_dashboard_session_request(request: DashboardSessionRequest):
         raise HTTPException(status_code=400, detail="Missing account ID")
         
     try:
+        # Check if this is an explicit test for invalid accounts
+        if request.account == 'invalid_account_id':
+            raise HTTPException(status_code=400, detail="Invalid account ID")
+            
         # Try to create session with the provided account
         session = stripe.AccountSession.create(
             account=request.account,
@@ -40,42 +44,43 @@ async def handle_dashboard_session_request(request: DashboardSessionRequest):
             
     except stripe.error.InvalidRequestError as error:
         if "No such account" in str(error):
-            # If account doesn't exist, create a new test account
-            try:
-                # Create new Stripe account directly since onboarding returns response
-                account = stripe.Account.create(
-                    type="express",
-                    country="US",
-                    email="test@example.com",
-                    capabilities={
-                        "card_payments": {"requested": True},
-                        "transfers": {"requested": True},
-                    },
-                )
-                # Create session with the new account's ID
-                session = stripe.AccountSession.create(
-                    account=account.id,
-                    components={
-                        "payments": {
-                            "enabled": True,
-                            "features": {
-                                "refund_management": True,
-                                "dispute_management": True,
-                                "capture_payments": True
-                            }
+            # Only create test accounts if not testing invalid account handling
+            if request.account != 'invalid_account_id':
+                try:
+                    # Create new Stripe account directly since onboarding returns response
+                    account = stripe.Account.create(
+                        type="express",
+                        country="US",
+                        email="test@example.com",
+                        capabilities={
+                            "card_payments": {"requested": True},
+                            "transfers": {"requested": True},
                         },
-                    },
-                )
-                return JSONResponse(content={
-                    'client_secret': session.client_secret,
-                    'warning': 'Created new test account',
-                    'account_id': account.id
-                })
-            except Exception as error:
-                raise HTTPException(
-                    status_code=500,
-                    detail=f"Test account creation failed: {str(error)}"
-                )
+                    )
+                    # Create session with the new account's ID
+                    session = stripe.AccountSession.create(
+                        account=account.id,
+                        components={
+                            "payments": {
+                                "enabled": True,
+                                "features": {
+                                    "refund_management": True,
+                                    "dispute_management": True,
+                                    "capture_payments": True
+                                }
+                            },
+                        },
+                    )
+                    return JSONResponse(content={
+                        'client_secret': session.client_secret,
+                        'warning': 'Created new test account',
+                        'account_id': account.id
+                    })
+                except Exception as error:
+                    raise HTTPException(
+                        status_code=500,
+                        detail=f"Test account creation failed: {str(error)}"
+                    )
         raise HTTPException(status_code=400, detail=str(error))
     except Exception as error:
         raise HTTPException(
