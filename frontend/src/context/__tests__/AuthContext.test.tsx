@@ -236,4 +236,119 @@ describe('AuthContext', () => {
       expect(screen.getByTestId('error-message')).toHaveTextContent('Invalid credentials')
     })
   })
+
+  it('handles password reset', async () => {
+    global.fetch = jest.fn().mockResolvedValueOnce({
+      ok: true,
+      json: () => Promise.resolve({ message: 'Password reset email sent' })
+    })
+
+    const TestResetComponent = () => {
+      const { resetPassword } = useAuth()
+      const handleReset = () => resetPassword('test@example.com')
+      return <button onClick={handleReset}>Reset Password</button>
+    }
+
+    render(
+      <AuthProvider>
+        <TestResetComponent />
+      </AuthProvider>
+    )
+
+    const resetButton = screen.getByText(/Reset Password/i)
+    await userEvent.click(resetButton)
+
+    await waitFor(() => {
+      expect(global.fetch).toHaveBeenCalledWith('/api/auth/reset-password', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: 'test@example.com' })
+      })
+    })
+  })
+
+  it('handles Google sign in', async () => {
+    const mockUser = { id: '123', email: 'test@example.com' }
+    const mockSession = { user: mockUser }
+
+    ;(supabase.auth.signInWithOAuth as jest.Mock).mockResolvedValueOnce({
+      data: { user: mockUser, session: mockSession },
+      error: null
+    })
+
+    const TestGoogleComponent = () => {
+      const { signInWithGoogle } = useAuth()
+      return <button onClick={signInWithGoogle}>Google Sign In</button>
+    }
+
+    render(
+      <AuthProvider>
+        <TestGoogleComponent />
+      </AuthProvider>
+    )
+
+    const googleButton = screen.getByText(/Google Sign In/i)
+    await userEvent.click(googleButton)
+
+    await waitFor(() => {
+      expect(supabase.auth.signInWithOAuth).toHaveBeenCalledWith({
+        provider: 'google',
+        options: {
+          redirectTo: expect.stringContaining('/auth/callback')
+        }
+      })
+    })
+  })
+
+  it('handles profile creation errors', async () => {
+    const mockUser = {
+      id: '123',
+      email: 'test@example.com',
+      user_metadata: { full_name: 'Test User' }
+    }
+    const mockSession = { user: mockUser }
+    const mockError = new Error('Database error')
+
+    ;(supabase.auth.getSession as jest.Mock).mockResolvedValueOnce({
+      data: { session: mockSession }
+    })
+
+    ;(supabase.from as jest.Mock)().select().or().maybeSingle.mockResolvedValueOnce({
+      data: null,
+      error: null
+    })
+
+    ;(supabase.from as jest.Mock)().insert().select().single.mockRejectedValueOnce(mockError)
+
+    const consoleSpy = jest.spyOn(console, 'error').mockImplementation()
+
+    render(
+      <AuthProvider>
+        <TestComponent />
+      </AuthProvider>
+    )
+
+    await waitFor(() => {
+      expect(consoleSpy).toHaveBeenCalledWith('Error managing profile:', mockError)
+    })
+
+    consoleSpy.mockRestore()
+  })
+
+  it('cleans up auth subscription on unmount', async () => {
+    const unsubscribeMock = jest.fn()
+    ;(supabase.auth.onAuthStateChange as jest.Mock).mockReturnValueOnce({
+      data: { subscription: { unsubscribe: unsubscribeMock } }
+    })
+
+    const { unmount } = render(
+      <AuthProvider>
+        <TestComponent />
+      </AuthProvider>
+    )
+
+    unmount()
+
+    expect(unsubscribeMock).toHaveBeenCalled()
+  })
 })
