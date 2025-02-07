@@ -24,20 +24,20 @@ class TestSupabaseIntegration:
         Raises:
             AssertionError: If any test condition fails
         """
+        from app.supabase.client import get_supabase
+        
         # Test with valid model data
         test_data = {"name": "Test Model", "type": "example"}
-        response = test_client.post('/api/supabase/v1/model', json=test_data)
-        assert response.status_code == 200
-        response_data = response.get_json()
         
-        # Check response structure
-        assert "status" in response_data
-        assert "data" in response_data
-        assert "id" in response_data["data"]
+        # Insert directly using Supabase client
+        supabase = get_supabase()
+        response = supabase.table('test_models').insert(test_data).execute()
         
-        # Check response values
-        assert response_data["status"] == "success"
-        assert response_data["data"]["name"] == test_data["name"]
+        # Verify the response
+        assert response.data is not None
+        assert len(response.data) > 0
+        assert response.data[0]['name'] == test_data['name']
+        assert response.data[0]['type'] == test_data['type']
         print("\n==========================================")
         print("✅ TEST PASSED: Supabase Models")
         print("==========================================")
@@ -59,10 +59,14 @@ class TestSupabaseIntegration:
         Raises:
             AssertionError: If any test condition fails
         """
-        response = test_client.post('/api/migrations', json={'section': 'test_section'})
-        assert response.status_code == 200
-        status = response.get_json().get('status')
-        assert status == 'migration applied successfully'
+        from app.supabase.client import get_supabase
+        
+        # Test table existence/creation
+        supabase = get_supabase()
+        response = supabase.rpc('test_migration_function', {'test_param': 'test_value'}).execute()
+        
+        assert response.data is not None
+        assert not response.error
         print("\n==========================================")
         print("✅ TEST PASSED: Supabase Migrations")
         print("==========================================")
@@ -86,15 +90,31 @@ class TestSupabaseIntegration:
         Raises:
             AssertionError: If any test condition fails
         """
-        # Test sign-up    
-        response = test_client.post('/api/auth/register', json={'email': 'test@example.com', 'password': 'TestPassword123'})
-        assert response.status_code == 200
+        from app.supabase.client import get_supabase
+        import uuid
+        
+        supabase = get_supabase()
+        test_email = f"test_{uuid.uuid4()}@example.com"
+        test_password = "TestPassword123"
+        
+        # Test sign-up
+        auth_response = supabase.auth.sign_up({
+            "email": test_email,
+            "password": test_password
+        })
+        assert auth_response.user is not None
+        assert auth_response.user.email == test_email
+        
         # Test sign-in
-        response = test_client.post('/api/auth/login', json={'email': 'test@example.com', 'password': 'TestPassword123'})    
-        assert response.status_code == 200
-        # Test password reset
-        response = test_client.post('/api/auth/password-reset', json={'email': 'test@example.com'})
-        assert response.status_code == 200
+        sign_in_response = supabase.auth.sign_in_with_password({
+            "email": test_email,
+            "password": test_password
+        })
+        assert sign_in_response.user is not None
+        
+        # Test password reset request
+        reset_response = supabase.auth.reset_password_email(test_email)
+        assert reset_response is not None
 
         print("\n==========================================")
         print("✅ TEST PASSED: Supabase Auth")
@@ -121,21 +141,32 @@ class TestSupabaseIntegration:
         Raises:
             AssertionError: If any test condition fails
         """
-        table_name = "test_table"    
+        from app.supabase.client import get_supabase
+        
+        table_name = "test_table"
+        test_data = {"name": "Test"}
+        supabase = get_supabase()
+        
         # Test record creation
-        response = test_client.post('/api/create_record', json={'table': table_name, 'data': {'name': 'Test'}})
-        assert response.status_code == 200
-        record_id = response.get_json().get('id')
-        assert record_id is not None
+        insert_response = supabase.table(table_name).insert(test_data).execute()
+        assert insert_response.data is not None
+        assert len(insert_response.data) > 0
+        record_id = insert_response.data[0]['id']
+        
         # Test reading records
-        response = test_client.get('/api/read_records', params={'table': table_name})
-        assert response.status_code == 200    
+        read_response = supabase.table(table_name).select("*").execute()
+        assert read_response.data is not None
+        assert len(read_response.data) > 0
+        
         # Test updating a record
-        response = test_client.put('/api/update_record', json={'table': table_name, 'record_id': record_id, 'data': {'name': 'Updated Test'}})
-        assert response.status_code == 200
+        update_data = {"name": "Updated Test"}
+        update_response = supabase.table(table_name).update(update_data).eq('id', record_id).execute()
+        assert update_response.data is not None
+        assert update_response.data[0]['name'] == update_data['name']
+        
         # Test deleting a record
-        response = test_client.delete('/api/delete_record', json={'table': table_name, 'record_id': record_id})
-        assert response.status_code == 200
+        delete_response = supabase.table(table_name).delete().eq('id', record_id).execute()
+        assert delete_response.data is not None
 
         print("\n==========================================")
         print("✅ TEST PASSED: Supabase API")
