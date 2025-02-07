@@ -8,7 +8,7 @@ from app.supabase.auth import (
 )
 from app.supabase.client import get_supabase_client
 
-api_router = APIRouter(prefix="/api")
+router = APIRouter(prefix="/api")
 security = HTTPBearer()
 
 async def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(security)):
@@ -20,25 +20,25 @@ async def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(s
     except Exception:
         raise HTTPException(status_code=401, detail="Invalid token")
 
-@api_router.get("/")
+@router.get("/")
 async def read_root():
     return {"message": "Hello from the backend!"}
 
-@api_router.post("/auth/signup")
+@router.post("/auth/signup")
 async def signup(email: str, password: str):
     try:
         return sign_up_with_email(email, password)
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
 
-@api_router.post("/auth/signin")
+@router.post("/auth/signin")
 async def signin(email: str, password: str):
     try:
         return sign_in_with_email(email, password)
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
 
-@api_router.post("/auth/reset-password")
+@router.post("/auth/reset-password")
 async def reset_password(email: str):
     try:
         send_password_reset_email(email)
@@ -46,33 +46,33 @@ async def reset_password(email: str):
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
 
-@api_router.post("/auth/google")
+@router.post("/auth/google")
 async def google_signin(google_token: str):
     try:
         return sign_in_with_google(google_token)
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
 
-@api_router.get("/protected")
+@router.get("/protected")
 async def protected_route(user = Depends(get_current_user)):
     return {"message": "You are authenticated", "user": user}
 
-@api_router.get("/health-check")
+@router.get("/health-check")
 async def health_check():
     return {"status": "ok"}
 
-@api_router.get("/test/supabase")
+@router.get("/test/supabase")
 async def test_supabase():
     try:
         # Add actual Supabase test logic here
         return {"status": "ok"}
     except Exception:
-        raise HTTPException(status_code=500, detail="Stripe integration test failed")
+        raise HTTPException(status_code=500, detail="Supabase integration test failed")
 
-@api_router.get("/test/stripe")
+@router.get("/test/stripe")
 async def test_stripe():
     try:
         # Add actual Stripe test logic here
         return {"status": "ok"}
     except Exception:
-        raise HTTPException(status_code=500, detail="Supabase integration test failed")
+        raise HTTPException(status_code=500, detail="Stripe integration test failed")
