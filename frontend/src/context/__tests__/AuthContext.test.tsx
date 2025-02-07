@@ -318,11 +318,10 @@ describe('AuthContext', () => {
       error: null
     })
 
-    ;(supabase.from as jest.Mock)().insert.mockImplementationOnce(() => ({
-      select: () => ({
-        single: () => Promise.reject(mockError)
-      })
-    }))
+    ;(supabase.from as jest.Mock)().insert().select().single.mockRejectedValueOnce({
+      data: null,
+      error: mockError
+    })
 
     const consoleSpy = jest.spyOn(console, 'error').mockImplementation()
 
