@@ -1,6 +1,6 @@
-from typing import List, Optional
+from typing import List, Optional, Dict, Any
 from datetime import datetime
-from fastapi import APIRouter, Depends, HTTPException, Query
+from fastapi import APIRouter, Depends, HTTPException, Query, Body
 from app.core.config import get_settings
 from app.supabase.client import get_supabase_client
 from app.supabase.models import Lesson, LessonCreate, LessonUpdate, Category
@@ -10,6 +10,24 @@ router = APIRouter(tags=["lessons"])
 
 def get_db() -> Client:
     return get_supabase_client()
+
+@router.post("/lessons", status_code=201)
+async def create_lesson(lesson_data: Dict[str, Any] = Body(...)) -> Dict[str, Any]:
+    """Create a new lesson."""
+    db = get_supabase_client()
+    try:
+        response = db.table('lessons').insert(lesson_data).execute()
+        if response.error:
+            raise HTTPException(
+                status_code=400,
+                detail=f"Failed to create lesson: {response.error.message}"
+            )
+        return response.data[0]
+    except Exception as e:
+        raise HTTPException(
+            status_code=500,
+            detail=f"Error creating lesson: {str(e)}"
+        )
 
 @router.get("/lessons", response_model=List[Lesson])
 async def list_lessons(
