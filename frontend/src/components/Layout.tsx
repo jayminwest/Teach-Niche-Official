@@ -2,9 +2,8 @@ import { ReactNode } from 'react'
 import { Box, Container, Spinner, Center } from '@chakra-ui/react'
 import Header from './Header'
 import Footer from './Footer'
-import dynamic from 'next/dynamic'
 import { useAuth } from '../context/AuthContext'
-const Hero = dynamic(() => import('./Hero'), { ssr: false })
+import Hero from './Hero'
 
 type LayoutProps = {
   children: ReactNode

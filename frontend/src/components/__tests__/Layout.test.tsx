@@ -34,7 +34,7 @@ describe('Layout', () => {
         <div>Content</div>
       </Layout>
     )
-    expect(screen.getByText('Loading...')).toBeInTheDocument()
+    expect(screen.getByRole('status')).toBeInTheDocument()
   })
 
   it('shows header by default', () => {
