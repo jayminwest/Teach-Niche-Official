@@ -133,12 +133,15 @@ class TestUserPurchaseFlow:
         
         lesson_data = LessonCreate(
             title="Test E2E Lesson",
-            description="Test Description for E2E Flow",
+            description="Test Description for E2E Flow", 
             price=1000,  # $10.00
             creator_id=test_creator_account["creator_data"]["user"]["id"],
             status="draft",
-            duration=30,
-            difficulty="beginner"
+            content="Test lesson content",
+            content_url="https://example.com/content",
+            thumbnail_url="https://example.com/thumbnail.jpg",
+            vimeo_video_id="123456789",
+            vimeo_url="https://vimeo.com/123456789"
         ).dict()
         lesson_response = test_client.post(
             "/api/v1/lessons",
