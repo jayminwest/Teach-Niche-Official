@@ -1,4 +1,4 @@
-import { render, screen, act, waitFor } from '@testing-library/react'
+import { render, screen, act, waitFor, cleanup } from '@testing-library/react'
 import { useState } from 'react'
 import userEvent from '@testing-library/user-event'
 import { AuthProvider, useAuth } from '../AuthContext'
