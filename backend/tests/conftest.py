@@ -5,8 +5,11 @@ from pathlib import Path
 import pytest
 from fastapi.testclient import TestClient
 
-# Import the FastAPI app
+# Import and create the FastAPI app
 from backend.main import create_fastapi_app
+
+# Create FastAPI app instance for testing
+app = create_fastapi_app()
 
 @pytest.fixture
 def test_client():
