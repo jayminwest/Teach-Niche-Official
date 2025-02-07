@@ -26,6 +26,16 @@
 - Checks video processing status
 - Returns current state (processing, ready, error)
 
+### GET /api/vimeo/playback-config/{video_id}
+- Gets playback configuration (quality settings, autoplay, controls)
+- Returns player customization options
+- Important for the learning experience
+
+### POST /api/vimeo/progress/{video_id}
+- Tracks viewer progress through video
+- Saves timestamps for resume functionality
+- Essential for e-learning features
+
 ## 3. Analytics & Tracking
 
 ### GET /api/vimeo/analytics/{video_id}
