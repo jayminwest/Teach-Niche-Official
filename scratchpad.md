@@ -33,8 +33,10 @@
 ### Refund Management (new file: refunds.py)
 - `POST /stripe/refund` - Create refund for payment
 - `GET /stripe/refund/{refund_id}` - Get refund status
+- `PATCH /stripe/purchases/{id}/status` - Update purchase status in Supabase (pending → refunded)
 
 ### Platform Fees (new file: fees.py)
+- `GET /stripe/purchases/{id}/fees` - Get fee breakdown for specific purchase
 - `GET /stripe/fees` - Get current platform fee structure
 - `POST /stripe/fees/calculate` - Calculate fees for a given amount
 
@@ -45,10 +47,12 @@
 - `GET /stripe/analytics/transactions/recent` - Get recent transactions
 
 ### Webhook Handlers (webhooks.py)
-- account.updated - Track verification status changes
-- payout.paid - Handle successful payouts
+- account.updated - Track verification status changes and stripe_onboarding_complete
+- payout.paid - Handle successful payouts and update creator earnings
 - payout.failed - Handle failed payouts
 - charge.dispute.created - Handle new disputes
+- charge.refunded - Update purchase status and creator earnings
+- payment_intent.canceled - Update purchase status
 
 ## Implementation Priority
 1. Complete webhook handlers (critical for production)
