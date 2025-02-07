@@ -185,7 +185,7 @@ class TestStripeIntegration:
         mock_checkout.return_value = SimpleNamespace(id='test_session_123')
         
         # Test checkout session creation
-        response = test_client.post('/api/v1/stripe/checkout_session', json={
+        response = test_client.post('/v1/stripe/checkout_session', json={
             'account': 'test_account_123',  # Use mock account ID
             'line_items': [
                 {
@@ -268,7 +268,7 @@ class TestStripeIntegration:
         """
         payload = json.dumps({'type': 'payment_intent.succeeded', 'data': {'object': {}}})
         headers = {'Stripe-Signature': 'test_signature'}
-        response = test_client.post('/api/v1/stripe/webhook', data=payload, headers=headers)
+        response = test_client.post('/v1/stripe/webhook', data=payload, headers=headers)
         assert response.status_code == 400
 
     def test_webhook(self, test_client):
@@ -287,7 +287,7 @@ class TestStripeIntegration:
         # Test webhook validation
         payload = json.dumps({'type': 'payment_intent.succeeded', 'data': {'object': {}}})
         headers = {'Stripe-Signature': 'test_signature'}
-        response = test_client.post('/api/v1/stripe/webhook', data=payload, headers=headers)
+        response = test_client.post('/v1/stripe/webhook', data=payload, headers=headers)
         assert response.status_code == 400
 
     @pytest.mark.asyncio
