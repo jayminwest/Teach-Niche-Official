@@ -32,13 +32,10 @@ describe('Supabase Client', () => {
   })
 
   it('initializes supabase client with correct config', () => {
-    let supabaseInstance;
     // Force re-import of supabase after setting environment variables
     jest.isolateModules(() => {
-      supabaseInstance = require('../supabase').supabase;
-    });
-    
-    expect(supabaseInstance).toBeDefined();
+      const { supabase } = require('../supabase');
+      expect(supabase).toBeDefined();
     
     expect(mockCreateClient).toHaveBeenCalledWith(
       mockSupabaseUrl,
