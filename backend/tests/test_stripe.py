@@ -2,6 +2,7 @@
 
 import json
 import pytest
+import stripe
 from fastapi import HTTPException
 from types import SimpleNamespace
 from unittest import mock
