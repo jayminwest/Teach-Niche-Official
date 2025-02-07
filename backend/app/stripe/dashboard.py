@@ -12,19 +12,19 @@ import app.stripe.onboarding as onboarding
 router = APIRouter(prefix="/dashboard")
 
 @router.post("/session")
-async def handle_dashboard_session_request(account_id: str = Body(..., embed=True)):
+async def handle_dashboard_session_request(account: str = Body(...)):
     """Handle incoming requests for Stripe Dashboard sessions."""
-    if not account_id:
+    if not account:
         raise HTTPException(status_code=400, detail="Missing account ID")
         
     try:
         # Validate account ID format first
-        if not account_id.startswith('acct_'):
+        if not account.startswith('acct_'):
             raise HTTPException(status_code=400, detail="Invalid account ID format")
 
         # Try to create session with existing account
         session = stripe.AccountSession.create(
-            account=account_id,
+            account=account,
             components={
                 "payments": {
                     "enabled": True,

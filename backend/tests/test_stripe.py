@@ -125,7 +125,7 @@ class TestStripeIntegration:
         
         response = test_client.post(
             '/api/v1/stripe/dashboard/session',
-            json={'account_id': 'test_account_123'}
+            json={'account': 'test_account_123'}
         )
         assert response.status_code == 200
         client_secret = response.json().get('client_secret')
