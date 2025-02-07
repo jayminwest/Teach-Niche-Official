@@ -407,16 +407,18 @@ class TestStripeDashboard:
     def test_dashboard_session_missing_account(self, test_client):
         """Test dashboard session creation with missing account ID."""
         response = test_client.post('/api/v1/stripe/dashboard/session', json={})
-        assert response.status_code == 400
+        assert response.status_code == 422  # FastAPI validation error code
 
     @mock.patch('app.stripe.dashboard.stripe.Account.create')
     @mock.patch('app.stripe.dashboard.stripe.AccountSession.create')
     def test_dashboard_session_new_account_creation(self, mock_session, mock_account, test_client):
         """Test automatic creation of test account when original doesn't exist."""
+        # Setup mocks to simulate Stripe API behavior
         mock_account.return_value = SimpleNamespace(id='new_test_account_123')
-        mock_session.return_value = SimpleNamespace(
-            client_secret='test_secret_456'
-        )
+        mock_session.side_effect = [
+            stripe.error.InvalidRequestError("No such account", "param"),
+            SimpleNamespace(client_secret='test_secret_456')
+        ]
         
         response = test_client.post(
             '/api/v1/stripe/dashboard/session',

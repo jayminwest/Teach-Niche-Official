@@ -22,11 +22,7 @@ async def handle_dashboard_session_request(request: DashboardSessionRequest):
         raise HTTPException(status_code=400, detail="Missing account ID")
         
     try:
-        # Validate account ID format first
-        if not request.account.startswith('acct_'):
-            raise HTTPException(status_code=400, detail="Invalid account ID format")
-
-        # Try to create session with existing account
+        # Try to create session with the provided account
         session = stripe.AccountSession.create(
             account=request.account,
             components={
