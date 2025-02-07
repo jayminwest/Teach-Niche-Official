@@ -36,10 +36,10 @@ const Footer = () => {
           </Text>
 
           <Flex gap={4}>
-            <Link href="https://twitter.com" isExternal _hover={{ color: 'blue.300' }}>
+            <Link href="https://twitter.com" isExternal rel="noreferrer" _hover={{ color: 'blue.300' }}>
               Twitter
             </Link>
-            <Link href="https://facebook.com" isExternal _hover={{ color: 'blue.300' }}>
+            <Link href="https://facebook.com" isExternal rel="noreferrer" _hover={{ color: 'blue.300' }}>
               Facebook
             </Link>
           </Flex>
