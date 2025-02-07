@@ -23,22 +23,21 @@ async def handle_dashboard_session_request(account_id: str = Body(..., embed=Tru
             raise HTTPException(status_code=400, detail="Invalid account ID format")
 
         # Try to create session with existing account
-        try:
-            session = stripe.AccountSession.create(
-                account=account_id,
-                components={
-                    "payments": {
-                        "enabled": True,
-                        "features": {
-                            "refund_management": True,
-                            "dispute_management": True,
-                            "capture_payments": True
-                        }
-                    },
+        session = stripe.AccountSession.create(
+            account=account_id,
+            components={
+                "payments": {
+                    "enabled": True,
+                    "features": {
+                        "refund_management": True,
+                        "dispute_management": True,
+                        "capture_payments": True
+                    }
                 },
-            )
-            return JSONResponse(content={'client_secret': session.client_secret})
-        
+            },
+        )
+        return JSONResponse(content={'client_secret': session.client_secret})
+            
     except stripe.error.InvalidRequestError as error:
         if "No such account" in str(error):
             # If account doesn't exist, create a new test account
