@@ -6,9 +6,9 @@ from typing import Dict, Any
 from fastapi.testclient import TestClient
 
 @pytest.fixture(scope="module")
-def test_user_credentials() -> Dict[str, str]:
+def test_user_credentials(random_string) -> Dict[str, str]:
     """Create a test user that persists for all tests in this module."""
-    email = f"test_user_{pytest.random_string()}@example.com"
+    email = f"test_user_{random_string}@example.com"
     password = "TestPassword123!"
     
     # Register new user
@@ -20,11 +20,11 @@ def test_user_credentials() -> Dict[str, str]:
         pytest.fail(f"Failed to create test user: {str(e)}")
 
 @pytest.fixture(scope="module")
-def test_creator_account(test_client) -> Dict[str, Any]:
+def test_creator_account(test_client, random_string) -> Dict[str, Any]:
     """Create a test creator account with Stripe Connect setup."""
     from app.stripe.client import get_stripe_client
     
-    email = f"test_creator_{pytest.random_string()}@example.com"
+    email = f"test_creator_{random_string}@example.com"
     password = "CreatorTest123!"
     stripe_client = get_stripe_client()
     
