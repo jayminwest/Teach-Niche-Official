@@ -2,6 +2,7 @@
 
 import json
 import pytest
+from fastapi import HTTPException
 from types import SimpleNamespace
 from unittest import mock
 
@@ -385,19 +386,133 @@ class TestStripeIntegration:
         assert result['status'] == 'ready'
 
     def test_compliance(self, test_client):
-        """Test complete Stripe compliance workflow.
-    
-    Combines compliance-related tests to verify the full
-    compliance processing workflow. This test ensures that
-    required compliance documents can be properly generated.
-    
-    Args:
-        test_client: FastAPI test client fixture
-        
-    Raises:
-        AssertionError: If any part of the compliance flow fails
-    """
-        # Test tax form generation
+        """Test complete Stripe compliance workflow."""
         response = test_client.post('/api/v1/stripe/compliance/tax_forms', 
                                  json={'account_id': self.TEST_ACCOUNT_ID})
         assert response.status_code == 200
+
+
+@pytest.mark.stripe
+class TestStripeDashboard:
+    """Test class for Stripe Dashboard functionality."""
+
+    def test_dashboard_session_with_invalid_account(self, test_client):
+        """Test dashboard session creation with invalid account ID."""
+        response = test_client.post(
+            '/api/v1/stripe/dashboard/session',
+            json={'account_id': 'invalid_account_id'}
+        )
+        assert response.status_code == 400
+
+    def test_dashboard_session_missing_account(self, test_client):
+        """Test dashboard session creation with missing account ID."""
+        response = test_client.post('/api/v1/stripe/dashboard/session', json={})
+        assert response.status_code == 400
+
+    @mock.patch('app.stripe.dashboard.stripe.Account.create')
+    @mock.patch('app.stripe.dashboard.stripe.AccountSession.create')
+    def test_dashboard_session_new_account_creation(self, mock_session, mock_account, test_client):
+        """Test automatic creation of test account when original doesn't exist."""
+        mock_account.return_value = SimpleNamespace(id='new_test_account_123')
+        mock_session.return_value = SimpleNamespace(client_secret='test_secret_456')
+        
+        response = test_client.post(
+            '/api/v1/stripe/dashboard/session',
+            json={'account_id': 'non_existent_account'}
+        )
+        assert response.status_code == 200
+        data = response.json()
+        assert 'client_secret' in data
+        assert 'warning' in data
+        assert 'account_id' in data
+
+
+@pytest.mark.stripe
+class TestStripePayments:
+    """Test class for Stripe payment processing."""
+
+    @mock.patch('app.stripe.payments.get_lesson_creator_stripe_account')
+    def test_checkout_session_missing_line_items(self, mock_get_account, test_client):
+        """Test checkout session creation without line items."""
+        response = test_client.post(
+            '/api/v1/stripe/checkout_session',
+            json={'metadata': {'lesson_id': 'test123'}}
+        )
+        assert response.status_code == 400
+        assert 'line_items' in response.json()['detail']
+
+    @mock.patch('app.stripe.payments.get_lesson_creator_stripe_account')
+    def test_checkout_session_missing_lesson_id(self, mock_get_account, test_client):
+        """Test checkout session creation without lesson ID."""
+        response = test_client.post(
+            '/api/v1/stripe/checkout_session',
+            json={'line_items': [{'price_data': {'unit_amount': 1000}}]}
+        )
+        assert response.status_code == 400
+        assert 'lesson_id' in response.json()['detail']
+
+    @mock.patch('app.stripe.payments.get_lesson_creator_stripe_account')
+    def test_creator_not_onboarded(self, mock_get_account, test_client):
+        """Test checkout when creator hasn't completed Stripe onboarding."""
+        mock_get_account.side_effect = HTTPException(
+            status_code=400,
+            detail="Creator has not completed Stripe onboarding"
+        )
+        
+        response = test_client.post(
+            '/api/v1/stripe/checkout_session',
+            json={
+                'line_items': [{'price_data': {'unit_amount': 1000}}],
+                'metadata': {'lesson_id': 'test123'}
+            }
+        )
+        assert response.status_code == 400
+        assert 'onboarding' in response.json()['detail']
+
+
+@pytest.mark.stripe
+class TestStripeWebhooks:
+    """Test class for Stripe webhook handling."""
+
+    def test_webhook_missing_signature(self, test_client):
+        """Test webhook handling without signature header."""
+        response = test_client.post(
+            '/api/v1/stripe/webhooks',
+            json={'type': 'payment_intent.succeeded'}
+        )
+        assert response.status_code == 400
+
+    @mock.patch('app.stripe.webhooks._verify_stripe_event')
+    def test_webhook_unhandled_event(self, mock_verify, test_client):
+        """Test webhook handling of unsupported event type."""
+        mock_verify.return_value = {'type': 'unhandled.event', 'data': {'object': {}}}
+        
+        response = test_client.post(
+            '/api/v1/stripe/webhooks',
+            json={'type': 'unhandled.event'},
+            headers={'Stripe-Signature': 'test_sig'}
+        )
+        assert response.status_code == 400
+        assert 'Unhandled event type' in response.json()['detail']
+
+    @mock.patch('app.stripe.webhooks._verify_stripe_event')
+    def test_webhook_payment_intent_handler(self, mock_verify, test_client):
+        """Test successful payment intent webhook handling."""
+        mock_verify.return_value = {
+            'type': 'payment_intent.succeeded',
+            'data': {
+                'object': {
+                    'id': 'pi_123',
+                    'amount': 1000,
+                    'status': 'succeeded'
+                }
+            }
+        }
+        
+        response = test_client.post(
+            '/api/v1/stripe/webhooks',
+            json={'type': 'payment_intent.succeeded'},
+            headers={'Stripe-Signature': 'test_sig'}
+        )
+        assert response.status_code == 200
+        assert response.json()['status'] == 'success'
