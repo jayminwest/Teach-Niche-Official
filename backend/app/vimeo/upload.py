@@ -7,6 +7,7 @@ and metadata management.
 
 import os
 from typing import Dict, Optional
+from fastapi import HTTPException
 from .client import get_vimeo_client
 
 async def upload_video(
@@ -53,7 +54,7 @@ async def upload_video(
                 file_path,
                 data={
                     'name': title,
-                    'description': description,
+                    'description': description or '',
                     'privacy': privacy
                 }
             )
@@ -69,15 +70,13 @@ async def upload_video(
         video_id = video_data.split('/')[-1] if isinstance(video_data, str) else ''
         
         return {
-            'video_id': video_id,
-            'status': 'success'
+            "vimeo_id": video_data.uri.split("/")[-1],
+            "uri": video_data.uri,
+            "url": video_data.link,
+            "title": video_data.name
         }
         
+    except FileNotFoundError as e:
+        raise HTTPException(status_code=400, detail=str(e))
     except Exception as e:
-        print(f"Error during upload: {str(e)}")
-        print(f"Error type: {type(e).__name__}")
-        return {
-            'status': 'error',
-            'message': str(e),
-            'error_type': type(e).__name__
-        }
+        raise HTTPException(status_code=502, detail=f"Vimeo API error: {str(e)}")
