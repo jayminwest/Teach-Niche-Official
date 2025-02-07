@@ -74,14 +74,13 @@ describe('Lessons Page', () => {
     renderPage()
     const searchInput = screen.getByPlaceholderText('Search lessons...')
     fireEvent.change(searchInput, { target: { value: 'React' } })
-    const headings = screen.getAllByRole('heading')
-    const reactHeading = headings.find(h => h.textContent === 'Advanced React Patterns')
-    const typescriptHeading = headings.find(h => h.textContent === 'TypeScript Mastery')
+    // Wait for filtered results
+    const reactHeading = screen.getByText('Advanced React Patterns')
+    const typescriptHeading = screen.queryByText('TypeScript Mastery')
     
     expect(reactHeading).toBeInTheDocument()
-    // Only check if typescript heading exists, don't check if it's not in document since
-    // the filtering might not remove it from DOM in test environment
-    expect(typescriptHeading).toBeDefined()
+    // TypeScript heading should not be visible when filtering for "React"
+    expect(typescriptHeading).not.toBeInTheDocument()
   })
 
   it('handles sort selection', () => {
