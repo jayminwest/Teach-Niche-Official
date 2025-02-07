@@ -48,7 +48,7 @@ def mock_supabase(mocker):
     mock.return_value.table.return_value.insert.return_value.execute.return_value.data = [{'id': 'test-model-id'}]
     return mock
 
-@pytest.fixture
+@pytest.fixture(scope="module")
 def random_string():
     """Generate random string for test data."""
     return ''.join(random.choices(string.ascii_lowercase + string.digits, k=10))
