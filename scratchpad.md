@@ -20,29 +20,43 @@
 
 ## Need to Implement
 
+### Account Management (onboarding.py)
+- `GET /stripe/account/{id}` - Get connected account details and status
+- `DELETE /stripe/account/{id}` - Deactivate/delete connected account
+- `GET /stripe/account/verification_status` - Get current verification status
+- `POST /stripe/account/requirements` - Update account with missing requirements
+
+### Payment Management (payments.py)
+- `POST /stripe/payment_intent` - Create payment intent for direct charge flows
+- `GET /stripe/payment_intent/{id}` - Get payment intent status
+
+### Refund Management (new file: refunds.py)
+- `POST /stripe/refund` - Create refund for payment
+- `GET /stripe/refund/{refund_id}` - Get refund status
+
+### Platform Fees (new file: fees.py)
+- `GET /stripe/fees` - Get current platform fee structure
+- `POST /stripe/fees/calculate` - Calculate fees for a given amount
+
+### Balance & Reporting (new file: reporting.py)
+- `GET /stripe/balance` - Get current balance for connected account
+- `GET /stripe/payouts/history` - Get payout history
+- `GET /stripe/analytics/earnings/summary` - Get basic earnings overview
+- `GET /stripe/analytics/transactions/recent` - Get recent transactions
+
 ### Webhook Handlers (webhooks.py)
 - account.updated - Track verification status changes
 - payout.paid - Handle successful payouts
 - payout.failed - Handle failed payouts
 - charge.dispute.created - Handle new disputes
 
-### Refund Management (new file: refunds.py)
-- `POST /stripe/refund` - Create refund for payment
-- `GET /stripe/refund/{refund_id}` - Get refund status
-
-### Balance & Reporting (new file: reporting.py)
-- `GET /stripe/balance` - Get current balance for connected account
-- `GET /stripe/payouts/history` - Get payout history
-
-### Account Verification (add to onboarding.py)
-- `GET /stripe/account/verification_status` - Get current verification status
-- `POST /stripe/account/requirements` - Update account with missing requirements
-
 ## Implementation Priority
 1. Complete webhook handlers (critical for production)
-2. Add refund functionality (customer service)
-3. Add balance/payout reporting (creator features)
-4. Add verification status endpoints
+2. Add payment intent endpoints (core payment flow)
+3. Add account management endpoints (creator onboarding)
+4. Add refund functionality (customer service)
+5. Add balance/analytics endpoints (creator features)
+6. Add fee calculation endpoints (transparency)
 
 ## Notes
 - All new endpoints need:
@@ -52,3 +66,5 @@
   - Type validation
   - Authentication checks
   - Test coverage
+  - Idempotency keys for POST requests
+  - Proper response schemas
