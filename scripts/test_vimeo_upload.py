@@ -8,6 +8,17 @@ from pathlib import Path
 backend_dir = Path(__file__).parent.parent / 'backend'
 sys.path.append(str(backend_dir))
 
+# Add the backend directory to Python path
+backend_dir = Path(__file__).parent.parent / 'backend'
+sys.path.append(str(backend_dir))
+
+try:
+    import vimeo
+except ImportError:
+    print("PyVimeo package not found. Installing...")
+    subprocess.run(["pip", "install", "PyVimeo"], check=True)
+    import vimeo
+
 from app.vimeo.client import get_vimeo_client
 from app.vimeo.upload import upload_video
 
