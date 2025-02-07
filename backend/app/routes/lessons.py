@@ -11,24 +11,6 @@ router = APIRouter(tags=["lessons"])
 def get_db() -> Client:
     return get_supabase_client()
 
-@router.post("/lessons", status_code=201)
-async def create_lesson(lesson_data: Dict[str, Any] = Body(...)) -> Dict[str, Any]:
-    """Create a new lesson."""
-    db = get_supabase_client()
-    try:
-        response = db.table('lessons').insert(lesson_data).execute()
-        if response.error:
-            raise HTTPException(
-                status_code=400,
-                detail=f"Failed to create lesson: {response.error.message}"
-            )
-        return response.data[0]
-    except Exception as e:
-        raise HTTPException(
-            status_code=500,
-            detail=f"Error creating lesson: {str(e)}"
-        )
-
 @router.get("/lessons", response_model=List[Lesson])
 async def list_lessons(
     search: Optional[str] = Query(None),
@@ -71,10 +53,23 @@ async def list_user_created_lessons(user_id: str, db: Client = Depends(get_db)):
     lessons = db.table('lessons').select('*').filter('creator_id', 'eq', user_id).execute()
     return [Lesson(**lesson) for lesson in lessons.data]
 
-@router.post("/lessons", response_model=Lesson)
-async def create_lesson(lesson: LessonCreate, db: Client = Depends(get_db)):
-    new_lesson = db.table('lessons').insert(lesson.dict()).execute()
-    return Lesson(**new_lesson.data[0])
+@router.post("/lessons", response_model=Lesson, status_code=201)
+async def create_lesson(lesson_data: Dict[str, Any] = Body(...)) -> Dict[str, Any]:
+    """Create a new lesson."""
+    db = get_supabase_client()
+    try:
+        response = db.table('lessons').insert(lesson_data).execute()
+        if response.error:
+            raise HTTPException(
+                status_code=400,
+                detail=f"Failed to create lesson: {response.error.message}"
+            )
+        return response.data[0]
+    except Exception as e:
+        raise HTTPException(
+            status_code=500,
+            detail=f"Error creating lesson: {str(e)}"
+        )
 
 @router.patch("/lessons/{id}", response_model=Lesson)
 async def update_lesson(id: str, lesson_update: LessonUpdate, db: Client = Depends(get_db)):

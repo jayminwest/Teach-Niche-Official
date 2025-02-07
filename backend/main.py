@@ -85,10 +85,10 @@ def create_fastapi_app() -> FastAPI:
     app.include_router(base_router, prefix="/api")
     app.include_router(supabase_router, prefix=f"{api_v1_prefix}/supabase")
     
-    # Register lessons router
-    app.include_router(lessons_router, prefix=f"{api_v1_prefix}", tags=["lessons"])
-    
     # Stripe routers with consistent prefix
+    
+    # Register lessons router first to avoid route conflicts
+    app.include_router(lessons_router, prefix=f"{api_v1_prefix}", tags=["lessons"])
     app.include_router(stripe_onboarding_router, prefix=f"{api_v1_prefix}/stripe", tags=["stripe"])
     app.include_router(stripe_payments_router, prefix=f"{api_v1_prefix}/stripe", tags=["stripe"])
     app.include_router(stripe_dashboard_router, prefix=f"{api_v1_prefix}/stripe", tags=["stripe"])
