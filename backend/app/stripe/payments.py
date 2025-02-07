@@ -14,6 +14,7 @@ This module is designed to work with Stripe's Connect platform and requires prop
 configuration of Stripe API keys and Connect settings.
 """
 
+import stripe
 from fastapi import APIRouter, HTTPException
 from fastapi.responses import JSONResponse
 from app.stripe.client import get_stripe_client

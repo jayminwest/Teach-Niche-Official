@@ -17,7 +17,7 @@ from fastapi import APIRouter, Request, HTTPException
 from app.stripe.client import stripe
 from app.core.config import get_settings
 
-router = APIRouter(prefix="/api/v1/stripe")
+router = APIRouter()
 
 # Initialize Stripe with config settings
 stripe.api_key = get_settings().STRIPE_SECRET_KEY
@@ -80,7 +80,7 @@ def _handle_payment_method_attached(event_data: dict) -> None:
     # Add event handling logic
 
 
-@router.post("/webhook", status_code=200)
+@router.post("/api/v1/stripe/webhook", status_code=200)
 async def handle_stripe_webhook(request: Request):
     """Main entry point for Stripe webhook processing.
     
