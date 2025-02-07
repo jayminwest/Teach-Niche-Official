@@ -1,6 +1,6 @@
 import { NextApiRequest, NextApiResponse } from 'next'
 
-export default async function handler(
+export default async function createCheckoutSessionHandler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
