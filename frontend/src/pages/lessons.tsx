@@ -263,6 +263,7 @@ const Lessons: NextPage = () => {
 
         <SimpleGrid 
           role="list"
+          className={viewMode === 'grid' ? 'css-grid-view' : 'css-list-view'}
           columns={{ 
             base: 1, 
             md: viewMode === 'grid' ? 2 : 1,
@@ -271,18 +272,19 @@ const Lessons: NextPage = () => {
           spacing={6}
         >
           {filteredLessons.map(lesson => (
-            <LessonCard
-              key={lesson.id}
-              id={lesson.id}
-              title={lesson.title}
-              description={lesson.description}
-              price={lesson.price}
-              isNew={lesson.isNew}
-              isPurchased={purchasedLessons.some(pl => pl.id === lesson.id)}
-              purchasedAt={purchasedLessons.find(pl => pl.id === lesson.id)?.purchase_date}
-              onPurchaseClick={() => handlePurchaseClick(lesson.id, lesson.price)}
-              onPlayClick={handlePlayClick}
-            />
+            <Box data-testid="lesson-card" key={lesson.id}>
+              <LessonCard
+                id={lesson.id}
+                title={lesson.title}
+                description={lesson.description}
+                price={lesson.price}
+                isNew={lesson.isNew}
+                isPurchased={purchasedLessons.some(pl => pl.id === lesson.id)}
+                purchasedAt={purchasedLessons.find(pl => pl.id === lesson.id)?.purchase_date}
+                onPurchaseClick={() => handlePurchaseClick(lesson.id, lesson.price)}
+                onPlayClick={handlePlayClick}
+              />
+            </Box>
           ))}
         </SimpleGrid>
       </Box>
