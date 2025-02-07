@@ -1,9 +1,17 @@
 import { createClient } from '@supabase/supabase-js'
-import { handleAuthStateChange } from '../supabase'
+import { handleAuthStateChange, supabase } from '../supabase'
 
 // Mock createClient
+const mockCreateClient = jest.fn()
 jest.mock('@supabase/supabase-js', () => ({
-  createClient: jest.fn()
+  createClient: (...args) => {
+    mockCreateClient(...args)
+    return {
+      auth: {
+        onAuthStateChange: jest.fn()
+      }
+    }
+  }
 }))
 
 describe('Supabase Client', () => {
@@ -13,6 +21,7 @@ describe('Supabase Client', () => {
   beforeEach(() => {
     // Reset modules before each test
     jest.resetModules()
+    jest.clearAllMocks()
     
     // Reset environment
     process.env.NEXT_PUBLIC_SUPABASE_URL = mockSupabaseUrl
@@ -27,7 +36,7 @@ describe('Supabase Client', () => {
     // Import supabase after setting up mocks
     const { supabase } = require('../supabase')
     
-    expect(createClient).toHaveBeenCalledWith(
+    expect(mockCreateClient).toHaveBeenCalledWith(
       mockSupabaseUrl,
       mockSupabaseKey,
       expect.any(Object)
@@ -50,16 +59,22 @@ describe('handleAuthStateChange', () => {
   it('registers auth state change callback', () => {
     const mockCallback = jest.fn()
     const mockUnsubscribe = jest.fn()
-    
-    // Mock the auth.onAuthStateChange method
-    jest.spyOn(supabase.auth, 'onAuthStateChange').mockImplementation((callback) => {
+    const mockOnAuthStateChange = jest.fn((callback) => {
       callback('SIGNED_IN', { user: { id: '123' }, session: {} })
       return { data: { subscription: { unsubscribe: mockUnsubscribe } } }
     })
 
-    handleAuthStateChange(mockCallback)
+    // Create a mock Supabase instance
+    const mockSupabase = {
+      auth: {
+        onAuthStateChange: mockOnAuthStateChange
+      }
+    }
+
+    // Call handleAuthStateChange with our mock
+    handleAuthStateChange(mockCallback, mockSupabase)
     
     expect(mockCallback).toHaveBeenCalledWith('SIGNED_IN', expect.any(Object))
-    expect(supabase.auth.onAuthStateChange).toHaveBeenCalled()
+    expect(mockOnAuthStateChange).toHaveBeenCalled()
   })
 })

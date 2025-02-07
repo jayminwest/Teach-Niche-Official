@@ -27,8 +27,8 @@ export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
 })
 
 // Helper function to handle auth state changes
-export const handleAuthStateChange = (callback) => {
-  return supabase.auth.onAuthStateChange((event, session) => {
+export const handleAuthStateChange = (callback, client = supabase) => {
+  return client.auth.onAuthStateChange((event, session) => {
     callback(event, session);
   });
 };
