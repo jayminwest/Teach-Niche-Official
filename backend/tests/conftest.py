@@ -1,6 +1,8 @@
 """Test configuration and fixtures."""
 import os
 import pytest
+import random
+import string
 from fastapi.testclient import TestClient
 
 # Add backend directory to Python path
@@ -45,3 +47,8 @@ def mock_supabase(mocker):
     mock = mocker.patch("backend.app.supabase.client.get_supabase_client")
     mock.return_value.table.return_value.insert.return_value.execute.return_value.data = [{'id': 'test-model-id'}]
     return mock
+
+@pytest.fixture
+def random_string():
+    """Generate random string for test data."""
+    return ''.join(random.choices(string.ascii_lowercase + string.digits, k=10))
