@@ -15,8 +15,8 @@ dependencies = [
     "pydantic",
     "flask",
     "pytest",
-    "requests"
-    "pyvimeo"
+    "requests",
+    "PyVimeo"
 ]
 
 [build-system]
