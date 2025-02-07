@@ -157,7 +157,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           setUser(null)
           setProfile(null)
           
-          if (event === 'SIGNED_OUT' && !router.pathname.startsWith('/auth/')) {
+          if (event === 'SIGNED_OUT') {
             router.push('/auth/login')
           }
         }

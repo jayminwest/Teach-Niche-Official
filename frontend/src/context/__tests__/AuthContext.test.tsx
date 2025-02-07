@@ -488,12 +488,34 @@ describe('AuthContext', () => {
       expect(screen.getByTestId('error-message')).toHaveTextContent('Please enter a valid email address')
     })
 
-    // Clear previous error
-    await act(async () => {
-      await userEvent.click(signUpButton)
-    })
+    // Test network error with valid email
+    const TestSignUpComponentWithValidEmail = () => {
+      const { signUp } = useAuth()
+      const [error, setError] = useState('')
 
-    // Test network error
+      const handleSignUp = async () => {
+        try {
+          await signUp('valid@email.com', 'short')
+        } catch (err) {
+          setError(err instanceof Error ? err.message : 'Unknown error')
+        }
+      }
+
+      return (
+        <div>
+          <button onClick={handleSignUp}>Sign Up</button>
+          {error && <div data-testid="error-message">{error}</div>}
+        </div>
+      )
+    }
+
+    render(
+      <AuthProvider>
+        <TestSignUpComponentWithValidEmail />
+      </AuthProvider>
+    )
+
+    const validSignUpButton = screen.getByText(/Sign Up/i)
     global.fetch = jest.fn().mockRejectedValueOnce(new TypeError('Failed to fetch'))
 
     await act(async () => {
