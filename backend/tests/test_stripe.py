@@ -166,7 +166,9 @@ class TestStripeIntegration:
                 }],
                 "metadata": {
                     "lesson_id": test_lesson_id
-                }
+                },
+                "success_url": "https://example.com/success",
+                "cancel_url": "https://example.com/cancel"
             }
         )
         assert response.status_code == 200
