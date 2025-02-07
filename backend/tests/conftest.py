@@ -1,9 +1,14 @@
 """Test configuration and fixtures for the backend application."""
 import os
+import sys
 from pathlib import Path
 
 import pytest
 from fastapi.testclient import TestClient
+
+# Add the project root to Python path
+project_root = str(Path(__file__).parent.parent.parent)
+sys.path.append(project_root)
 
 # Import and create the FastAPI app
 from backend.main import create_fastapi_app
