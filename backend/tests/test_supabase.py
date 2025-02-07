@@ -41,9 +41,6 @@ class TestSupabaseIntegration:
             assert response.data[0]['description'] == test_data['description']
         except Exception as e:
             pytest.skip(f"Supabase connection failed: {str(e)}")
-        print("\n==========================================")
-        print("✅ TEST PASSED: Supabase Models")
-        print("==========================================")
 
     def test_database_migrations(self, test_client):
         """Test the application of database migrations through Supabase.
@@ -73,9 +70,6 @@ class TestSupabaseIntegration:
             assert isinstance(response.count, int)
         except Exception as e:
             pytest.skip(f"Supabase connection failed: {str(e)}")
-        print("\n==========================================")
-        print("✅ TEST PASSED: Supabase Migrations")
-        print("==========================================")
 
     def test_user_authentication_workflow(self, test_client):
         """Test the complete user authentication workflow through Supabase.
@@ -129,10 +123,6 @@ class TestSupabaseIntegration:
                 pytest.skip("Auth signup failed - likely due to email restrictions")
         except Exception as e:
             pytest.skip(f"Auth test failed: {str(e)}")
-
-        print("\n==========================================")
-        print("✅ TEST PASSED: Supabase Auth")
-        print("==========================================")
 
     def test_crud_operations(self, test_client):
         """Test CRUD (Create, Read, Update, Delete) operations through Supabase API.
@@ -189,7 +179,3 @@ class TestSupabaseIntegration:
             assert delete_response.data is not None
         except Exception as e:
             pytest.skip(f"CRUD operations failed: {str(e)}")
-
-        print("\n==========================================")
-        print("✅ TEST PASSED: Supabase API")
-        print("==========================================")
