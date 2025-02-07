@@ -1,3 +1,20 @@
+import pytest
+from fastapi.testclient import TestClient
+from backend.main import create_fastapi_app
+
+@pytest.fixture
+def test_client():
+    """Create a test client for the FastAPI application."""
+    app = create_fastapi_app()
+    return TestClient(app)
+
+@pytest.fixture(scope="session")
+def event_loop():
+    """Create an instance of the default event loop for the test session."""
+    import asyncio
+    loop = asyncio.get_event_loop_policy().new_event_loop()
+    yield loop
+    loop.close()
 """Test suite for basic API endpoints and functionality."""
 
 import pytest
