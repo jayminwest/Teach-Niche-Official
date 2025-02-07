@@ -75,10 +75,10 @@ describe('Lessons Page', () => {
     const searchInput = screen.getByPlaceholderText('Search lessons...')
     fireEvent.change(searchInput, { target: { value: 'React' } })
     // Wait for filtered results
-    const reactHeading = screen.getByText('Advanced React Patterns')
+    const reactHeadings = screen.getAllByText('Advanced React Patterns')
     const typescriptHeading = screen.queryByText('TypeScript Mastery')
     
-    expect(reactHeading).toBeInTheDocument()
+    expect(reactHeadings.length).toBeGreaterThan(0)
     // TypeScript heading should not be visible when filtering for "React"
     expect(typescriptHeading).not.toBeInTheDocument()
   })
