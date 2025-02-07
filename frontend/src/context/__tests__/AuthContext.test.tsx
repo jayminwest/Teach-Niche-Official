@@ -1,4 +1,5 @@
 import { render, screen, act, waitFor } from '@testing-library/react'
+import { useState } from 'react'
 import userEvent from '@testing-library/user-event'
 import { AuthProvider, useAuth } from '../AuthContext'
 import { supabase } from '../../lib/supabase'
@@ -47,6 +48,16 @@ jest.mock('../../lib/supabase', () => ({
 // Test component that uses auth context
 const TestComponent = () => {
   const { user, signIn, signOut } = useAuth()
+  const [error, setError] = useState('')
+
+  const handleSignIn = async () => {
+    try {
+      await signIn('test@example.com', 'password')
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Sign in failed')
+    }
+  }
+
   return (
     <div>
       {user ? (
@@ -55,9 +66,10 @@ const TestComponent = () => {
           <button onClick={() => signOut()}>Sign Out</button>
         </>
       ) : (
-        <button onClick={() => signIn('test@example.com', 'password')}>
-          Sign In
-        </button>
+        <>
+          <button onClick={handleSignIn}>Sign In</button>
+          {error && <div data-testid="error-message">{error}</div>}
+        </>
       )}
     </div>
   )
@@ -201,7 +213,7 @@ describe('AuthContext', () => {
   })
 
   it('handles sign in errors', async () => {
-    const mockError = new Error('Invalid credentials')
+    const mockError = { message: 'Invalid credentials' }
     
     ;(supabase.auth.signInWithPassword as jest.Mock).mockResolvedValueOnce({
       data: { user: null, session: null },
@@ -221,7 +233,7 @@ describe('AuthContext', () => {
     })
 
     await waitFor(() => {
-      expect(screen.getByText(/Sign In/i)).toBeInTheDocument()
+      expect(screen.getByTestId('error-message')).toHaveTextContent('Invalid credentials')
     })
   })
 })
