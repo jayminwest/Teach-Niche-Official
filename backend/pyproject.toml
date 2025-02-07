@@ -3,7 +3,7 @@ name = "backend"
 version = "0.1.0"
 description = "Backend for Teach Niche"
 authors = [
-    { name = "Jaymin West", email = "jaymin@teachniche.com" }
+    { name = "Jaymin West", email = "jaymin@teach-niche.com" }
 ]
 dependencies = [
     "fastapi",
@@ -16,6 +16,7 @@ dependencies = [
     "flask",
     "pytest",
     "requests"
+    "pyvimeo"
 ]
 
 [build-system]
