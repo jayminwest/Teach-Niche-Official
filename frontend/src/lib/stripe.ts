@@ -1,12 +1,6 @@
 import { loadStripe } from '@stripe/stripe-js';
 
-import Stripe from 'stripe';
-
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: '2023-10-16',
-});
-
-export default stripe;
+const stripePublishableKey = process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY;
 
 if (!stripePublishableKey) {
   throw new Error(
@@ -14,23 +8,34 @@ if (!stripePublishableKey) {
   );
 }
 
+// Only initialize client-side Stripe instance
 export const stripe = loadStripe(stripePublishableKey);
 
-// Helper function for creating checkout sessions
-export const createCheckoutSession = async (priceId: string) => {
+// Type for checkout session response
+interface CheckoutSessionResponse {
+  sessionId: string;
+  url: string;
+}
+
+// Helper function to create checkout session via API
+export const createCheckoutSession = async (lessonId: string, price: number): Promise<CheckoutSessionResponse> => {
   try {
-    const response = await fetch('/api/create-checkout-session', {
+    const response = await fetch('/api/stripe/checkout_session', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ priceId }),
+      body: JSON.stringify({ lessonId, price }),
     });
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
     
     const session = await response.json();
     return session;
   } catch (error) {
     console.error('Error creating checkout session:', error);
-    throw error;
+    throw new Error('Failed to create checkout session. Please try again.');
   }
 };
