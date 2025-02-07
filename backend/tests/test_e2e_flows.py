@@ -31,6 +31,7 @@ def test_creator_account(test_client) -> Dict[str, Any]:
     try:
         # Register creator
         from app.supabase.auth import register_user_with_email
+        from app.supabase.client import get_supabase_client
         creator_data = register_user_with_email(email, password)
         
         # Setup Stripe Connect account (test mode)
