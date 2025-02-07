@@ -14,22 +14,30 @@ router = APIRouter(prefix="/dashboard")
 @router.post("/session")
 async def handle_dashboard_session_request(account_id: str = Body(..., embed=True)):
     """Handle incoming requests for Stripe Dashboard sessions."""
+    if not account_id:
+        raise HTTPException(status_code=400, detail="Missing account ID")
+        
     try:
-        # Try to create session with existing account (will validate ID format)
-        session = stripe.AccountSession.create(
-            account=account_id,
-            components={
-                "payments": {
-                    "enabled": True,
-                    "features": {
-                        "refund_management": True,
-                        "dispute_management": True,
-                        "capture_payments": True
-                    }
+        # Validate account ID format first
+        if not account_id.startswith('acct_'):
+            raise HTTPException(status_code=400, detail="Invalid account ID format")
+
+        # Try to create session with existing account
+        try:
+            session = stripe.AccountSession.create(
+                account=account_id,
+                components={
+                    "payments": {
+                        "enabled": True,
+                        "features": {
+                            "refund_management": True,
+                            "dispute_management": True,
+                            "capture_payments": True
+                        }
+                    },
                 },
-            },
-        )
-        return JSONResponse(content={'client_secret': session.client_secret})
+            )
+            return JSONResponse(content={'client_secret': session.client_secret})
         
     except stripe.error.InvalidRequestError as error:
         if "No such account" in str(error):

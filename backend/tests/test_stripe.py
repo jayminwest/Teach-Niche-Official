@@ -414,7 +414,9 @@ class TestStripeDashboard:
     def test_dashboard_session_new_account_creation(self, mock_session, mock_account, test_client):
         """Test automatic creation of test account when original doesn't exist."""
         mock_account.return_value = SimpleNamespace(id='new_test_account_123')
-        mock_session.return_value = SimpleNamespace(client_secret='test_secret_456')
+        mock_session.return_value = SimpleNamespace(
+            client_secret='test_secret_456'
+        )
         
         response = test_client.post(
             '/api/v1/stripe/dashboard/session',

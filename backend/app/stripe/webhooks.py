@@ -94,8 +94,11 @@ async def handle_stripe_webhook(request: Request):
         dict: Response dictionary with status
     """
     try:
-        payload = await request.body()
         signature = request.headers.get('stripe-signature')
+        if not signature:
+            raise HTTPException(status_code=400, detail='Missing Stripe signature')
+            
+        payload = await request.body()
         event = _verify_stripe_event(payload.decode('utf-8'), signature)
         
         # Route to appropriate event handler
