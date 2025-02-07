@@ -139,38 +139,28 @@ def verify_state_param(state: str):
 ```
 
 2. Database Schema for Connect Accounts
-```sql
--- Add to your Supabase schema
-create table stripe_connected_accounts (
-    id uuid references auth.users primary key,
-    stripe_account_id text unique not null,
-    charges_enabled boolean default false,
-    payouts_enabled boolean default false,
-    requirements jsonb,
-    created_at timestamp with time zone default timezone('utc'::text, now()) not null,
-    updated_at timestamp with time zone default timezone('utc'::text, now()) not null
-);
 
--- Function to update account status
-create or replace function update_stripe_account_status(
-    account_id uuid,
-    stripe_id text,
-    charges boolean,
-    payouts boolean,
-    reqs jsonb
-) returns void as $$
-begin
-    insert into stripe_connected_accounts (id, stripe_account_id, charges_enabled, payouts_enabled, requirements)
-    values (account_id, stripe_id, charges, payouts, reqs)
-    on conflict (id) do update
-    set 
-        charges_enabled = excluded.charges_enabled,
-        payouts_enabled = excluded.payouts_enabled,
-        requirements = excluded.requirements,
-        updated_at = now();
-end;
-$$ language plpgsql;
+Note: The Stripe Connect account information is already integrated into the profiles table in our schema:
+
+```sql
+-- From existing schema in migrations.py
+CREATE TABLE profiles (
+    id uuid PRIMARY KEY,
+    full_name text NOT NULL,
+    email text NOT NULL UNIQUE,
+    bio text,
+    avatar_url text,
+    social_media_tag text,
+    stripe_account_id text,
+    stripe_onboarding_complete boolean NOT NULL DEFAULT FALSE,
+    vimeo_access_token text,
+    deleted_at timestamp with time zone
+);
 ```
+
+The profiles table already includes:
+- stripe_account_id: For storing the Stripe Connect account ID
+- stripe_onboarding_complete: For tracking onboarding status
 
 3. Environment Variables Needed
 ```
