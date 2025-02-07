@@ -193,12 +193,28 @@ async def initiate_password_reset(email: str = Body(..., embed=True)) -> Dict[st
         )
 
 
-@router.post("/create_record", deprecated=True)
-async def create_record_endpoint(table: str = Body(...), data: dict = Body(...)):
-    """Endpoint to create a record in the database."""
+@router.post("/create_record")
+async def create_record_endpoint(
+    table: str = Body(...),
+    data: Dict[str, Any] = Body(...)
+) -> Dict[str, Any]:
+    """Create a record in the specified table."""
     try:
+        # Validate table name
+        if not table or not isinstance(table, str):
+            raise HTTPException(status_code=400, detail="Invalid table name")
+            
+        # Validate data
+        if not data or not isinstance(data, dict):
+            raise HTTPException(status_code=400, detail="Invalid data format")
+            
         response = create_db_record(table, data)
-        return {"id": response.get("id")}
+        return {
+            "status": "success",
+            "data": response
+        }
+    except HTTPException as he:
+        raise he
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
@@ -226,5 +242,30 @@ async def delete_record_endpoint(table: str = Body(...), record_id: int = Body(.
     try:
         response = delete_db_record(table, record_id)
         return response
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@router.get("/user/profile")
+async def get_user_profile(user_id: str) -> Dict[str, Any]:
+    """Get user profile data."""
+    try:
+        response = supabase.from_("profiles").select("*").eq("id", user_id).single().execute()
+        if response.get('error'):
+            raise HTTPException(status_code=404, detail="Profile not found")
+        return response.get('data', {})
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@router.put("/user/profile")
+async def update_user_profile(
+    user_id: str,
+    profile_data: Dict[str, Any] = Body(...)
+) -> Dict[str, Any]:
+    """Update user profile data."""
+    try:
+        response = supabase.from_("profiles").update(profile_data).eq("id", user_id).execute()
+        if response.get('error'):
+            raise HTTPException(status_code=400, detail="Profile update failed")
+        return response.get('data', {})
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))

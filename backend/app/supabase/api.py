@@ -19,15 +19,24 @@ def create_record(table: str, data: Dict[str, Any]) -> APIResponse:
         data (dict): The data to insert.
 
     Returns:
-        dict: The inserted record.
-
-    Raises:
-        Exception: If the insertion fails.
+        APIResponse: Response containing status and data/error.
     """
-    response = supabase.table(table).insert(data).execute()
-    if response.get('error'):
-        raise Exception(f"Insert failed: {response['error']}")
-    return response.get('data', {})
+    try:
+        response = supabase.table(table).insert(data).execute()
+        if response.get('error'):
+            return APIResponse(
+                status="error",
+                error=f"Insert failed: {response['error']}"
+            )
+        return APIResponse(
+            status="success",
+            data=response.get('data', {})
+        )
+    except Exception as e:
+        return APIResponse(
+            status="error",
+            error=f"Insert failed: {str(e)}"
+        )
 
 def read_records(table: str, query: dict = None) -> list:
     """
