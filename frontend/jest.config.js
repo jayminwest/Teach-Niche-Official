@@ -34,6 +34,13 @@ const customJestConfig = {
   testPathIgnorePatterns: [
     '<rootDir>/node_modules/',
     '<rootDir>/.next/'
+  ],
+  reporters: [
+    ["jest-spec-reporter", {
+      suppressPending: true,
+      removeColors: false,
+      fullPath: false
+    }]
   ]
 }
 
