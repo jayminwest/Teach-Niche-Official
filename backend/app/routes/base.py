@@ -8,7 +8,7 @@ from app.supabase.auth import (
 )
 from app.supabase.client import get_supabase_client
 
-api_router = APIRouter()
+api_router = APIRouter(prefix="/api")
 security = HTTPBearer()
 
 async def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(security)):
@@ -67,7 +67,7 @@ async def test_supabase():
         # Add actual Supabase test logic here
         return {"status": "ok"}
     except Exception:
-        return {"status": "error"}, 500
+        raise HTTPException(status_code=500, detail="Stripe integration test failed")
 
 @api_router.get("/test/stripe")
 async def test_stripe():
@@ -75,4 +75,4 @@ async def test_stripe():
         # Add actual Stripe test logic here
         return {"status": "ok"}
     except Exception:
-        return {"status": "error"}, 500
+        raise HTTPException(status_code=500, detail="Supabase integration test failed")

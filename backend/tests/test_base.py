@@ -33,7 +33,7 @@ class TestBaseEndpoints:
     def test_module_import(self):
         """Test that backend modules can be imported."""
         try:
-            from backend.app.core.config import get_settings
+            from app.core.config import get_settings
             assert get_settings is not None
         except ImportError as e:
             pytest.fail(f"Failed to import backend module: {e}")
