@@ -219,6 +219,61 @@ class TestStripeIntegration:
         )
         assert response.status_code == 200
 
+    @mock.patch('app.stripe.payments.get_lesson_creator_stripe_account')
+    @mock.patch('app.stripe.payments.stripe.checkout.Session.create')
+    async def test_checkout_session_fee_calculation(self, mock_checkout, mock_get_account, test_client):
+        """Test that checkout session correctly calculates 10% application fee.
+        
+        Verifies that:
+        1. Application fee is calculated as 10% of the unit amount
+        2. Fee is passed correctly to Stripe session creation
+        3. Connected account is set as transfer destination
+        
+        Args:
+            test_client: FastAPI test client fixture
+            mock_checkout: Mock for Stripe checkout session creation
+            mock_get_account: Mock for getting creator's Stripe account
+        """
+        # Mock the connected account lookup
+        test_connected_account = "acct_test123"
+        mock_get_account.return_value = test_connected_account
+        
+        # Mock the Stripe checkout session creation
+        mock_checkout.return_value = SimpleNamespace(id='test_session_123')
+        
+        # Test data
+        unit_amount = 2000  # $20.00
+        expected_fee = 200  # 10% of $20.00
+        
+        response = test_client.post(
+            '/api/v1/stripe/checkout_session',
+            json={
+                'line_items': [{
+                    'price_data': {
+                        'currency': self.TEST_CURRENCY,
+                        'product_data': {'name': self.TEST_PRODUCT_NAME},
+                        'unit_amount': unit_amount,
+                    },
+                    'quantity': self.TEST_QUANTITY,
+                }],
+                'metadata': {
+                    'lesson_id': 'test_lesson_123'
+                },
+                'success_url': 'https://example.com/success',
+                'cancel_url': 'https://example.com/cancel'
+            }
+        )
+        
+        # Verify response
+        assert response.status_code == 200
+        assert 'id' in response.json()
+        
+        # Verify Stripe session was created with correct parameters
+        mock_checkout.assert_called_once()
+        call_kwargs = mock_checkout.call_args.kwargs
+        assert call_kwargs['payment_intent_data']['application_fee_amount'] == expected_fee
+        assert call_kwargs['payment_intent_data']['transfer_data']['destination'] == test_connected_account
+
     def test_payout_configuration(self, test_client):
         """Test Stripe payout schedule configuration.
 
