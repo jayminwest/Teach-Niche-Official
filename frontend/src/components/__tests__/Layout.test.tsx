@@ -34,7 +34,9 @@ describe('Layout', () => {
         <div>Content</div>
       </Layout>
     )
-    expect(screen.getByRole('status')).toBeInTheDocument()
+    const spinner = screen.getByRole('status')
+    expect(spinner).toBeInTheDocument()
+    expect(spinner).toHaveAttribute('aria-label', 'Loading')
   })
 
   it('shows header by default', () => {

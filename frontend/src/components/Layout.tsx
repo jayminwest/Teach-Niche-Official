@@ -31,6 +31,7 @@ const Layout = ({
           emptyColor="gray.200"
           color="blue.500"
           size="xl"
+          aria-label="Loading"
         />
       </Center>
     )
