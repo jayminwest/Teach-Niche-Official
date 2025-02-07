@@ -22,7 +22,8 @@ async def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(s
 
 @router.get("/")
 async def read_root():
-    return {"message": "Hello from the backend!"}
+    """Root endpoint that returns a welcome message."""
+    return {"message": "Welcome to TeachNiche API"}
 
 @router.post("/auth/signup")
 async def signup(email: str, password: str):

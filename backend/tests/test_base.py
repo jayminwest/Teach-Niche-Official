@@ -4,7 +4,8 @@ import pytest
 from fastapi import status
 from app.core.config import get_settings
 
-@pytest.mark.asyncio
+pytestmark = pytest.mark.asyncio
+
 class TestBaseEndpoints:
     """Test class for basic API endpoints."""
 
