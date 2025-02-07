@@ -15,11 +15,11 @@ def get_vimeo_client() -> pyvimeo.VimeoClient:
     Get a cached instance of the Vimeo API client.
     
     Returns:
-        vimeo.VimeoClient: Authenticated Vimeo API client instance
+        pyvimeo.VimeoClient: Authenticated Vimeo API client instance
     """
     settings = get_settings()
     
-    return vimeo.VimeoClient(
+    return pyvimeo.VimeoClient(
         token=settings.VIMEO_ACCESS_TOKEN,
         key=settings.VIMEO_CLIENT_ID,
         secret=settings.VIMEO_CLIENT_SECRET,
