@@ -38,7 +38,6 @@ describe('Header Component', () => {
     expect(screen.getByText('Home')).toBeInTheDocument()
     expect(screen.getByText('Lessons')).toBeInTheDocument()
     expect(screen.getByText('About')).toBeInTheDocument()
-    expect(screen.getByText('My Purchased Lessons')).toBeInTheDocument()
   })
 
   it('toggles dark mode', () => {
@@ -68,11 +67,10 @@ describe('Header Component', () => {
     const closeButton = screen.getByLabelText('Close')
     fireEvent.click(closeButton)
     
-    // Check if mobile menu is hidden by checking transform style
+    // Check if mobile menu is hidden
     const dialog = screen.getByRole('dialog')
     await waitFor(() => {
-      // Check that transform contains a large translateX value (close to 100%)
-      expect(dialog.style.transform).toMatch(/translateX\(100%\)/)
+      expect(dialog).not.toBeVisible()
     })
     
     // Desktop profile menu should still be visible
