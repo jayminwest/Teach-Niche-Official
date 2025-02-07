@@ -14,7 +14,7 @@ def test_user_credentials(random_string, mocker) -> Dict[str, str]:
     # Mock Supabase response
     mock_response = {
         "user": {
-            "id": "test-user-id",
+            "id": "123e4567-e89b-12d3-a456-426614174000",
             "email": email,
             "aud": "authenticated",
             "role": "authenticated"
@@ -44,7 +44,7 @@ def test_creator_account(test_client, random_string, mocker) -> Dict[str, Any]:
     # Mock Supabase auth response
     mock_auth_response = {
         "user": {
-            "id": "test-creator-id",
+            "id": "123e4567-e89b-12d3-a456-426614174001",
             "email": email,
             "aud": "authenticated",
             "role": "authenticated"
