@@ -49,6 +49,7 @@ interface ListLessonsParams {
   sort?: 'newest' | 'oldest' | 'price-low' | 'price-high';
   limit?: number;
   offset?: number;
+  category?: string; // Filter by category
 }
 
 // GET /api/lessons/featured
@@ -63,12 +64,50 @@ interface Lesson {
   title: string;
   description: string;
   price: number;
-  isNew?: boolean;
-  imageUrl?: string;
   creator_id: string;
   created_at: string;
-  status: 'draft' | 'published';
-  video_id?: string;
+  updated_at: string;
+  stripe_product_id?: string;
+  stripe_price_id?: string;
+  content?: string;
+  content_url?: string;
+  thumbnail_url?: string;
+  vimeo_video_id?: string;
+  vimeo_url?: string;
+  is_featured: boolean;
+  status: 'draft' | 'published' | 'archived';
+  deleted_at?: string;
+  version: number;
+  categories?: Category[];
+}
+
+// GET /api/categories
+interface Category {
+  id: string;
+  name: string;
+  created_at: string;
+  updated_at: string;
+}
+
+// GET /api/categories/{category_id}/lessons
+// Returns lessons in a category
+
+// GET /api/reviews/lesson/{lesson_id}
+interface Review {
+  id: string;
+  user_id: string;
+  lesson_id: string;
+  rating: number; // 1-5
+  comment?: string;
+  created_at: string;
+  updated_at: string;
+}
+
+// POST /api/reviews
+interface CreateReviewParams {
+  lesson_id: string;
+  rating: number;
+  comment?: string;
 }
 ```
 
@@ -103,9 +142,19 @@ interface Purchase {
   id: string;
   user_id: string;
   lesson_id: string;
-  purchased_at: string;
-  stripe_payment_intent_id: string;
-  status: 'completed' | 'refunded';
+  creator_id: string;
+  purchase_date: string;
+  stripe_session_id: string;
+  amount: number;
+  platform_fee: number;
+  creator_earnings: number;
+  payment_intent_id: string;
+  fee_percentage: number;
+  status: 'pending' | 'completed' | 'failed' | 'refunded';
+  metadata?: any;
+  created_at: string;
+  updated_at: string;
+  version: number;
 }
 
 // POST /api/purchases/verify/{lesson_id}
@@ -144,6 +193,10 @@ interface Profile {
   social_media_tag?: string;
   stripe_account_id?: string;
   stripe_onboarding_complete: boolean;
+  vimeo_access_token?: string;
+  deleted_at?: string;
+  created_at: string;
+  updated_at: string;
 }
 ```
 
