@@ -17,7 +17,8 @@ async def test_vimeo_client_initialization(mock_vimeo):
     mock_vimeo.assert_called_once_with(
         token=settings.VIMEO_ACCESS_TOKEN,
         key=settings.VIMEO_CLIENT_ID,
-        secret=settings.VIMEO_CLIENT_SECRET
+        secret=settings.VIMEO_CLIENT_SECRET,
+        api_version='3.4'
     )
     assert client == mock_vimeo.return_value
 
@@ -25,7 +26,7 @@ async def test_vimeo_client_initialization(mock_vimeo):
 @patch('app.vimeo.upload.get_vimeo_client')
 async def test_successful_video_upload(mock_client):
     """Test successful video upload flow"""
-    mock_client.return_value.upload = AsyncMock(
+    mock_client.return_value.upload = MagicMock(
         return_value={
             'uri': '/videos/12345',
             'link': 'https://vimeo.com/12345',
@@ -40,7 +41,7 @@ async def test_successful_video_upload(mock_client):
         privacy={"view": "disable"}
     )
     
-    mock_client.return_value.upload.assert_awaited_once_with(
+    mock_client.return_value.upload.assert_called_once_with(
         "test.mp4",
         data={
             'name': 'Test Video',
