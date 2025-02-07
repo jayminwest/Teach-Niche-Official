@@ -78,17 +78,21 @@ def create_fastapi_app() -> FastAPI:
         allow_headers=["*"],
     )
 
+    # Define API version prefix
+    api_v1_prefix = "/api/v1"
+    
     # Register all API routers with versioned prefix
     app.include_router(base_router, prefix="/api")
-    app.include_router(supabase_router, prefix="/api/supabase/v1")
-    app.include_router(lessons_router, prefix="/api/v1/lessons", tags=["lessons"])
-    # Stripe routers
-    app.include_router(stripe_onboarding_router, prefix="/api/v1/stripe", tags=["stripe"])
-    app.include_router(stripe_payments_router, prefix="/api/v1/stripe", tags=["stripe"])
-    app.include_router(stripe_dashboard_router, prefix="/api/v1/stripe", tags=["stripe"])
-    app.include_router(stripe_payouts_router, prefix="/api/v1/stripe", tags=["stripe"])
-    app.include_router(stripe_webhooks_router, prefix="/api/v1/stripe", tags=["stripe"])
-    app.include_router(stripe_compliance_router, prefix="/api/v1/stripe", tags=["stripe"])
+    app.include_router(supabase_router, prefix=f"{api_v1_prefix}/supabase")
+    app.include_router(lessons_router, prefix=f"{api_v1_prefix}/lessons", tags=["lessons"])
+    
+    # Stripe routers with consistent prefix
+    app.include_router(stripe_onboarding_router, prefix=f"{api_v1_prefix}/stripe", tags=["stripe"])
+    app.include_router(stripe_payments_router, prefix=f"{api_v1_prefix}/stripe", tags=["stripe"])
+    app.include_router(stripe_dashboard_router, prefix=f"{api_v1_prefix}/stripe", tags=["stripe"])
+    app.include_router(stripe_payouts_router, prefix=f"{api_v1_prefix}/stripe", tags=["stripe"])
+    app.include_router(stripe_webhooks_router, prefix=f"{api_v1_prefix}/stripe", tags=["stripe"])
+    app.include_router(stripe_compliance_router, prefix=f"{api_v1_prefix}/stripe", tags=["stripe"])
 
     return app
 

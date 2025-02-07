@@ -5,7 +5,7 @@ from app.stripe.client import stripe
 
 router = APIRouter()
 
-@router.post("/tax_forms")
+@router.post("/compliance/tax_forms")
 async def handle_tax_form_generation(
     account_id: str = Body(..., embed=True),
     form_type: str = Body("us_1099_k"),

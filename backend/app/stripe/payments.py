@@ -74,7 +74,7 @@ async def get_lesson_creator_stripe_account(lesson_id: str) -> str:
             detail=f"Error creating checkout session: {str(e)}"
         )
 
-@router.post("/api/v1/stripe/checkout_session")
+@router.post("/checkout_session")
 async def create_checkout_session(data: dict):
     """Creates a Stripe Checkout session for processing payments.
     
