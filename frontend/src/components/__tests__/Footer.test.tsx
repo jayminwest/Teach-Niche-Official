@@ -46,8 +46,8 @@ describe('Footer', () => {
     const facebookLink = screen.getByText('Facebook').closest('a')
 
     expect(twitterLink).toHaveAttribute('target', '_blank')
-    expect(twitterLink).toHaveAttribute('rel', 'noopener noreferrer')
+    expect(twitterLink).toHaveAttribute('rel', 'noreferrer')
     expect(facebookLink).toHaveAttribute('target', '_blank')
-    expect(facebookLink).toHaveAttribute('rel', 'noopener noreferrer')
+    expect(facebookLink).toHaveAttribute('rel', 'noreferrer')
   })
 })
