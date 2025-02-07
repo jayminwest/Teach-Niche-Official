@@ -498,7 +498,7 @@ describe('AuthContext', () => {
 
       const handleSignUp = async () => {
         try {
-          await signUp('valid@email.com', 'short')
+          await signUp('valid@email.com', 'validpassword123')
         } catch (err) {
           setError(err instanceof Error ? err.message : 'Unknown error')
         }
