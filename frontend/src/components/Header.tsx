@@ -72,11 +72,20 @@ const Header = () => {
             flex={1} 
             justify="center"
             align="center"
+            mx={4}
           >
-            <HStack spacing={8} position="absolute" left="50%" transform="translateX(-50%)">
+            <HStack 
+              spacing={{ base: 4, md: 8 }}
+              shouldWrapChildren
+              maxW="container.md"
+            >
               {NAV_ITEMS.map(({ href, label }) => (
                 <Link key={href} href={href}>
-                  <Button variant="ghost" size="md">
+                  <Button 
+                    variant="ghost" 
+                    size="md"
+                    whiteSpace="nowrap"
+                  >
                     {label}
                   </Button>
                 </Link>
@@ -84,7 +93,7 @@ const Header = () => {
             </HStack>
           </Flex>
 
-          <HStack spacing={2}>
+          <HStack spacing={2} flexShrink={0}>
             <IconButton
               icon={colorMode === 'light' ? <FiMoon /> : <FiSun />}
               variant="ghost"
