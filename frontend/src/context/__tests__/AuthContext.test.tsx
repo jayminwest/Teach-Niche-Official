@@ -372,12 +372,27 @@ describe('AuthContext', () => {
       data: { session: mockSession }
     })
 
-    ;(supabase.from as jest.Mock)().select().or().maybeSingle.mockResolvedValueOnce({
-      data: existingProfile,
-      error: null
+    const mockFrom = jest.fn().mockReturnValue({
+      select: jest.fn().mockReturnValue({
+        or: jest.fn().mockReturnValue({
+          maybeSingle: jest.fn().mockResolvedValueOnce({
+            data: existingProfile,
+            error: null
+          })
+        })
+      }),
+      update: jest.fn().mockReturnValue({
+        eq: jest.fn().mockReturnValue({
+          select: jest.fn().mockReturnValue({
+            single: jest.fn().mockResolvedValueOnce({
+              data: { ...existingProfile, id: mockUser.id },
+              error: null
+            })
+          })
+        })
+      })
     })
-
-    ;(supabase.from as jest.Mock)().update().eq().select().single.mockResolvedValueOnce({
+    ;(supabase.from as jest.Mock).mockImplementation(() => mockFrom())
       data: { ...existingProfile, id: mockUser.id },
       error: null
     })
@@ -427,11 +442,16 @@ describe('AuthContext', () => {
 
     expect(mockRouter.push).toHaveBeenCalledWith('/profile')
 
+    // Reset mock calls
+    mockRouter.push.mockReset()
+    
     await act(async () => {
       await authStateCallback('SIGNED_OUT', null)
     })
 
-    expect(mockRouter.push).toHaveBeenCalledWith('/auth/login')
+    await waitFor(() => {
+      expect(mockRouter.push).toHaveBeenCalledWith('/auth/login')
+    })
   })
 
   it('handles sign up validation and API errors', async () => {
@@ -471,6 +491,11 @@ describe('AuthContext', () => {
       expect(screen.getByTestId('error-message')).toHaveTextContent('Please enter a valid email address')
     })
 
+    // Clear previous error
+    await act(async () => {
+      await userEvent.click(signUpButton)
+    })
+
     // Test network error
     global.fetch = jest.fn().mockRejectedValueOnce(new TypeError('Failed to fetch'))
 
@@ -479,7 +504,7 @@ describe('AuthContext', () => {
     })
 
     await waitFor(() => {
-      expect(screen.getByTestId('error-message')).toHaveTextContent('Unable to connect to the server')
+      expect(screen.getByTestId('error-message')).toHaveTextContent('Unable to connect to the server. Please check your internet connection and make sure the backend is running.')
     })
   })
 
