@@ -6,7 +6,7 @@ from app.supabase.client import get_supabase_client
 from app.supabase.models import Lesson, LessonCreate, LessonUpdate, Category
 from supabase import Client
 
-router = APIRouter()
+router = APIRouter(tags=["lessons"])
 
 def get_db() -> Client:
     return get_supabase_client()

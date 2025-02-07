@@ -38,7 +38,7 @@ from app.stripe.dashboard import router as stripe_dashboard_router
 from app.stripe.payouts import router as stripe_payouts_router
 from app.stripe.webhooks import router as stripe_webhooks_router
 from app.stripe.compliance import router as stripe_compliance_router
-from app.routes.lessons import lessons_router
+from app.routes.lessons import router as lessons_router
 
 # Initialize application settings
 APP_SETTINGS = get_settings()
