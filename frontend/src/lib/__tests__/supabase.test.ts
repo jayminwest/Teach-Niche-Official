@@ -6,25 +6,25 @@ jest.mock('@supabase/supabase-js')
 describe('Supabase Client', () => {
   let mockCreateClient;
   
-  beforeEach(() => {
-    mockCreateClient = jest.fn().mockReturnValue({
-      auth: {
-        onAuthStateChange: jest.fn()
-      }
-    });
-    (createClient as jest.Mock).mockImplementation(mockCreateClient);
-  })
   const mockSupabaseUrl = 'https://test.supabase.co'
   const mockSupabaseKey = 'test-key'
   
   beforeEach(() => {
-    // Reset modules before each test
+    // Reset modules and mocks before each test
     jest.resetModules()
     jest.clearAllMocks()
     
     // Reset environment
     process.env.NEXT_PUBLIC_SUPABASE_URL = mockSupabaseUrl
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY = mockSupabaseKey
+
+    // Set up mocks
+    mockCreateClient = jest.fn().mockReturnValue({
+      auth: {
+        onAuthStateChange: jest.fn()
+      }
+    });
+    (createClient as jest.Mock).mockImplementation(mockCreateClient);
   })
 
   afterEach(() => {
@@ -34,8 +34,8 @@ describe('Supabase Client', () => {
   it('initializes supabase client with correct config', () => {
     // Force re-import of supabase after setting environment variables
     jest.isolateModules(() => {
-      const supabaseModule = require('../supabase');
-      expect(supabaseModule.supabase).toBeDefined();
+      const { supabase } = require('../supabase');
+      expect(supabase).toBeDefined();
     });
     
     expect(createClient).toHaveBeenCalledWith(
