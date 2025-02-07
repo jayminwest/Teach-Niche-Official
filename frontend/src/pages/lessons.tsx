@@ -150,7 +150,7 @@ const Lessons: NextPage = () => {
       }
 
       // Create checkout session through our API
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/stripe/checkout_session`, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/v1/stripe/checkout/checkout_session`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
