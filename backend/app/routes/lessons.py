@@ -58,14 +58,17 @@ async def create_lesson(lesson_data: Dict[str, Any] = Body(...)) -> Dict[str, An
     """Create a new lesson."""
     db = get_supabase_client()
     try:
+        print(f"Creating lesson with data: {lesson_data}")  # Debug log
         response = db.table('lessons').insert(lesson_data).execute()
         if response.error:
+            print(f"Supabase error: {response.error}")  # Debug log
             raise HTTPException(
                 status_code=400,
                 detail=f"Failed to create lesson: {response.error.message}"
             )
         return response.data[0]
     except Exception as e:
+        print(f"Exception creating lesson: {str(e)}")  # Debug log
         raise HTTPException(
             status_code=500,
             detail=f"Error creating lesson: {str(e)}"
