@@ -354,4 +354,172 @@ describe('AuthContext', () => {
 
     expect(unsubscribeMock).toHaveBeenCalled()
   })
+
+  it('handles profile update when email exists', async () => {
+    const mockUser = {
+      id: '123',
+      email: 'test@example.com',
+      user_metadata: { full_name: 'Test User' }
+    }
+    const mockSession = { user: mockUser }
+    const existingProfile = {
+      id: '456', // Different ID to trigger update
+      email: 'test@example.com',
+      full_name: 'Existing User'
+    }
+
+    ;(supabase.auth.getSession as jest.Mock).mockResolvedValueOnce({
+      data: { session: mockSession }
+    })
+
+    ;(supabase.from as jest.Mock)().select().or().maybeSingle.mockResolvedValueOnce({
+      data: existingProfile,
+      error: null
+    })
+
+    ;(supabase.from as jest.Mock)().update().eq().select().single.mockResolvedValueOnce({
+      data: { ...existingProfile, id: mockUser.id },
+      error: null
+    })
+
+    render(
+      <AuthProvider>
+        <TestComponent />
+      </AuthProvider>
+    )
+
+    await waitFor(() => {
+      expect(supabase.from).toHaveBeenCalledWith('profiles')
+      expect(supabase.from().update).toHaveBeenCalled()
+    })
+  })
+
+  it('handles auth state change with redirects', async () => {
+    const mockUser = {
+      id: '123',
+      email: 'test@example.com',
+      user_metadata: {}
+    }
+    const mockSession = { user: mockUser }
+    let authStateCallback: (event: string, session: any) => void
+
+    ;(supabase.auth.onAuthStateChange as jest.Mock).mockImplementation((callback) => {
+      authStateCallback = callback
+      return {
+        data: { subscription: { unsubscribe: jest.fn() } }
+      }
+    })
+
+    ;(useRouter as jest.Mock).mockReturnValue({
+      ...mockRouter,
+      pathname: '/auth/login'
+    })
+
+    render(
+      <AuthProvider>
+        <TestComponent />
+      </AuthProvider>
+    )
+
+    await act(async () => {
+      await authStateCallback('SIGNED_IN', mockSession)
+    })
+
+    expect(mockRouter.push).toHaveBeenCalledWith('/profile')
+
+    await act(async () => {
+      await authStateCallback('SIGNED_OUT', null)
+    })
+
+    expect(mockRouter.push).toHaveBeenCalledWith('/auth/login')
+  })
+
+  it('handles sign up validation and API errors', async () => {
+    const TestSignUpComponent = () => {
+      const { signUp } = useAuth()
+      const [error, setError] = useState('')
+
+      const handleSignUp = async () => {
+        try {
+          await signUp('invalid-email', 'short')
+        } catch (err) {
+          setError(err instanceof Error ? err.message : 'Unknown error')
+        }
+      }
+
+      return (
+        <div>
+          <button onClick={handleSignUp}>Sign Up</button>
+          {error && <div data-testid="error-message">{error}</div>}
+        </div>
+      )
+    }
+
+    render(
+      <AuthProvider>
+        <TestSignUpComponent />
+      </AuthProvider>
+    )
+
+    const signUpButton = screen.getByText(/Sign Up/i)
+    
+    await act(async () => {
+      await userEvent.click(signUpButton)
+    })
+
+    await waitFor(() => {
+      expect(screen.getByTestId('error-message')).toHaveTextContent('Please enter a valid email address')
+    })
+
+    // Test network error
+    global.fetch = jest.fn().mockRejectedValueOnce(new TypeError('Failed to fetch'))
+
+    await act(async () => {
+      await userEvent.click(signUpButton)
+    })
+
+    await waitFor(() => {
+      expect(screen.getByTestId('error-message')).toHaveTextContent('Unable to connect to the server')
+    })
+  })
+
+  it('handles password reset errors', async () => {
+    global.fetch = jest.fn().mockResolvedValueOnce({
+      ok: false,
+      json: () => Promise.resolve({ detail: 'Invalid email address' })
+    })
+
+    const TestResetComponent = () => {
+      const { resetPassword } = useAuth()
+      const [error, setError] = useState('')
+
+      const handleReset = async () => {
+        try {
+          await resetPassword('invalid@email')
+        } catch (err) {
+          setError(err instanceof Error ? err.message : 'Unknown error')
+        }
+      }
+
+      return (
+        <div>
+          <button onClick={handleReset}>Reset Password</button>
+          {error && <div data-testid="error-message">{error}</div>}
+        </div>
+      )
+    }
+
+    render(
+      <AuthProvider>
+        <TestResetComponent />
+      </AuthProvider>
+    )
+
+    const resetButton = screen.getByText(/Reset Password/i)
+    await userEvent.click(resetButton)
+
+    await waitFor(() => {
+      expect(screen.getByTestId('error-message')).toHaveTextContent('Invalid email address')
+    })
+  })
 })
