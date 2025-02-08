@@ -79,38 +79,6 @@ const SellLessonsPage: NextPage = () => {
             </Box>
           </SimpleGrid>
         </Box>
-
-        {/* Team Section */}
-        <Box>
-          <Heading as="h2" size="xl" color={headingColor} mb={8} textAlign="center">
-            Our Team
-          </Heading>
-          <SimpleGrid columns={{ base: 1, md: 2 }} spacing={10} maxW="2xl" mx="auto">
-            {teamMembers.map((member) => (
-              <Stack
-                key={member.name}
-                bg={cardBg}
-                p={6}
-                borderRadius="lg"
-                boxShadow="md"
-                spacing={4}
-                align="center"
-                textAlign="center"
-              >
-                <Avatar size="xl" name={member.name} src={member.avatar} />
-                <Heading as="h3" size="md" color={headingColor}>
-                  {member.name}
-                </Heading>
-                <Text fontWeight="medium" color={textColor}>
-                  {member.role}
-                </Text>
-                <Text color={textColor}>
-                  {member.bio}
-                </Text>
-              </Stack>
-            ))}
-          </SimpleGrid>
-        </Box>
       </Container>
     </Layout>
   )
