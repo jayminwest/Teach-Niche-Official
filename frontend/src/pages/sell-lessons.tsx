@@ -6,7 +6,7 @@ import { Heading, Text } from '@chakra-ui/react';
 
 const SellLessonsPage = () => {
   return (
-    <Layout showHeader={true} showFooter={true}>
+    <Layout showHeader={false} showFooter={false}>
       <Section title="Sell Your Lessons">
         <Heading as="h2" size="lg" mb={4}>
           Share Your Knowledge and Earn
