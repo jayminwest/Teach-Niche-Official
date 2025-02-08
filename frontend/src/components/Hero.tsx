@@ -15,24 +15,33 @@ import {
 
 export default function CallToActionWithAnnotation() {
   return (
-    <>
-      <Container maxW={'3xl'}>
+    <Box
+      bgImage="url('https://via.placeholder.com/1920x1080')" // Replace with your image URL
+      bgSize="cover"
+      bgPosition="center"
+      minH="80vh" // Adjust as needed
+      display="flex"
+      alignItems="center"
+      justifyContent="center"
+    >
+      <Container maxW={'3xl'} textAlign="center">
         <Stack
           as={Box}
-          textAlign={'center'}
           spacing={{ base: 8, md: 14 }}
-          py={{ base: 20, md: 36 }}>
+          py={{ base: 20, md: 36 }}
+          color="white" // Ensure text is visible on the background image
+        >
           <Heading
             fontWeight={600}
             fontSize={{ base: '2xl', sm: '4xl', md: '6xl' }}
             lineHeight={'110%'}
-            color={useColorModeValue('gray.900', 'white')}>
+          >
             Make money from <br />
             <Text as={'span'} color={useColorModeValue('blue.500', 'blue.300')}>
               your audience
             </Text>
           </Heading>
-          <Text color={useColorModeValue('gray.600', 'gray.300')}>
+          <Text color={useColorModeValue('gray.200', 'gray.300')} fontSize={'lg'}>
             Monetize your content by charging your most loyal readers and reward them
             loyalty points. Give back to your loyal readers by granting them access to
             your pre-releases and sneak-peaks.
@@ -42,7 +51,8 @@ export default function CallToActionWithAnnotation() {
             spacing={3}
             align={'center'}
             alignSelf={'center'}
-            position={'relative'}>
+            position={'relative'}
+          >
             <Button
               colorScheme={'blue'}
               bg={useColorModeValue('blue.500', 'blue.400')}
@@ -51,7 +61,8 @@ export default function CallToActionWithAnnotation() {
               shadow="sm"
               _hover={{
                 bg: useColorModeValue('blue.600', 'blue.500'),
-              }}>
+              }}
+            >
               Get Started
             </Button>
             <Button variant={'ghost'} colorScheme={'blue'} size={'sm'}>
@@ -60,8 +71,8 @@ export default function CallToActionWithAnnotation() {
           </Stack>
         </Stack>
       </Container>
-    </>
-  )
+    </Box>
+  );
 }
 
 const Arrow = createIcon({
