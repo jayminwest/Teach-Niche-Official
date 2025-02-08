@@ -1,6 +1,6 @@
 # Stripe API Endpoints Overview
 
-## Currently Implemented (Required for MVP)
+## ✅ Currently Implemented (MVP Complete)
 
 ### Account Management
 - `POST /stripe/account` - Creates new Stripe Connected Account (onboarding.py)
@@ -10,13 +10,66 @@
 ### Payments
 - `POST /stripe/checkout_session` - Creates checkout session for lesson purchase (payments.py)
 
-### Payouts
+### Payouts 
 - `POST /stripe/payouts` - Configures payout schedule (payouts.py)
 
 ### Webhooks (webhooks.py)
-- Basic webhook signature verification
-- Handler for payment_intent.succeeded
-- Handler for payment_method.attached
+- ✅ Basic webhook signature verification
+- ✅ Handler for payment_intent.succeeded
+- ✅ Handler for payment_method.attached
+
+## ⚠️ Needs Implementation (Remaining MVP)
+
+### Account Management
+- `GET /stripe/account/{id}` - Get connected account details 
+- `GET /stripe/account/verification_status` - Check verification state
+- `POST /stripe/account/verify` - Submit verification docs
+- `GET /stripe/account/requirements` - List pending requirements
+
+### Platform Fees
+- ➕ Create fees.py module
+- `GET /stripe/fees` - Get fee configuration
+- `POST /stripe/fees/calculate` - Calculate transaction fees
+- `PUT /stripe/fees/configure` - Update fee structure
+
+### Disputes & Refunds
+- ➕ Create disputes.py module
+- `GET /stripe/disputes` - List account disputes
+- `GET /stripe/disputes/{id}` - Get dispute details
+- `POST /stripe/disputes/{id}/respond` - Submit dispute response
+- ➕ Create refunds.py module  
+- `POST /stripe/refund` - Create payment refund
+- `PATCH /stripe/purchases/{id}/status` - Update purchase status
+
+### Reporting & Balance
+- ➕ Create reporting.py module
+- `GET /stripe/balance` - View account balance
+- `GET /stripe/payouts/history` - Payout history
+- `GET /stripe/earnings/summary` - Earnings breakdown
+
+## 🌍 International Support Gaps
+
+### Currency & Tax
+- ➕ Create tax.py module
+- `POST /stripe/tax/calculate` - Calculate transaction tax
+- `GET /stripe/tax/rates` - Get regional tax rates
+- ➕ Create currency.py module
+- `GET /stripe/currencies/rates` - Currency conversion rates
+- `POST /stripe/currencies/convert` - Convert amounts
+
+### Payout Enhancements
+- Multi-currency payout support
+- Region-specific payout methods
+- Currency conversion handling
+
+### Webhook Handling
+- ❌ Missing handlers for:
+  - account.updated
+  - payout.paid/failed
+  - charge.refunded
+  - payment_intent.canceled
+  - tax.calculated
+  - dispute.created/closed
 
 ## Need to Implement (Required for MVP)
 
