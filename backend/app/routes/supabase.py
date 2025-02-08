@@ -257,6 +257,20 @@ async def get_user_profile(user_id: str) -> Dict[str, Any]:
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
+@router.get("/profiles", response_model=List[Dict])
+async def get_all_profiles():
+    """Get all profiles from the database."""
+    try:
+        client = get_supabase_client()
+        response = client.from_("profiles").select("*").execute()
+        if not response.data:
+            raise HTTPException(status_code=404, detail="No profiles found")
+        return response.data
+    except HTTPException as he:
+        raise he
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
 @router.put("/user/profile")
 async def update_user_profile(
     user_id: str,
