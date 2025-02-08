@@ -115,8 +115,8 @@ async def create_checkout_session(request: CheckoutSessionRequest = Body(...)):
             payment_method_types=['card'],
             line_items=line_items,
             mode='payment',
-            success_url=data.get('success_url'),
-            cancel_url=data.get('cancel_url'),
+            success_url=request.success_url,
+            cancel_url=request.cancel_url,
             metadata=metadata,
             payment_intent_data={
                 'application_fee_amount': application_fee_amount,
