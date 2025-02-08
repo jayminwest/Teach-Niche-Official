@@ -181,6 +181,8 @@ class CheckoutSessionRequest(BaseModel):
 
 @router.post("/checkout_session")
 async def create_stripe_checkout_session(request: CheckoutSessionRequest = Body(...)) -> dict:
+    import logging
+    logger = logging.getLogger("stripe")
     """Creates a Stripe checkout session for processing payments.
 
     This endpoint generates a checkout session for processing payments through Stripe.
@@ -205,22 +207,30 @@ async def create_stripe_checkout_session(request: CheckoutSessionRequest = Body(
         {'id': 'cs_123', 'url': 'https://checkout.stripe.com/pay/cs_123'}
     """
     try:
+        logger.info(f"Incoming checkout request for account {request.account_id} with lesson {request.lesson_id}")
+        logger.debug(f"Full request payload: {request.dict()}")
+        
         # Validate line items structure
-        for item in request.line_items:
+        for index, item in enumerate(request.line_items):
+            logger.debug(f"Validating line item #{index + 1}: {item}")
             if "price" not in item or "quantity" not in item:
+                logger.error(f"Invalid line item format at index {index}: {item}")
                 raise HTTPException(
                     status_code=400,
                     detail="Each line item must contain 'price' and 'quantity' fields"
                 )
 
         # Set lesson_id in metadata
+        logger.debug(f"Setting lesson_id in metadata: {request.lesson_id}")
         request.metadata["lesson_id"] = request.lesson_id
             
+        logger.info("Creating Stripe checkout session")
         session = payments.create_checkout_session(
             request.account_id, 
             request.line_items,
             metadata=request.metadata
         )
+        logger.info(f"Checkout session created successfully: {session['id']}")
         return session
     except HTTPException as he:
         raise he

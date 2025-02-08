@@ -145,11 +145,18 @@ const Lessons: NextPage = () => {
 
 
   const handlePurchaseClick = async (lessonId: string) => {
+    console.log('Starting purchase process for lesson:', lessonId);
     const lesson = SAMPLE_LESSONS.find(l => l.id === lessonId);
     if (!lesson) {
-      console.error('Lesson not found');
+      console.error('Purchase error: Lesson not found with ID', lessonId);
       return;
     }
+    console.log('Found lesson:', {
+      id: lesson.id,
+      title: lesson.title,
+      stripePriceId: lesson.stripePriceId,
+      stripeAccountId: lesson.stripeAccountId
+    });
     console.log('Purchase initiated for lesson:', lessonId);
     
     try {
@@ -165,19 +172,27 @@ const Lessons: NextPage = () => {
       }
 
       // Create checkout session through our API
+      const requestBody = {
+        account_id: "acct_1PqgBMF5CuyC6hH3", // Test Stripe account ID
+        line_items: [{
+          price: "price_1PqgBMF5CuyC6hH3r9qP3qT0", // Test price ID
+          quantity: 1
+        }],
+        lesson_id: lessonId
+      };
+      
+      console.log('Sending checkout request:', {
+        url: `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/stripe/checkout_session`,
+        method: 'POST',
+        body: requestBody
+      });
+
       const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/stripe/checkout_session`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-          account_id: "acct_1PqgBMF5CuyC6hH3", // Test Stripe account ID
-          line_items: [{
-            price: "price_1PqgBMF5CuyC6hH3r9qP3qT0", // Test price ID
-            quantity: 1
-          }],
-          lesson_id: lessonId
-        }),
+        body: JSON.stringify(requestBody),
       });
 
       if (!response.ok) {
@@ -185,7 +200,14 @@ const Lessons: NextPage = () => {
         throw new Error(`Checkout session creation failed: ${errorData.message}`);
       }
 
-      const { sessionId } = await response.json();
+      const responseData = await response.json();
+      console.log('Checkout response:', responseData);
+      
+      if (!responseData.sessionId) {
+        console.error('Invalid session ID in response:', responseData);
+        throw new Error('No session ID received from server');
+      }
+      const { sessionId } = responseData;
 
       // Redirect to Stripe checkout
       const { error } = await stripe.redirectToCheckout({
