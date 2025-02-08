@@ -263,9 +263,7 @@ async def get_all_profiles():
     try:
         client = get_supabase_client()
         response = client.from_("profiles").select("*").execute()
-        if not response.data:
-            raise HTTPException(status_code=404, detail="No profiles found")
-        return response.data
+        return response.data or []
     except HTTPException as he:
         raise he
     except Exception as e:
