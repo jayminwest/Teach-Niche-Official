@@ -16,7 +16,6 @@ import {
 export default function CallToActionWithAnnotation() {
   return (
     <Box
-      bgImage="url('https://via.placeholder.com/1920x1080')" // Replace with your image URL
       bgSize="cover"
       bgPosition="center"
       minH="80vh" // Adjust as needed
