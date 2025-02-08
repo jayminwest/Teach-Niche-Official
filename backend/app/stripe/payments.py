@@ -49,28 +49,30 @@ async def get_lesson_creator_stripe_account(lesson_id: str) -> str:
             raise HTTPException(status_code=400, detail="Invalid lesson_id format")
 
         # First get the lesson to find the creator_id
-        response = supabase.table('lessons') \
-            .select('creator_id') \
-            .eq('id', lesson_id) \
-            .single() \
-            .execute()
-            
-        if response.error:
-            raise HTTPException(status_code=404, detail=f"Lesson {lesson_id} not found")
+        # Verify lesson exists
+        response = supabase.table('lessons').select('creator_id').eq('id', lesson_id).execute()
+        if not response.data:
+            raise HTTPException(
+                status_code=404, 
+                detail=f"Lesson {lesson_id} not found. Be sure to create the lesson first with valid UUIDs from your database."
+            )
             
         creator_id = response.data.get('creator_id')
         
         # Then get the creator's stripe account
-        response = supabase.table('profiles') \
-            .select('stripe_account_id') \
-            .eq('id', creator_id) \
-            .single() \
-            .execute()
-            
-        if response.error or not response.data.get('stripe_account_id'):
+        # Verify creator exists and has stripe account
+        response = supabase.table('profiles').select('stripe_account_id').eq('id', creator_id).execute()
+        if not response.data:
+            raise HTTPException(
+                status_code=404,
+                detail=f"Creator profile {creator_id} not found"
+            )
+        
+        stripe_account_id = response.data[0].get('stripe_account_id')
+        if not stripe_account_id:
             raise HTTPException(
                 status_code=400,
-                detail="Creator has not completed Stripe onboarding"
+                detail=f"Creator {creator_id} has not completed Stripe onboarding"
             )
             
         return response.data.get('stripe_account_id')
