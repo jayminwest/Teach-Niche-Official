@@ -12,7 +12,7 @@ All routes follow RESTful conventions and return consistent JSON responses.
 Error handling is implemented to provide meaningful error messages to clients.
 """
 from fastapi import APIRouter, HTTPException, Body
-from typing import Dict, Any
+from typing import Dict, Any, List
 
 from app.supabase.auth import (
     register_user_with_email as sign_up_with_email,
