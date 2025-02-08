@@ -29,6 +29,9 @@ const Footer = () => {
             <Link as={NextLink} href="/legal#privacy" _hover={{ color: 'blue.300' }}>
               Privacy
             </Link>
+            <Link as={NextLink} href="/sell-lessons" _hover={{ color: 'blue.300' }}>
+              Sell Lessons
+            </Link>
           </Flex>
 
           <Text textAlign="center" opacity={0.8}>
