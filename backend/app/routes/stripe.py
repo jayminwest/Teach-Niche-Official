@@ -171,8 +171,16 @@ async def create_stripe_dashboard_session(account_id: str = Body(..., embed=True
             detail=f"Stripe dashboard session creation failed: {str(error)}"
         )
 
+from pydantic import BaseModel
+
+class CheckoutSessionRequest(BaseModel):
+    account_id: str
+    line_items: list[dict]
+    lesson_id: str
+    metadata: dict = {}
+
 @router.post("/checkout_session")
-async def create_stripe_checkout_session(data: dict = Body(...)) -> dict:
+async def create_stripe_checkout_session(request: CheckoutSessionRequest = Body(...)) -> dict:
     """Creates a Stripe checkout session for processing payments.
 
     This endpoint generates a checkout session for processing payments through Stripe.
@@ -197,28 +205,22 @@ async def create_stripe_checkout_session(data: dict = Body(...)) -> dict:
         {'id': 'cs_123', 'url': 'https://checkout.stripe.com/pay/cs_123'}
     """
     try:
-        account_id = data.get("account_id")
-        line_items = data.get("line_items")
-        lesson_id = data.get("lesson_id")
-        
-        if not all([account_id, line_items, lesson_id]):
-            raise HTTPException(
-                status_code=400,
-                detail="Missing required fields: account_id, line_items, and lesson_id"
-            )
-            
-        if not isinstance(line_items, list) or not line_items:
-            raise HTTPException(
-                status_code=400,
-                detail="line_items must be a non-empty list"
-            )
+        # Validate line items structure
+        for item in request.line_items:
+            if "price" not in item or "quantity" not in item:
+                raise HTTPException(
+                    status_code=400,
+                    detail="Each line item must contain 'price' and 'quantity' fields"
+                )
 
-        # Ensure metadata contains lesson_id
-        if not data.get("metadata", {}).get("lesson_id"):
-            data["metadata"] = data.get("metadata", {})
-            data["metadata"]["lesson_id"] = lesson_id
+        # Set lesson_id in metadata
+        request.metadata["lesson_id"] = request.lesson_id
             
-        session = payments.create_checkout_session(account_id, line_items)
+        session = payments.create_checkout_session(
+            request.account_id, 
+            request.line_items,
+            metadata=request.metadata
+        )
         return session
     except HTTPException as he:
         raise he
