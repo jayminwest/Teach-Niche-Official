@@ -15,8 +15,10 @@ configuration of Stripe API keys and Connect settings.
 """
 
 import stripe
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Body
 from fastapi.responses import JSONResponse
+from pydantic import BaseModel
+from typing import List, Dict, Optional
 from app.stripe.client import get_stripe_client
 from app.supabase.client import get_supabase_client
 
@@ -74,30 +76,33 @@ async def get_lesson_creator_stripe_account(lesson_id: str) -> str:
             detail=f"Error creating checkout session: {str(e)}"
         )
 
-@router.post("/checkout_session")
-async def create_checkout_session(data: dict):
-    """Creates a Stripe Checkout session for processing payments.
-    
-    Args:
-        data (dict): Request data containing line_items and URLs
-        
-    Returns:
-        JSONResponse: Response containing session ID
-        
-    Raises:
-        HTTPException: If session creation fails
-    """
+class LineItemRequest(BaseModel):
+    price_data: Dict[str, str|int|Dict[str, str]]
+    quantity: int
+
+class CheckoutSessionRequest(BaseModel):
+    line_items: List[LineItemRequest]
+    success_url: str
+    cancel_url: str
+    metadata: Dict[str, str]
+
+@router.post("/checkout_session", response_model=Dict[str, str], status_code=201)
+async def create_checkout_session(request: CheckoutSessionRequest = Body(...)):
+    """Creates a Stripe Checkout session for processing payments."""
     stripe = get_stripe_client()
     try:
-        line_items = data.get('line_items')
-        metadata = data.get('metadata', {})
+        line_items = [item.dict() for item in request.line_items]
+        metadata = request.metadata
         
         if not line_items:
             raise HTTPException(status_code=400, detail="Missing required line_items")
             
-        lesson_id = metadata.get('lesson_id')
+        lesson_id = metadata.get('lesson_id', '')
         if not lesson_id:
-            raise HTTPException(status_code=400, detail="Missing lesson_id in metadata")
+            raise HTTPException(
+                status_code=400, 
+                detail="Missing lesson_id in metadata"
+            )
 
         # Get the connected account ID for the lesson creator
         connected_account_id = await get_lesson_creator_stripe_account(lesson_id)
