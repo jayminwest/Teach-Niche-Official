@@ -1,5 +1,5 @@
 import React from 'react';
-import { Layout } from '../components/Layout';
+import Layout from '../components/Layout';
 import { Section } from '../components/Section';
 import { Button } from '../components/Button';
 import { Heading, Text } from '@chakra-ui/react';
