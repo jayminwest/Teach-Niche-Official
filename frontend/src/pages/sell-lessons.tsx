@@ -38,11 +38,11 @@ const SellLessonsPage: NextPage = () => {
         {/* Mission Section */}
         <VStack spacing={8} align="stretch" mb={16}>
           <Heading as="h1" size="2xl" color={headingColor} textAlign="center">
-            Empowering Educators
+            Unlock Your Earning Potential
           </Heading>
           <Box display="flex" justifyContent="center" w="100%">
             <Text fontSize="xl" color={textColor} textAlign="center" maxW="2xl" width="100%">
-              We provide a platform for educators to share their knowledge and connect with learners around the world. Our mission is to empower educators to monetize their expertise and create engaging learning experiences.
+              Turn your expertise into income by selling lessons on our platform. We provide the tools and resources you need to create, market, and sell your lessons to a global audience.
             </Text>
           </Box>
         </VStack>
@@ -50,31 +50,31 @@ const SellLessonsPage: NextPage = () => {
         {/* Values Section */}
         <Box mb={16}>
           <Heading as="h2" size="xl" color={headingColor} mb={8} textAlign="center">
-            Our Promises
+            What We Offer
           </Heading>
           <SimpleGrid columns={{ base: 1, md: 3 }} spacing={8}>
             <Box bg={cardBg} p={6} borderRadius="lg" boxShadow="md">
               <Heading as="h3" size="md" color={headingColor} mb={4}>
-                Reach
+                Easy Setup
               </Heading>
               <Text color={textColor}>
-                Connect with a global audience of learners eager to expand their knowledge.
+                Quickly create and customize your lesson offerings with our intuitive tools.
               </Text>
             </Box>
             <Box bg={cardBg} p={6} borderRadius="lg" boxShadow="md">
               <Heading as="h3" size="md" color={headingColor} mb={4}>
-                Support
+                Marketing Support
               </Heading>
               <Text color={textColor}>
-                Receive guidance and resources to create high-quality lessons.
+                Reach more students through our platform's built-in marketing and promotion features.
               </Text>
             </Box>
             <Box bg={cardBg} p={6} borderRadius="lg" boxShadow="md">
               <Heading as="h3" size="md" color={headingColor} mb={4}>
-                Monetization
+                Secure Payments
               </Heading>
               <Text color={textColor}>
-                Earn revenue by sharing your expertise and passion with others.
+                Get paid securely and reliably with our integrated payment processing system.
               </Text>
             </Box>
           </SimpleGrid>
