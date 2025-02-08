@@ -41,6 +41,13 @@ async def get_lesson_creator_stripe_account(lesson_id: str) -> str:
     supabase = get_supabase_client()
     
     try:
+        # Validate UUID format
+        from uuid import UUID
+        try:
+            UUID(lesson_id)
+        except ValueError:
+            raise HTTPException(status_code=400, detail="Invalid lesson_id format")
+
         # First get the lesson to find the creator_id
         response = supabase.table('lessons') \
             .select('creator_id') \
