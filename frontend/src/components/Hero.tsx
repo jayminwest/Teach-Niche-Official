@@ -57,26 +57,6 @@ export default function CallToActionWithAnnotation() {
             <Button variant={'ghost'} colorScheme={'blue'} size={'sm'}>
               Learn more
             </Button>
-            <Box>
-              <Icon
-                as={Arrow}
-                color={useColorModeValue('gray.800', 'gray.300')}
-                w={71}
-                position={'absolute'}
-                right={-71}
-                top={'10px'}
-              />
-              <Text
-                fontSize={'lg'}
-                fontFamily={'Caveat'}
-                position={'absolute'}
-                right={'-125px'}
-                top={'-15px'}
-                transform={'rotate(10deg)'}
-                color={useColorModeValue('gray.600', 'gray.300')}>
-                Starting at $15/mo
-              </Text>
-            </Box>
           </Stack>
         </Stack>
       </Container>
