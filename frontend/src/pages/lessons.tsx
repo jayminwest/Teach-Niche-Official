@@ -27,8 +27,13 @@ interface Lesson {
   title: string;
   description: string;
   price: number;
+  stripePriceId: string;
+  stripeAccountId: string;
   isNew?: boolean;
   purchased_at?: string;
+  thumbnailUrl?: string;
+  duration?: number;
+  category?: string;
 }
 
 const SAMPLE_LESSONS: Lesson[] = [
@@ -37,8 +42,13 @@ const SAMPLE_LESSONS: Lesson[] = [
     title: "Getting Started with Web Development",
     description: "Learn the fundamentals of web development including HTML, CSS, and JavaScript. Perfect for beginners looking to start their coding journey.",
     price: 29.99,
+    stripePriceId: "price_1PqgBMF5CuyC6hH3r9qP3qT0",
+    stripeAccountId: "acct_1PqgBMF5CuyC6hH3",
     isNew: true,
-    creator_id: "00000000-0000-0000-0000-000000000000" // Add a default creator ID
+    creator_id: "00000000-0000-0000-0000-000000000000",
+    thumbnailUrl: "/images/webdev-thumb.jpg",
+    duration: 120,
+    category: "Web Development"
   },
   {
     id: "2",
@@ -134,7 +144,12 @@ const Lessons: NextPage = () => {
   }, [searchQuery, sortBy]);
 
 
-  const handlePurchaseClick = async (lessonId: string, price: number) => {
+  const handlePurchaseClick = async (lessonId: string) => {
+    const lesson = SAMPLE_LESSONS.find(l => l.id === lessonId);
+    if (!lesson) {
+      console.error('Lesson not found');
+      return;
+    }
     console.log('Purchase initiated for lesson:', lessonId);
     
     try {
@@ -156,9 +171,12 @@ const Lessons: NextPage = () => {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          lessonId,
-          price,
-          userId: session.user.id
+          account_id: "acct_1PqgBMF5CuyC6hH3", // Test Stripe account ID
+          line_items: [{
+            price: "price_1PqgBMF5CuyC6hH3r9qP3qT0", // Test price ID
+            quantity: 1
+          }],
+          lesson_id: lessonId
         }),
       });
 
