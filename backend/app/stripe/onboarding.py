@@ -44,6 +44,7 @@ def _get_account_id_from_request( dict):
         )
     return account_id
 
+
 def _create_stripe_account_session(account_id):
     """Creates a Stripe account session with onboarding enabled.
 
@@ -59,6 +60,7 @@ def _create_stripe_account_session(account_id):
             "account_onboarding": {"enabled": True},
         },
     )
+
 
 @router.post("/account/session")
 async def create_stripe_account_session( dict):
@@ -82,6 +84,7 @@ async def create_stripe_account_session( dict):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
+
 def _get_account_controller_settings():
     """Returns the default controller settings for new Stripe accounts.
 
@@ -95,6 +98,7 @@ def _get_account_controller_settings():
         "requirement_collection": "application",
     }
 
+
 def _get_account_capabilities():
     """Returns the default capabilities for new Stripe accounts.
 
@@ -104,6 +108,7 @@ def _get_account_capabilities():
     return {
         "transfers": {"requested": True}
     }
+
 
 @router.post("/account")
 def create_stripe_connected_account():
@@ -138,8 +143,9 @@ def create_stripe_connected_account():
         )
         return JSONResponse(content={'account': account.id})
     except Exception as e:
-        logger.exception("Error creating Stripe connected account") # Added logging here
+        logger.exception("Error creating Stripe connected account")  # Added logging here
         raise HTTPException(
             status_code=500,
             detail=f"Stripe account creation failed: {str(e)}"
         )
+
