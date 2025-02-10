@@ -66,6 +66,10 @@ async def create_lesson(lesson_data: LessonCreate = Body(...)) -> Dict[str, Any]
         data["created_at"] = datetime.utcnow().isoformat()
         data["updated_at"] = data["created_at"]
         
+        # Ensure metadata is properly formatted as strings
+        if 'metadata' in data:
+            data['metadata'] = {str(k): str(v) for k, v in data['metadata'].items()}
+        
         # Debug logging
         print("Creating lesson with data:")
         for key, value in data.items():
