@@ -166,7 +166,11 @@ const Lessons: NextPage = () => {
           }
         },
         line_items: [{
-          price: lesson.stripe_price_id,
+          price_data: {
+            currency: 'usd',
+            product: lesson.stripe_price_id,
+            unit_amount: lesson.price * 100,
+          },
           quantity: 1
         }],
         metadata: {
