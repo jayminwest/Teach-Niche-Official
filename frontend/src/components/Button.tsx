@@ -11,19 +11,23 @@ export const Button = ({
   label,
   className = '',
   isLoading = false, // Add isLoading to the destructured props with a default value
-  ...props
-}: ButtonProps) => {
+  ...props // Keep the rest of the props
+}: ButtonProps) => { // Destructure isLoading here
   const baseStyles = `px-4 py-2 rounded-md transition-colors focus:outline-none focus:ring-2 ${isLoading || props.disabled ? 'opacity-50 cursor-not-allowed' : ''}` // Disable and style when isLoading or disabled
   const variants = {
     primary: `bg-blue-500 text-white ${!(isLoading || props.disabled) && 'hover:bg-blue-600'} focus:ring-blue-300`, // Conditional hover style
     secondary: `bg-gray-200 text-gray-800 ${!(isLoading || props.disabled) && 'hover:bg-gray-300'} focus:ring-gray-200` // Conditional hover style
   }
 
+  // Separate isLoading from the props that are spread
+  const { isLoading: _isLoading, ...restProps } = props;
+
+
   return (
     <button
       className={`${baseStyles} ${variants[variant]} ${className}`}
-      {...props}
-      disabled={isLoading || props.disabled} // Disable the button when isLoading is true or prop disabled is true
+      {...restProps} // Spread only the rest of the props
+      disabled={isLoading || props.disabled} // Keep using isLoading for disabled
     >
       {label}
       {isLoading && (
