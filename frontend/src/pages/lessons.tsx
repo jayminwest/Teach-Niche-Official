@@ -164,7 +164,7 @@ const Lessons: NextPage = () => {
         cancel_url: `${window.location.origin}/lessons/${lessonId}`,
         user_id: session.user.id,
         stripe_account_id: lesson.stripe_account_id,
-        line_items: {
+        line_items: [{
           price_data: {
             currency: 'usd',
             product_data: {
@@ -174,7 +174,7 @@ const Lessons: NextPage = () => {
             unit_amount: lesson.price * 100 // Convert to cents
           },
           quantity: 1
-        },
+        }],
         metadata: {
           lesson_id: lessonId,
           user_id: session.user.id
