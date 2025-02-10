@@ -61,7 +61,8 @@ def seed_test_lessons():
                 "stripe_product_id": product.id,
                 "stripe_price_id": price.id
             }
-        try:
+
+            try:
             result = supabase.table("lessons").insert(lesson).execute()
             if result.data:
                 print(f"Inserted lesson: {lesson['title']}")
