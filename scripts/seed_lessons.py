@@ -1,56 +1,66 @@
 import uuid
 from datetime import datetime, timedelta
+import stripe
 from backend.app.supabase.client import get_supabase_client
+from backend.app.stripe.client import get_stripe_client
 
 def seed_test_lessons():
     """Seed the database with test lessons using Supabase client"""
     supabase = get_supabase_client()
     
+    # Initialize Stripe client
+    stripe = get_stripe_client()
+    
     # Test lesson data
     test_lessons = [
         {
-            "id": str(uuid.uuid4()),
             "title": "Introduction to Python Programming",
             "description": "Learn Python basics with hands-on exercises",
             "price": 49.99,
-            "creator_id": "fe225f89-132b-4ff6-8ebc-e3683f9c4416",  # Test user profile
-            "created_at": datetime.now().isoformat(),
-            "updated_at": datetime.now().isoformat(),
-            "stripe_product_id": "prod_XXXXXXXXXXXXXX",
-            "stripe_price_id": "price_XXXXXXXXXXXXXX",
             "content": "Basic Python syntax, variables, and control structures",
             "status": "published"
         },
         {
-            "id": str(uuid.uuid4()),
             "title": "Web Development with FastAPI",
             "description": "Build modern APIs using Python and FastAPI",
             "price": 79.99,
-            "creator_id": "fe225f89-132b-4ff6-8ebc-e3683f9c4416",
-            "created_at": (datetime.now() - timedelta(days=2)).isoformat(),
-            "updated_at": datetime.now().isoformat(),
-            "stripe_product_id": "prod_YYYYYYYYYYYYYY",
-            "stripe_price_id": "price_YYYYYYYYYYYYYY",
             "content": "FastAPI fundamentals, middleware, and database integration",
             "status": "published"
         },
         {
-            "id": str(uuid.uuid4()),
             "title": "React for Beginners",
             "description": "Master React fundamentals and component architecture",
             "price": 59.99,
-            "creator_id": "fe225f89-132b-4ff6-8ebc-e3683f9c4416",
-            "created_at": (datetime.now() - timedelta(days=5)).isoformat(),
-            "updated_at": datetime.now().isoformat(),
-            "stripe_product_id": "prod_ZZZZZZZZZZZZZZ",
-            "stripe_price_id": "price_ZZZZZZZZZZZZZZ",
             "content": "JSX, state management, and hooks",
             "status": "draft"
         }
     ]
 
     # Insert lessons
-    for lesson in test_lessons:
+    for lesson_data in test_lessons:
+        # Create Stripe product
+        try:
+            product = stripe.Product.create(
+                name=lesson_data["title"],
+                description=lesson_data["description"],
+                type="service"
+            )
+            
+            price = stripe.Price.create(
+                product=product.id,
+                unit_amount=int(lesson_data["price"] * 100),  # Convert to cents
+                currency="usd",
+            )
+            
+            lesson = {
+                "id": str(uuid.uuid4()),
+                **lesson_data,
+                "creator_id": "fe225f89-132b-4ff6-8ebc-e3683f9c4416",
+                "created_at": datetime.now().isoformat(),
+                "updated_at": datetime.now().isoformat(),
+                "stripe_product_id": product.id,
+                "stripe_price_id": price.id
+            }
         try:
             result = supabase.table("lessons").insert(lesson).execute()
             if result.data:
