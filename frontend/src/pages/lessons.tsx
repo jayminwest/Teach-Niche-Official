@@ -158,12 +158,13 @@ const Lessons: NextPage = () => {
 
       // Create checkout session through our API
       const requestBody = {
-        account_id: lesson.stripe_account_id,
+        connected_account_id: lesson.stripe_account_id,
         line_items: [{
-          price: lesson.stripe_price_id,
+          price_id: lesson.stripe_price_id,
           quantity: 1
         }],
-        lesson_id: lessonId
+        lesson_id: lessonId,
+        customer_id: session.user.id
       };
       
       console.log('Sending checkout request:', {
@@ -182,7 +183,8 @@ const Lessons: NextPage = () => {
 
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(`Checkout session creation failed: ${errorData.message}`);
+        console.error('Server error details:', errorData);
+        throw new Error(`Checkout session creation failed: ${errorData.detail || errorData.message}`);
       }
 
       const responseData = await response.json();
