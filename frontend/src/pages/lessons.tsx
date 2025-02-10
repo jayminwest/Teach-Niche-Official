@@ -158,30 +158,10 @@ const Lessons: NextPage = () => {
 
       // Create checkout session through our API
       const requestBody = {
-        mode: "payment",
-        payment_method_types: ["card"],
-        payment_intent_data: {
-          transfer_data: {
-            destination: lesson.stripe_account_id
-          }
-        },
-        line_items: [{
-          price_data: {
-            currency: 'usd',
-            product: lesson.stripe_price_id,
-            unit_amount: lesson.price * 100,
-          },
-          quantity: 1
-        }],
-        metadata: {
-          lesson_id: lessonId,
-          user_id: session.user.id,
-          seller_account_id: lesson.stripe_account_id
-        },
+        lesson_id: lessonId,
+        price_amount: lesson.price,
         success_url: `${window.location.origin}/checkout/success?session_id={CHECKOUT_SESSION_ID}`,
-        cancel_url: `${window.location.origin}/lessons/${lessonId}`,
-        allow_promotion_codes: true,
-        customer: session.user.id
+        cancel_url: `${window.location.origin}/lessons/${lessonId}`
       };
       
       console.log('Sending checkout request:', {
@@ -201,7 +181,8 @@ const Lessons: NextPage = () => {
       if (!response.ok) {
         const errorData = await response.json();
         console.error('Server error details:', errorData);
-        throw new Error(`Checkout session creation failed: ${errorData.detail || errorData.message}`);
+        const errorMessage = errorData.detail?.[0]?.msg || errorData.detail || errorData.message || 'Unknown error occurred';
+        throw new Error(`Checkout session creation failed: ${errorMessage}`);
       }
 
       const responseData = await response.json();
