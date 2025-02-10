@@ -27,18 +27,23 @@ export default function Home() {
   const textColor = useColorModeValue('gray.600', 'gray.400')
   const router = useRouter()
 
+  const [featuredLessons, setFeaturedLessons] = useState<Lesson[]>([])
+
   React.useEffect(() => {
-    const handleRouteChangeError = (err: { cancelled?: boolean }) => {
-      if (err.cancelled) {
-        console.log('Route change cancelled')
+    const fetchFeaturedLessons = async () => {
+      try {
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/lessons/featured`
+        )
+        const data = await response.json()
+        setFeaturedLessons(data)
+      } catch (error) {
+        console.error('Error fetching featured lessons:', error)
       }
     }
 
-    router.events.on('routeChangeError', handleRouteChangeError)
-    return () => {
-      router.events.off('routeChangeError', handleRouteChangeError)
-    }
-  }, [router])
+    fetchFeaturedLessons()
+  }, [])
 
   return (
     <Layout showHeader={false} showFooter={false}>
@@ -49,26 +54,7 @@ export default function Home() {
         <Box py={8}>
           <Heading size="xl" mb={6}>Featured Lessons</Heading>
           <SimpleGrid columns={{ base: 1, md: 2, lg: 3 }} spacing={6}>
-            {[
-              {
-                id: '1',
-                title: 'Web Development Basics',
-                description: 'Learn HTML, CSS and JavaScript fundamentals',
-                price: 49.99
-              },
-              {
-                id: '2', 
-                title: 'Python for Beginners',
-                description: 'Start your programming journey with Python',
-                price: 39.99
-              },
-              {
-                id: '3',
-                title: 'Data Visualization',
-                description: 'Master data visualization with D3.js',
-                price: 59.99
-              }
-            ].map((lesson) => (
+            {featuredLessons.map((lesson) => (
               <LessonCard
                 key={lesson.id}
                 id={lesson.id}

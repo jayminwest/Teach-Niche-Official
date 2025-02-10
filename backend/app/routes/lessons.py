@@ -11,7 +11,7 @@ router = APIRouter(tags=["lessons"])
 def get_db() -> Client:
     return get_supabase_client()
 
-@router.get("/lessons", response_model=List[Lesson])
+@router.get("/lessons", response_model=List[Lesson], summary="Get all lessons", description="Returns paginated list of lessons with filtering and sorting options")
 async def list_lessons(
     search: Optional[str] = Query(None),
     sort: str = Query('newest'),
@@ -43,7 +43,7 @@ async def list_lessons(
     lessons = query.limit(limit).offset(offset).execute()
     return [Lesson(**lesson) for lesson in lessons.data]
 
-@router.get("/lessons/featured", response_model=List[Lesson])
+@router.get("/lessons/featured", response_model=List[Lesson], summary="Get featured lessons", description="Returns list of featured lessons")
 async def list_featured_lessons(db: Client = Depends(get_db)):
     lessons = db.table('lessons').select('*').filter('is_featured', 'eq', True).execute()
     return [Lesson(**lesson) for lesson in lessons.data]

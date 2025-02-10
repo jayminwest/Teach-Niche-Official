@@ -27,16 +27,15 @@ interface Lesson {
   title: string;
   description: string;
   price: number;
-  stripePriceId: string;
-  stripeAccountId: string;
-  isNew?: boolean;
-  purchased_at?: string;
-  thumbnailUrl?: string;
-  duration?: number;
-  category?: string;
+  created_at: string;
+  updated_at: string;
+  thumbnail_url?: string;
+  stripe_price_id?: string;
+  stripe_account_id: string;
+  is_featured?: boolean;
+  categories?: string[];
+  vimeo_video_id?: string;
 }
-
-const SAMPLE_LESSONS: Lesson[] = [
   {
     id: "1",
     title: "Getting Started with Web Development",
@@ -81,6 +80,8 @@ const Lessons: NextPage = () => {
   const [sortBy, setSortBy] = useState('newest')
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid')
   const [purchasedLessons, setPurchasedLessons] = useState<Lesson[]>([])
+  const [lessons, setLessons] = useState<Lesson[]>([])
+  const [isLoading, setIsLoading] = useState(true)
   const [tabIndex, setTabIndex] = useState(0)
 
   // Pre-calculate all color mode values
@@ -96,6 +97,19 @@ const Lessons: NextPage = () => {
   }, [session, router])
 
   useEffect(() => {
+    const fetchLessons = async () => {
+      try {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/lessons`);
+        if (!response.ok) throw new Error('Failed to fetch lessons');
+        const data = await response.json();
+        setLessons(data);
+      } catch (error) {
+        console.error('Error fetching lessons:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
     const fetchPurchasedLessons = async () => {
       if (!session) return
       
@@ -112,11 +126,12 @@ const Lessons: NextPage = () => {
       }
     };
 
+    fetchLessons();
     fetchPurchasedLessons();
   }, [session]);
 
   const filteredLessons = useMemo(() => {
-    let results = tabIndex === 0 ? [...SAMPLE_LESSONS] : [...purchasedLessons];
+    let results = tabIndex === 0 ? [...lessons] : [...purchasedLessons];
     
     if (searchQuery) {
       const query = searchQuery.toLowerCase();
@@ -173,9 +188,9 @@ const Lessons: NextPage = () => {
 
       // Create checkout session through our API
       const requestBody = {
-        account_id: "acct_1PqgBMF5CuyC6hH3", // Test Stripe account ID
+        account_id: lesson.stripe_account_id,
         line_items: [{
-          price: "price_1PqgBMF5CuyC6hH3r9qP3qT0", // Test price ID
+          price: lesson.stripe_price_id,
           quantity: 1
         }],
         lesson_id: lessonId
