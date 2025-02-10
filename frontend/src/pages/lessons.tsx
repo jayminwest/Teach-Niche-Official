@@ -63,7 +63,7 @@ const Lessons: NextPage = () => {
   useEffect(() => {
     const fetchLessons = async () => {
       try {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/lessons`);
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/lessons`);
         if (!response.ok) throw new Error('Failed to fetch lessons');
         const data = await response.json();
         setLessons(data);
@@ -125,7 +125,7 @@ const Lessons: NextPage = () => {
 
   const handlePurchaseClick = async (lessonId: string) => {
     console.log('Starting purchase process for lesson:', lessonId);
-    const lesson = SAMPLE_LESSONS.find(l => l.id === lessonId);
+    const lesson = lessons.find(l => l.id === lessonId);
     if (!lesson) {
       console.error('Purchase error: Lesson not found with ID', lessonId);
       return;
@@ -297,9 +297,9 @@ const Lessons: NextPage = () => {
                 title={lesson.title}
                 description={lesson.description}
                 price={lesson.price}
-                isNew={lesson.isNew}
+                isNew={Date.now() - new Date(lesson.created_at).getTime() < 604800000} // New if < 7 days old
                 isPurchased={purchasedLessons.some(pl => pl.id === lesson.id)}
-                purchasedAt={purchasedLessons.find(pl => pl.id === lesson.id)?.purchase_date}
+                purchasedAt={purchasedLessons.find(pl => pl.id === lesson.id)?.created_at}
                 onPurchaseClick={() => handlePurchaseClick(lesson.id, lesson.price)}
                 onPlayClick={handlePlayClick}
               />

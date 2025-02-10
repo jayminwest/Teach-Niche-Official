@@ -76,6 +76,8 @@ export default function Home() {
                 title={lesson.title}
                 description={lesson.description}
                 price={lesson.price}
+                stripe_price_id={lesson.stripe_price_id}
+                stripe_account_id={lesson.stripe_account_id}
                 onPurchaseClick={() => router.push(`/lessons/${lesson.id}`)}
               />
             ))}
