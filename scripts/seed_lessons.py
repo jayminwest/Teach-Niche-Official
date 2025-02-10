@@ -1,6 +1,13 @@
 import uuid
+import sys
+import pathlib
 from datetime import datetime, timedelta
 import stripe
+
+# Add project root directory to Python path
+project_root = pathlib.Path(__file__).parent.parent.resolve()
+sys.path.insert(0, str(project_root))
+
 from backend.app.supabase.client import get_supabase_client
 from backend.app.stripe.client import get_stripe_client
 
