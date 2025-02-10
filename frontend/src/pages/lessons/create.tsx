@@ -68,26 +68,30 @@ const LessonCreatePage = () => {
         thumbnailUrl = supabase.storage.from('lesson-thumbnails').getPublicUrl(data.path).data.publicUrl;
       }
 
-      // 3. Create lesson in Supabase
-      const {  lessonData, error: lessonError } = await supabase
-        .from('lessons')
-        .insert([
-          {
-            title: values.title,
-            description: values.description,
-            price: values.price,
-            video_id: vimeoVideoId,
-            thumbnail_url: thumbnailUrl,
-            stripe_account_id: profile?.stripe_account_id,
-            creator_id: user.id,
-          },
-        ])
-        .select()
-        .single();
+      // 3. Create lesson via backend API
+      const response = await fetch('/api/lessons', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          title: values.title,
+          description: values.description,
+          price: values.price,
+          video_id: vimeoVideoId,
+          thumbnail_url: thumbnailUrl,
+          stripe_account_id: profile?.stripe_account_id,
+          creator_id: user.id,
+        }),
+      });
 
-      if (lessonError) {
-        throw new Error(`Error creating lesson: ${lessonError.message}`);
+      if (!response.ok) {
+        const message = (await response.json()).detail;
+        throw new Error(`Failed to create lesson: ${message || response.statusText}`);
       }
+
+      const lessonData = await response.json();
+
 
       toast({
         title: 'Lesson created.',
