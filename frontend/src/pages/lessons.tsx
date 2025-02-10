@@ -64,7 +64,9 @@ const Lessons: NextPage = () => {
     const fetchLessons = async () => {
       try {
         const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/lessons`);
-        if (!response.ok) throw new Error('Failed to fetch lessons');
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
         const data = await response.json();
         setLessons(data);
       } catch (error) {
@@ -297,14 +299,17 @@ const Lessons: NextPage = () => {
           {filteredLessons.map(lesson => (
             <Box data-testid="lesson-card" key={lesson.id}>
               <LessonCard
+                key={lesson.id}
                 id={lesson.id}
                 title={lesson.title}
                 description={lesson.description}
                 price={lesson.price}
-                isNew={Date.now() - new Date(lesson.created_at).getTime() < 604800000} // New if < 7 days old
+                stripe_price_id={lesson.stripe_price_id}
+                stripe_account_id={lesson.stripe_account_id}
+                isNew={Date.now() - new Date(lesson.created_at).getTime() < 604800000}
                 isPurchased={purchasedLessons.some(pl => pl.id === lesson.id)}
                 purchasedAt={purchasedLessons.find(pl => pl.id === lesson.id)?.created_at}
-                onPurchaseClick={() => handlePurchaseClick(lesson.id, lesson.price)}
+                onPurchaseClick={() => handlePurchaseClick(lesson.id)}
                 onPlayClick={handlePlayClick}
               />
             </Box>
