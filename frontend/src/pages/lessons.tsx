@@ -163,7 +163,22 @@ const Lessons: NextPage = () => {
         success_url: `${window.location.origin}/checkout/success?session_id={CHECKOUT_SESSION_ID}`,
         cancel_url: `${window.location.origin}/lessons/${lessonId}`,
         user_id: session.user.id,
-        stripe_account_id: lesson.stripe_account_id
+        stripe_account_id: lesson.stripe_account_id,
+        line_items: [{
+          price_data: {
+            currency: 'usd',
+            product_data: {
+              name: lesson.title,
+              description: lesson.description
+            },
+            unit_amount: lesson.price * 100 // Convert to cents
+          },
+          quantity: 1
+        }],
+        metadata: {
+          lesson_id: lessonId,
+          user_id: session.user.id
+        }
       };
       
       console.log('Sending checkout request:', {
