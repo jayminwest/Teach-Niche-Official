@@ -13,7 +13,7 @@ def seed_test_lessons():
             "title": "Introduction to Python Programming",
             "description": "Learn Python basics with hands-on exercises",
             "price": 49.99,
-            "creator_id": "REPLACE_WITH_VALID_PROFILE_UUID",  # Must match existing profile
+            "creator_id": "fe225f89-132b-4ff6-8ebc-e3683f9c4416",  # Test user profile
             "created_at": datetime.now().isoformat(),
             "updated_at": datetime.now().isoformat(),
             "stripe_product_id": "prod_XXXXXXXXXXXXXX",
@@ -26,7 +26,7 @@ def seed_test_lessons():
             "title": "Web Development with FastAPI",
             "description": "Build modern APIs using Python and FastAPI",
             "price": 79.99,
-            "creator_id": "REPLACE_WITH_VALID_PROFILE_UUID",
+            "creator_id": "fe225f89-132b-4ff6-8ebc-e3683f9c4416",
             "created_at": (datetime.now() - timedelta(days=2)).isoformat(),
             "updated_at": datetime.now().isoformat(),
             "stripe_product_id": "prod_YYYYYYYYYYYYYY",
@@ -39,7 +39,7 @@ def seed_test_lessons():
             "title": "React for Beginners",
             "description": "Master React fundamentals and component architecture",
             "price": 59.99,
-            "creator_id": "REPLACE_WITH_VALID_PROFILE_UUID",
+            "creator_id": "fe225f89-132b-4ff6-8ebc-e3683f9c4416",
             "created_at": (datetime.now() - timedelta(days=5)).isoformat(),
             "updated_at": datetime.now().isoformat(),
             "stripe_product_id": "prod_ZZZZZZZZZZZZZZ",
