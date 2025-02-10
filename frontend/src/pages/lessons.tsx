@@ -65,8 +65,8 @@ const Lessons: NextPage = () => {
       try {
         const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/lessons`);
         if (!response.ok) throw new Error('Failed to fetch lessons');
-        const { data } = await response.json();
-        setLessons(data.lessons);
+        const data = await response.json();
+        setLessons(data);
       } catch (error) {
         console.error('Error fetching lessons:', error);
       } finally {
