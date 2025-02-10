@@ -25,12 +25,13 @@ import {
   ModalCloseButton,
   FormControl,
   FormLabel,
-  Input
+  Input,
+  Badge
 } from '@chakra-ui/react';
 import { supabase } from '../lib/supabase';
 
 const ProfilePage = () => {
-  const { user, isLoading: authLoading, signOut } = useAuth();
+  const { user, isLoading: authLoading, signOut, profile } = useAuth();
   const router = useRouter();
   const toast = useToast();
   const [isInitialLoad, setIsInitialLoad] = useState(true);
@@ -104,7 +105,7 @@ const ProfilePage = () => {
     }
   }, [user, authLoading, router, isInitialLoad]);
 
-  if (authLoading || isInitialLoad) {
+  if (authLoading || isInitialLoad || !profile) {
     return (
       <div className="flex h-screen items-center justify-center">
         <VStack spacing={4}>
@@ -175,7 +176,7 @@ const ProfilePage = () => {
               {/* Settings Tab */}
               <TabPanel>
                 <VStack spacing={6} align="stretch">
-                  {/* Notification Settings */}
+                  {/* General Settings */}
                   <VStack spacing={4} align="stretch">
                     <span className="text-xl font-semibold">Settings</span>
 
@@ -186,6 +187,29 @@ const ProfilePage = () => {
                       className="w-full" 
                     />
                   </VStack>
+
+                  <Divider />
+
+                  {/* Stripe Connect Settings */}
+                  <VStack spacing={4} align="stretch">
+                    <span className="text-xl font-semibold">Stripe Connect</span>
+                    <HStack justify="space-between">
+                      <Text>Onboarding Status:</Text>
+                      {profile.stripe_onboarding_complete ? (
+                        <Badge colorScheme="green">Complete</Badge>
+                      ) : (
+                        <Badge colorScheme="red">Incomplete</Badge>
+                      )}
+                    </HStack>
+                    {!profile.stripe_onboarding_complete && (
+                      <Button
+                        variant="primary"
+                        label="Connect to Stripe"
+                        className="w-full"
+                      />
+                    )}
+                  </VStack>
+
 
                   <Divider />
 
