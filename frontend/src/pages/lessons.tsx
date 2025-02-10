@@ -65,8 +65,8 @@ const Lessons: NextPage = () => {
       try {
         const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/lessons`);
         if (!response.ok) throw new Error('Failed to fetch lessons');
-        const data = await response.json();
-        setLessons(data);
+        const { data } = await response.json();
+        setLessons(data.lessons);
       } catch (error) {
         console.error('Error fetching lessons:', error);
       } finally {
@@ -95,7 +95,11 @@ const Lessons: NextPage = () => {
   }, [session]);
 
   const filteredLessons = useMemo(() => {
-    let results = tabIndex === 0 ? [...lessons] : [...purchasedLessons];
+    let results = tabIndex === 0 
+      ? [...lessons] 
+      : purchasedLessons.map(purchase => 
+          lessons.find(lesson => lesson.id === purchase.lesson_id) || purchase
+        ).filter(Boolean);
     
     if (searchQuery) {
       const query = searchQuery.toLowerCase();
@@ -112,10 +116,10 @@ const Lessons: NextPage = () => {
         case 'price-high':
           return b.price - a.price;
         case 'oldest':
-          return a.id.localeCompare(b.id);
+          return new Date(a.created_at).getTime() - new Date(b.created_at).getTime();
         case 'newest':
         default:
-          return b.id.localeCompare(a.id);
+          return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
       }
     });
     
@@ -133,8 +137,8 @@ const Lessons: NextPage = () => {
     console.log('Found lesson:', {
       id: lesson.id,
       title: lesson.title,
-      stripePriceId: lesson.stripePriceId,
-      stripeAccountId: lesson.stripeAccountId
+      stripe_price_id: lesson.stripe_price_id,
+      stripe_account_id: lesson.stripe_account_id
     });
     console.log('Purchase initiated for lesson:', lessonId);
     
