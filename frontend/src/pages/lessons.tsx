@@ -36,42 +36,6 @@ interface Lesson {
   categories?: string[];
   vimeo_video_id?: string;
 }
-  {
-    id: "1",
-    title: "Getting Started with Web Development",
-    description: "Learn the fundamentals of web development including HTML, CSS, and JavaScript. Perfect for beginners looking to start their coding journey.",
-    price: 29.99,
-    stripePriceId: "price_1PqgBMF5CuyC6hH3r9qP3qT0",
-    stripeAccountId: "acct_1PqgBMF5CuyC6hH3",
-    isNew: true,
-    creator_id: "00000000-0000-0000-0000-000000000000",
-    thumbnailUrl: "/images/webdev-thumb.jpg",
-    duration: 120,
-    category: "Web Development"
-  },
-  {
-    id: "2",
-    title: "Advanced React Patterns",
-    description: "Master advanced React concepts including hooks, context, and performance optimization techniques for building scalable applications.",
-    price: 49.99,
-    creator_id: "00000000-0000-0000-0000-000000000000"
-  },
-  {
-    id: "3",
-    title: "Full Stack Development with Next.js",
-    description: "Build modern full-stack applications using Next.js, incorporating API routes, authentication, and database integration.",
-    price: 59.99,
-    isNew: true,
-    creator_id: "00000000-0000-0000-0000-000000000000"
-  },
-  {
-    id: "4",
-    title: "TypeScript Mastery",
-    description: "Deep dive into TypeScript features, advanced types, and best practices for building type-safe applications.",
-    price: 39.99,
-    creator_id: "00000000-0000-0000-0000-000000000000"
-  }
-];
 
 const Lessons: NextPage = () => {
   const { session } = useAuth()
