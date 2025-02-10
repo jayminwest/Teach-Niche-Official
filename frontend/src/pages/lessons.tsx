@@ -63,7 +63,7 @@ const Lessons: NextPage = () => {
   useEffect(() => {
     const fetchLessons = async () => {
       try {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/lessons`);
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/lessons`);
         if (!response.ok) throw new Error('Failed to fetch lessons');
         const data = await response.json();
         setLessons(data);
