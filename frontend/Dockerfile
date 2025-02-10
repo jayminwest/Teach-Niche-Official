@@ -3,7 +3,7 @@ FROM node:18-alpine AS base
 WORKDIR /app
 ENV NEXT_TELEMETRY_DISABLED=1
 COPY package*.json ./
-RUN npm install --force
+RUN npm install react-dropzone --force
 COPY . .
 
 # Development stage
