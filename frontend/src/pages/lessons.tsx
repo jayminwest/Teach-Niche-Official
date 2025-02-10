@@ -199,8 +199,8 @@ const Lessons: NextPage = () => {
         const errorData = await response.json();
         console.error('Server error details:', errorData);
         const errorMessage = Array.isArray(errorData.detail) 
-          ? errorData.detail.map(err => `${err.msg} at ${err.loc.join('.')}`).join(', ')
-          : errorData.detail || errorData.message || 'Unknown error occurred';
+          ? errorData.detail.map(err => err.msg ? `${err.msg} at ${err.loc?.join('.') ?? ''}` : JSON.stringify(err)).join(', ')
+          : errorData.detail?.msg || errorData.detail || errorData.message || 'Unknown error occurred';
         throw new Error(`Checkout session creation failed: ${errorMessage}`);
       }
 
