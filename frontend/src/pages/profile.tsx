@@ -4,17 +4,17 @@ import { useAuth } from '../context/AuthContext';
 import { Section } from '../components/Section';
 import { Card } from '../components/Card';
 import { Button } from '../components/Button';
-import { 
-  Spinner, 
-  useToast, 
-  VStack, 
-  HStack, 
-  Text, 
-  Divider, 
-  Tabs, 
-  TabList, 
-  TabPanels, 
-  Tab, 
+import {
+  Spinner,
+  useToast,
+  VStack,
+  HStack,
+  Text,
+  Divider,
+  Tabs,
+  TabList,
+  TabPanels,
+  Tab,
   TabPanel,
   Modal,
   ModalOverlay,
@@ -29,6 +29,9 @@ import {
   Badge
 } from '@chakra-ui/react';
 import { supabase } from '../lib/supabase';
+import { loadStripe } from '@stripe/stripe-js'; // Import Stripe.js
+
+const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY); // Initialize Stripe
 
 const ProfilePage = () => {
   const { user, isLoading: authLoading, signOut, profile } = useAuth();
@@ -125,6 +128,69 @@ const ProfilePage = () => {
     });
   };
 
+  const handleConnectToStripe = async () => {
+    setIsLoading(true);
+    try {
+      // 1. Create a Stripe Account
+      const createAccountResponse = await fetch('/api/stripe/onboarding/create-account', {
+        method: 'POST',
+      });
+
+      if (!createAccountResponse.ok) {
+        const errorData = await createAccountResponse.json();
+        throw new Error(errorData.message || 'Failed to create Stripe account.');
+      }
+
+      const { account: accountId } = await createAccountResponse.json();
+
+      // 2. Create an Account Session
+      const createSessionResponse = await fetch('/api/stripe/onboarding/account-session', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ account_id: accountId }), // Send the account ID
+      });
+
+      if (!createSessionResponse.ok) {
+        const errorData = await createSessionResponse.json();
+        throw new Error(errorData.message || 'Failed to create Stripe onboarding session.');
+      }
+
+      const { client_secret } = await createSessionResponse.json();
+
+      // 3. Redirect to Stripe Onboarding
+      const stripe = await stripePromise; // Get Stripe instance
+      if (stripe) {
+        const { error } = await stripe.redirectToAccountOnboarding({
+          account: accountId,
+          clientSecret: client_secret,
+          returnUrl: `${window.location.origin}/profile`, // Adjust return URL as needed
+        });
+
+        if (error) {
+          console.error("Stripe redirect error:", error);
+          throw new Error('Failed to redirect to Stripe onboarding.');
+        }
+      } else {
+        throw new Error('Stripe SDK failed to load.');
+      }
+
+
+    } catch (error: any) {
+      toast({
+        title: "Failed to connect to Stripe",
+        description: error.message,
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+
   return (
     <>
       <Section title="Profile" subtitle="Manage your account settings">
@@ -180,11 +246,11 @@ const ProfilePage = () => {
                   <VStack spacing={4} align="stretch">
                     <span className="text-xl font-semibold">Settings</span>
 
-                    <Button 
-                      variant="secondary" 
-                      label="Save Changes" 
+                    <Button
+                      variant="secondary"
+                      label="Save Changes"
                       onClick={handleSaveChanges}
-                      className="w-full" 
+                      className="w-full"
                     />
                   </VStack>
 
@@ -206,6 +272,8 @@ const ProfilePage = () => {
                         variant="primary"
                         label="Connect to Stripe"
                         className="w-full"
+                        onClick={handleConnectToStripe} // Use the new handler
+                        isLoading={isLoading}
                       />
                     )}
                   </VStack>
@@ -216,9 +284,9 @@ const ProfilePage = () => {
                   {/* Account Actions */}
                   <VStack spacing={3} align="stretch">
                     <span className="text-xl font-semibold">Account Actions</span>
-                    <Button 
-                      variant="secondary" 
-                      label="Change Password" 
+                    <Button
+                      variant="secondary"
+                      label="Change Password"
                       className="w-full"
                       onClick={() => setIsChangePasswordModalOpen(true)}
                       isLoading={isLoading}
@@ -245,8 +313,8 @@ const ProfilePage = () => {
         </VStack>
       </Card>
     </Section>
-    <Modal 
-      isOpen={isChangePasswordModalOpen} 
+    <Modal
+      isOpen={isChangePasswordModalOpen}
       onClose={() => setIsChangePasswordModalOpen(false)}
     >
       <ModalOverlay />
