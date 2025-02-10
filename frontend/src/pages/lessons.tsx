@@ -161,7 +161,9 @@ const Lessons: NextPage = () => {
         lesson_id: lessonId,
         price_amount: lesson.price,
         success_url: `${window.location.origin}/checkout/success?session_id={CHECKOUT_SESSION_ID}`,
-        cancel_url: `${window.location.origin}/lessons/${lessonId}`
+        cancel_url: `${window.location.origin}/lessons/${lessonId}`,
+        user_id: session.user.id,
+        stripe_account_id: lesson.stripe_account_id
       };
       
       console.log('Sending checkout request:', {
@@ -181,7 +183,9 @@ const Lessons: NextPage = () => {
       if (!response.ok) {
         const errorData = await response.json();
         console.error('Server error details:', errorData);
-        const errorMessage = errorData.detail?.[0]?.msg || errorData.detail || errorData.message || 'Unknown error occurred';
+        const errorMessage = Array.isArray(errorData.detail) 
+          ? errorData.detail.map(err => `${err.msg} at ${err.loc.join('.')}`).join(', ')
+          : errorData.detail || errorData.message || 'Unknown error occurred';
         throw new Error(`Checkout session creation failed: ${errorMessage}`);
       }
 
