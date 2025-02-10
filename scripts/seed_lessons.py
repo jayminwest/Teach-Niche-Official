@@ -62,7 +62,10 @@ def seed_test_lessons():
                 "stripe_price_id": price.id
             }
 
-            try:
+        except Exception as e:  # Add except clause here
+            print(f"Error creating Stripe product for lesson {lesson_data['title']}: {str(e)}")
+
+        try:
             result = supabase.table("lessons").insert(lesson).execute()
             if result.data:
                 print(f"Inserted lesson: {lesson['title']}")
