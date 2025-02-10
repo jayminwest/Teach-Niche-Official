@@ -148,4 +148,3 @@ def create_stripe_connected_account():
             status_code=500,
             detail=f"Stripe account creation failed: {str(e)}"
         )
-
