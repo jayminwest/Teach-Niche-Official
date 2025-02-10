@@ -1,11 +1,26 @@
 import { Heading, Text, VStack, Box, useColorModeValue, SimpleGrid, Button } from '@chakra-ui/react'
 import Layout from '../components/Layout'
 import { useRouter } from 'next/router'
-import React from 'react'
+import React, { useState } from 'react'
 import Link from 'next/link'
 import Hero from '../components/Hero'
 import { LessonCard } from '../components/LessonCard'
 import { RiBookOpenLine, RiArrowRightLine } from 'react-icons/ri'
+
+interface Lesson {
+  id: string;
+  title: string;
+  description: string;
+  price: number;
+  created_at: string;
+  updated_at: string;
+  thumbnail_url?: string;
+  stripe_price_id?: string;
+  stripe_account_id: string;
+  is_featured?: boolean;
+  categories?: string[];
+  vimeo_video_id?: string;
+}
 
 function ErrorBoundary({ children }: { children: React.ReactNode }) {
   const [hasError, setHasError] = React.useState(false)
