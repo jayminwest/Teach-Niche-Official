@@ -171,7 +171,7 @@ const Lessons: NextPage = () => {
               name: lesson.title,
               description: lesson.description
             },
-            unit_amount: lesson.price * 100 // Convert to cents
+            unit_amount: Math.round(lesson.price * 100) // Convert to cents and ensure integer
           },
           quantity: 1
         }],
