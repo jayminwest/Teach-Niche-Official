@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   FormControl,
   FormLabel,
@@ -12,8 +12,6 @@ import {
   Flex,
   Text,
 } from '@chakra-ui/react';
-import { useFormik } from 'formik';
-import * as Yup from 'yup';
 
 interface LessonFormProps {
   onSubmit: (values: {
@@ -27,67 +25,59 @@ interface LessonFormProps {
 }
 
 export const LessonForm: React.FC<LessonFormProps> = ({ onSubmit, isSubmitting }) => {
-  const formik = useFormik({
-    initialValues: {
-      title: '',
-      description: '',
-      price: 0,
-      videoFile: undefined,
-      thumbnailFile: undefined,
-    },
-    validationSchema: Yup.object({
-      title: Yup.string().required('Title is required'),
-      description: Yup.string().required('Description is required'),
-      price: Yup.number().required('Price is required').positive('Price must be positive'),
-      videoFile: Yup.mixed().optional(), // Adjust validation as needed for file types/sizes
-      thumbnailFile: Yup.mixed().optional(), // Adjust validation as needed for file types/sizes
-    }),
-    onSubmit: onSubmit,
-  });
+  const [title, setTitle] = useState('');
+  const [description, setDescription] = useState('');
+  const [price, setPrice] = useState<number | undefined>(0);
+  const [videoFile, setVideoFile] = useState<File | undefined>(undefined);
+  const [thumbnailFile, setThumbnailFile] = useState<File | undefined>(undefined);
+
+  const handleSubmit = (event: React.FormEvent) => {
+    event.preventDefault();
+
+    if (price === undefined) {
+      // Basic validation, consider more robust validation
+      alert("Price is required and must be a positive number");
+      return;
+    }
+
+    onSubmit({
+      title,
+      description,
+      price: price,
+      videoFile,
+      thumbnailFile,
+    });
+  };
 
   return (
-    <Box as="form" onSubmit={formik.handleSubmit} bg="white" p={6} rounded="md" shadow="md">
+    <Box as="form" onSubmit={handleSubmit} bg="white" p={6} rounded="md" shadow="md">
       <Stack spacing={4}>
-        <FormControl id="title" isInvalid={formik.errors.title && formik.touched.title}>
+        <FormControl id="title">
           <FormLabel>Title</FormLabel>
           <Input
             type="text"
             name="title"
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            value={formik.values.title}
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
           />
-          {formik.errors.title && formik.touched.title ? (
-            <Text color="red.500">{formik.errors.title}</Text>
-          ) : null}
         </FormControl>
 
-        <FormControl id="description" isInvalid={formik.errors.description && formik.touched.description}>
+        <FormControl id="description">
           <FormLabel>Description</FormLabel>
           <Textarea
             name="description"
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            value={formik.values.description}
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
           />
-          {formik.errors.description && formik.touched.description ? (
-            <Text color="red.500">{formik.errors.description}</Text>
-          ) : null}
         </FormControl>
 
-        <FormControl id="price" isInvalid={formik.errors.price && formik.touched.price}>
+        <FormControl id="price">
           <FormLabel>Price</FormLabel>
-          <NumberInput min={0} step={1} precision={2}>
+          <NumberInput min={0} step={1} precision={2} value={price} onChange={(valueString) => setPrice(parseFloat(valueString))}>
             <NumberInputField
               name="price"
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-              value={formik.values.price}
             />
           </NumberInput>
-          {formik.errors.price && formik.touched.price ? (
-            <Text color="red.500">{formik.errors.price}</Text>
-          ) : null}
         </FormControl>
 
         <FormControl id="videoFile" >
@@ -95,8 +85,7 @@ export const LessonForm: React.FC<LessonFormProps> = ({ onSubmit, isSubmitting }
           <Input
             type="file"
             name="videoFile"
-            onChange={(event) => formik.setFieldValue("videoFile", event.currentTarget.files![0])}
-            onBlur={formik.handleBlur}
+            onChange={(event) => setVideoFile(event.currentTarget.files![0])}
           />
         </FormControl>
 
@@ -105,8 +94,7 @@ export const LessonForm: React.FC<LessonFormProps> = ({ onSubmit, isSubmitting }
           <Input
             type="file"
             name="thumbnailFile"
-            onChange={(event) => formik.setFieldValue("thumbnailFile", event.currentTarget.files![0])}
-            onBlur={formik.handleBlur}
+            onChange={(event) => setThumbnailFile(event.currentTarget.files![0])}
           />
         </FormControl>
 
