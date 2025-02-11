@@ -63,7 +63,7 @@ def _create_stripe_account_session(self, account_id):
 
 
 @router.post("/account/session")
-async def create_stripe_account_session( dict):
+async def create_stripe_account_session(data: dict):
     """Creates a Stripe account session for onboarding new connected accounts.
 
     Args:
