@@ -98,6 +98,10 @@ const ProfilePage = () => {
     router.push('/auth/delete-account');
   };
 
+  const handleCreateLesson = () => {
+    router.push('/lessons/create');
+  };
+
   useEffect(() => {
     if (!authLoading) {
       if (!user) {
@@ -224,7 +228,11 @@ const ProfilePage = () => {
               <TabPanel>
                 <VStack spacing={4} align="stretch">
                   <Text fontSize="lg">Your Created Lessons</Text>
-                  <Button variant="primary" label="Create New Lesson" />
+                  <Button 
+                    variant="primary" 
+                    label="Create New Lesson" 
+                    onClick={handleCreateLesson}
+                  />
                   {/* Add lesson list here */}
                   <Text color="gray.500">No lessons created yet</Text>
                 </VStack>
