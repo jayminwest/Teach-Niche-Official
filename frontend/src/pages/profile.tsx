@@ -99,6 +99,16 @@ const ProfilePage = () => {
   };
 
   const handleCreateLesson = () => {
+    if (!profile.stripe_onboarding_complete) {
+      toast({
+        title: "Stripe Account Required",
+        description: "Please connect your Stripe account before creating lessons",
+        status: "warning",
+        duration: 5000,
+        isClosable: true,
+      });
+      return;
+    }
     router.push('/lessons/create');
   };
 
