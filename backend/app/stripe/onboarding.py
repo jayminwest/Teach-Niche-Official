@@ -21,7 +21,7 @@ router = APIRouter()
 logger = logging.getLogger(__name__)
 
 
-def _get_account_id_from_request(self,  dict):
+def _get_account_id_from_request(data: dict):
     """Extracts the account ID from the request data.
 
     Args:
@@ -33,7 +33,7 @@ def _get_account_id_from_request(self,  dict):
     Raises:
         HTTPException: If the account ID is missing or invalid
     """
-    if not 
+    if not data:
         raise HTTPException(status_code=400, detail="Request data is required")
 
     account_id = data.get('account') or data.get('account_id')
