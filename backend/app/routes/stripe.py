@@ -43,6 +43,8 @@ import app.stripe.payouts as payouts
 import app.stripe.dashboard as dashboard
 import app.stripe.compliance as compliance
 import app.stripe.webhooks as webhooks
+from app.stripe.onboarding import router as onboarding_router  # Import the onboarding router
+
 
 router = APIRouter(
     prefix="/v1/stripe",
@@ -50,12 +52,15 @@ router = APIRouter(
     responses={404: {"description": "Not found"}},
 )
 
-# Include all Stripe sub-routers
-router.include_router(onboarding.router, prefix="/account", tags=["account"])
+# Include onboarding routes - NO PREFIX, to put /account directly under /v1/stripe
+router.include_router(onboarding_router, tags=["onboarding"])
+
+# Include payments routes
 router.include_router(payments.router, prefix="/checkout", tags=["checkout"])
-router.include_router(payouts.router, prefix="/payouts", tags=["payouts"]) 
+router.include_router(payouts.router, prefix="/payouts", tags=["payouts"])
 router.include_router(dashboard.router, prefix="/dashboard", tags=["dashboard"])
 router.include_router(compliance.router, prefix="/compliance", tags=["compliance"])
+
 
 @router.post("/account")
 async def create_stripe_account() -> dict:
@@ -177,7 +182,7 @@ class CheckoutSessionRequest(BaseModel):
     account_id: str
     line_items: list[dict]
     lesson_id: str
-    metadata: dict = {}
+    meta dict = {}
 
 @router.post("/checkout_session")
 async def create_stripe_checkout_session(request: CheckoutSessionRequest = Body(...)) -> dict:
@@ -209,7 +214,7 @@ async def create_stripe_checkout_session(request: CheckoutSessionRequest = Body(
     try:
         logger.info(f"Incoming checkout request for account {request.account_id} with lesson {request.lesson_id}")
         logger.debug(f"Full request payload: {request.dict()}")
-        
+
         # Validate line items structure
         for index, item in enumerate(request.line_items):
             logger.debug(f"Validating line item #{index + 1}: {item}")
@@ -221,12 +226,12 @@ async def create_stripe_checkout_session(request: CheckoutSessionRequest = Body(
                 )
 
         # Set lesson_id in metadata
-        logger.debug(f"Setting lesson_id in metadata: {request.lesson_id}")
+        logger.debug(f"Setting lesson_id in meta {request.lesson_id}")
         request.metadata["lesson_id"] = request.lesson_id
-            
+
         logger.info("Creating Stripe checkout session")
         session = payments.create_checkout_session(
-            request.account_id, 
+            request.account_id,
             request.line_items,
             metadata=request.metadata
         )
